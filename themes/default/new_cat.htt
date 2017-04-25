@@ -1,0 +1,63 @@
+<!-- BEGIN CommentDoc -->
+<!-- This is a phplib-template for new_cat.php -->
+<!-- END CommentDoc -->
+</div><!-- end SectionInfoLine -->
+{ModuleScript}
+<h2>Foldergallery Verwaltung</h2>
+<div id="FG_table" style="width:100%; border-collapse: collapse; border: 0 none; " >
+    <form action="{NEW_CAT_LINK}" method="post">
+        <input type="hidden" name="section_id" value="{SECTION_ID_VALUE}" />
+        <input type="hidden" name="page_id" value="{PAGE_ID_VALUE}" />
+        <input type="hidden" name="root" value="{ROOT}" />
+
+        <div class="block-outer">
+            <fieldset style=" border: 0 none;">
+                <legend style=" border: 0 none;"><span class="modulinfo">{NEW_CAT_TITLE}</span></legend>
+                <dl class="settingdata">
+                    <dt class="setting_name">
+                        <label class="tip">{CAT_PARENT_STRING}:</label>
+                    </dt>
+                    <dd class="setting_value">
+                        <select name="cat_parent" style="width: 100%;">
+                            <!-- BEGIN select_option_block -->
+                            <option class="level-{NIVEAU}" value="{FOLDER}" {DIR_SELECTED} >{FOLDER_NAME}</option>
+                            <!-- END select_option_block -->
+                        </select>
+                    </dd>
+                </dl>
+                <dl class="settingdata">
+                    <dt class="setting_name">
+                        <label for="folder_name" class="tip">{FOLDER_NAME_STRING}:</label>
+                    </dt>
+                    <dd class="setting_value">
+                        <input type="text" name="folder_name" id="folder_name" value="" style="width: 100%;" />
+                    </dd>
+                </dl>
+                <dl class="settingdata">
+                    <dt class="setting_name">
+                        <label for="cat_title" class="tip">{CAT_TITLE_STRING}:</label>
+                    </dt>
+                    <dd class="setting_value">
+                        <input type="text" name="cat_title" id="cat_title" value="" style="width: 100%;" />
+                    </dd>
+                </dl>
+                <dl class="settingdata">
+                    <dt class="setting_name">
+                        <label for="cat_desc" class="tip">{CAT_DESC_STRING}:</label>
+                    </dt>
+                    <dd class="setting_value">
+                         <textarea style="height: 5.525em;" id="cat_desc" name="cat_desc" rows="5" cols="50"></textarea>
+                    </dd>
+                </dl>
+                <hr class="clear" style=" border: 0 none;" />
+            </fieldset>
+        </div>
+        <dl id="submit_buttons" style="width:100%; border-collapse: collapse; " >
+            <dt class="insert_name" >
+                <button style="display: inline; width: 25%;" class="FG_button fg-btn fg-btn-gradient" type="submit">{SAVE_STRING}</button>
+                <button style="display: inline; width: 25%;" class="FG_button fg-btn fg-btn-gradient" type="reset" onclick="{CANCEL_ONCLICK}">{CANCEL_STRING}</button>
+            </dt>
+            <dd></dd>
+        </dl>
+    </form>
+</div>

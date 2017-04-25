@@ -1,29 +1,30 @@
 <?php
-/*
-
- Website Baker Project <http://www.websitebaker.org/>
- Copyright (C) 2004-2008, Ryan Djurovich
-
- Website Baker is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
-
- Website Baker is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with Website Baker; if not, write to the Free Software
- Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-*/
-
+/**
+ *
+ * @category        modules
+ * @package         katalog
+ * @author          WebsiteBaker Project / Jacobi22
+ * @copyright       WebsiteBaker Org. e.V.
+ * @link            http://www.jacobi22.com/
+ * @platform        WebsiteBaker 2.8.x
+ * @requirements    PHP 5.2.2 and higher
+ * @version         $Id: uninstall.php 96 2016-11-20 16:46:52Z dietmar $
+ * @lastmodified    $Date: 2016-11-20 17:46:52 +0100 (So, 20. Nov 2016) $
+ *
+ */
+/* -------------------------------------------------------- */
+// Must include code to stop this file being accessed directly
+//if(!defined('DEBUG')) { define('DEBUG', true); }
 // prevent this file from being accessed directly
-if(!defined('WB_PATH')) die(header('Location: index.php'));  
+/* -------------------------------------------------------- */
+// Must include code to prevent this file from being accessed directly
+if(defined('WB_PATH') == false) {
+    die('Cannot access '.basename(__DIR__).'/'.basename(__FILE__).' directly');
+} else {
+    // create tables from sql dump file
+    if (is_readable(__DIR__.'/install-struct.sql')) {
+        $database->SqlImport(__DIR__.'/install-struct.sql', TABLE_PREFIX, __FILE__ );
+    }
+}
 
-$database->query("DROP TABLE IF EXISTS `" .TABLE_PREFIX ."mod_foldergallery_settings`");
-$database->query("DROP TABLE IF EXISTS `" .TABLE_PREFIX ."mod_foldergallery_files`");
-$database->query("DROP TABLE IF EXISTS `" .TABLE_PREFIX ."mod_foldergallery_categories`");
-?>
+// end of file

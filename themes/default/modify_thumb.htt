@@ -1,0 +1,40 @@
+<!-- BEGIN CommentDoc -->
+<!--
+This is a phplib-template for modify_thumb.php
+-->
+<!-- END CommentDoc -->
+</div><!-- end SectionInfoLine -->
+{ModuleScript}
+<script type="text/javascript">
+    var relWidth = '{REL_WIDTH}';
+    var relHeight = '{REL_HEIGHT}';
+    var thumbSize = '{THUMB_SIZE}';
+    var settingsRatio = '{RATIO}';
+</script>
+<h2>{EDIT_THUMB}</h2>
+<div id="jcrop" class="block-outer" style="margin-bottom: 0.625em; position: relative; overflow: hidden;">
+    <h3>{EDIT_THUMB_DESCR}</h3>
+    <h4>{FULL_FILE_LINK}</h4>
+    <div style="float: left; padding: 0.925em 1.225em;">
+        <img src="{FULL_FILE_LINK}" id="cropbox" alt="" style="max-width: 500px; max-height: 500px;"/>
+    </div>
+    <div style="float:left; text-align:center; padding: 0.925em 1.225em;">
+        <div style="overflow: hidden; width: {PREVIEW_WIDTH}px; height: {PREVIEW_HEIGHT}px; margin: auto; margin-bottom: 1.225em;">
+            <img src="{FULL_FILE_LINK}" id="preview" alt=""/>
+        </div>
+        <!-- This is the form that our event handler fills -->
+        <form action="{ADDON_URL}/admin/modify_thumb.php" method="post" onsubmit="return checkCoords();">
+            <input type="hidden" name="section_id" value="{SECTION_ID}"/>
+            <input type="hidden" name="page_id" value="{PAGE_ID}"/>
+            <input type="hidden" name="cat_id" value="{CAT_ID}"/>
+            <input type="hidden" name="id" value="{IMG_ID}"/>
+            <input type="hidden" name="infoBanner" value="0"/>
+            <input type="hidden" id="x1" name="x1" />
+            <input type="hidden" id="y1" name="y1" />
+            <input type="hidden" id="x2" name="x2" />
+            <input type="hidden" id="y2" name="y2" />
+            <input style="width: 100%;" type="submit" value="{SAVE_NEW_THUMB}" class="FG_button fg-btn fg-btn-gradient" />
+            <input style="width: 100%;" type="button" value="{CANCEL}" onclick="parent.location='{ADDON_URL}/admin/modify_cat.php?page_id={PAGE_ID}&section_id={SECTION_ID}&cat_id={CAT_ID}'" class="FG_button fg-btn fg-btn-gradient"/>
+        </form>
+    </div>
+</div>

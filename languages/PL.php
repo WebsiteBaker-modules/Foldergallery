@@ -33,10 +33,13 @@ $MOD_FOLDERGALLERY['CATEGORIES_TITLE']  = 'Kategorie';
 $MOD_FOLDERGALLERY['BACK_STRING']       = 'Strona główna galerii ';
 $MOD_FOLDERGALLERY['FRONT_END_ERROR']   = 'Ta kategoria nie istnieje albo nie zawiera żadnych obrazów bądź podkategorii!';
 $MOD_FOLDERGALLERY['PAGE']              = 'Strona';
-
+$MOD_FOLDERGALLERY['IMG_TITLE_TEXT']    = 'Tytuł obrazu';
+$MOD_FOLDERGALLERY['GAL']              = 'Galeria';
+$MOD_FOLDERGALLERY['PAGINATION']        = 'Pagination';
 
 //Variables for the Backend
 $MOD_FOLDERGALLERY['PICS_PP']           = 'Obrazów na stronę';
+$MOD_FOLDERGALLERY['GAL_PP']            = 'Galeria na stronę';
 $MOD_FOLDERGALLERY['LIGHTBOX']          = 'Lightbox';
 $MOD_FOLDERGALLERY['MODIFY_CAT_TITLE']  = 'Modyfikacja kategorii i detali obrazów';
 $MOD_FOLDERGALLERY['MODIFY_CAT']        = 'Modyfikacja detali kategorii:';
@@ -46,11 +49,12 @@ $MOD_FOLDERGALLERY['MODIFY_IMG']        = 'Modyfikuj obrazy:';
 $MOD_FOLDERGALLERY['IMAGE']             = 'Obraz';
 $MOD_FOLDERGALLERY['IMAGE_NAME']        = 'Nazwa obrazu';
 $MOD_FOLDERGALLERY['IMG_CAPTION']       = 'Opis obrazu';
-$MOD_FOLDERGALLERY['REDIRECT']          = 'Musisz skonfigurować galerię zanim będzie możliwe korzystanie z niej. '
+$MOD_FOLDERGALLERY['REDIRECT']          = 'Musisz skonfigurować galerię zanim będzie <a href="{{SETTING_LINK}}">możliwe korzystanie</a> z niej. '
                                         . 'Zostaniesz przeniesiony na stronę konfiguracji za 2 sec. (jeśli javascript jest włączony.)';
 $MOD_FOLDERGALLERY['TITEL_BACKEND']     = 'Administracja modułem Foldergallery';
 $MOD_FOLDERGALLERY['TITEL_MODIFY']      = 'Modyfikuj kategorie i obrazy:';
-$MOD_FOLDERGALLERY['SETTINGS']          = 'Podstawowe ustawienia';
+$MOD_FOLDERGALLERY['SETTINGS']          = 'Ustawienia';
+$MOD_FOLDERGALLERY['SETTINGS_STRING']   = 'Podstawowe ustawienia';
 $MOD_FOLDERGALLERY['ROOT_DIR']          = 'Katalog główny';
 $MOD_FOLDERGALLERY['EXTENSIONS']        = 'Dopuszczalne rozszerzenia plików';
 $MOD_FOLDERGALLERY['INVISIBLE']         = 'Ukryj foldery';
@@ -61,7 +65,7 @@ $MOD_FOLDERGALLERY['ERROR_MESSAGE']     = 'Brak danych!';
 $MOD_FOLDERGALLERY['DB_ERROR']          = 'Błąd bazy danych!';
 $MOD_FOLDERGALLERY['FS_ERROR']          = 'Nie można usunąć folderu!';
 $MOD_FOLDERGALLERY['NO_FILES_IN_CAT']   = 'Kategoria nie zawiera żadnych obrazów!';
-$MOD_FOLDERGALLERY['SYNC']              = 'Synchronizacja bazy danych z systemem plików';
+$MOD_FOLDERGALLERY['SYNC']              = 'Synchronizacja systemem plików';
 $MOD_FOLDERGALLERY['EDIT_CSS']          = 'Edytuj CSS';
 $MOD_FOLDERGALLERY['FOLDER_IN_FS']      = 'Folder systemowy:';
 $MOD_FOLDERGALLERY['CAT_TITLE']         = 'Tytuł kategorii:';
@@ -96,6 +100,8 @@ $MOD_FOLDERGALLERY['CAT_ACTIVE']                = 'aktywny, kliknij aby zdeaktyw
 $MOD_FOLDERGALLERY['CAT_INACTIVE']              = 'nieaktywny, kliknij aby aktywować!';
 $MOD_FOLDERGALLERY['CAT_TOGGLE_ACTIV_FAIL']     = 'Aktywacja/deaktywacja tej kategorii niemożliwa! Próbujesz zhakować system ?!';
 $MOD_FOLDERGALLERY['DELETE_ARE_YOU_SURE']       = 'Na pewno usunąć ten plik ? Po usunięciu pliku nie można odtworzyć !';
+$MOD_FOLDERGALLERY['DELETE_IMG_ARE_YOU_SURE']   = 'Would you like to delete this file including title, description? The file will be completely deleted from the server!';
+$MOD_FOLDERGALLERY['DELETE_CAT_ARE_YOU_SURE']   = 'Would you like to delete this categorie including images, title, descriptions? The categorie and files will be completely deleted from the server!';
 $MOD_FOLDERGALLERY['ADD_MORE_PICS']             = 'Dodaj więcej obrazów do tej kategorii';
 $MOD_FOLDERGALLERY['CATPIC_STRINGS'][0]         = 'Losowo';
 $MOD_FOLDERGALLERY['CATPIC_STRINGS'][1]         = 'Pierwszy';
@@ -131,4 +137,16 @@ $MOD_FOLDERGALLERY['ROOT_FOLDER_STRING_TT']     = 'To jest podstawowy (główny)
 $MOD_FOLDERGALLERY['EXTENSIONS_STRING_TT']      = 'Zdefiniuj tutaj sufiksy plików, Define the file suffixes you wish to allow here. (Case insensitive.) Use "," (comma) as delimiter.';
 $MOD_FOLDERGALLERY['INVISIBLE_STRING_TT']       = 'Folder that are listed here will not be scanned.';
 $MOD_FOLDERGALLERY['DELETE_TITLE_TT']           = 'Warning: This will delete ALL categories and images! (The images will be REMOVED, too!)';
-?>
+
+$MOD_FOLDERGALLERY['PICTURES']  = 'fotos';
+$MOD_FOLDERGALLERY['1PICTURE']  = 'foto';
+$MOD_FOLDERGALLERY['2PICTURES'] = 'fotos';
+$MOD_FOLDERGALLERY['3PICTURES'] = 'fotos';
+$MOD_FOLDERGALLERY['CATEGORIE']     = 'Category';
+$MOD_FOLDERGALLERY['CATEGORIES']    = 'Categories';
+$MOD_FOLDERGALLERY['ALL_CATEGORIES']= 'All categories';
+$MOD_FOLDERGALLERY['ALL_PICTURES']  = 'All fotos';
+$MOD_FOLDERGALLERY['ALIGNMENT']  = 'Categories  Preview alignment';
+$MOD_FOLDERGALLERY['LEFT']       = 'left';
+$MOD_FOLDERGALLERY['RIGHT']      = 'right';
+$MOD_FOLDERGALLERY['CENTER']     = 'center';

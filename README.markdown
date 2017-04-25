@@ -16,6 +16,34 @@ GNU General Public License for more details.
 
 ##Changelog
 
+###V1.39 (Jacobi22, 21.02.2016)
++ add Category-Pagination
++ fix some mysql-statements for mysql-strict mode
+- remove uplodify-script (secure issues)
++ some styling fixes in different file (width for some buttons etc, bigger rows in overview and settings etc)
++ upgrade jcrop to vers 0.9.12
++ fixes for PHP 7.x
++ upgrade scripts (pirobox, prettyPhoto, galleryView)
++ add gallery overview && gallery pagination
+
+###V1.38 (Jacobi22, 20.02.2016)
+- remove the switch for mysql / mysqli, implement in vers 1.35. wrong order in the close-part (was only needed on non-utf8-systems)
+
+###V1.37 (B. Martinovic, 16.02.2015)
++ Fix: re-activated line 65 in view.php for security reasons
+
+###V1.36 (Jacobi22, 30.12.2014)
++ Fix: fix Regex in class / class.upload.php (thx to DarkViper)
++ Fix: fix delete.php / delete images works with wrong field names (need gallery id, not parent_id)
++ Fix: fix save_settings.php / delete images works with wrong field names (need gallery id, not parent_id)
++ Fix: fix missing gallery title & gallery description in single gallery in view.php
+
+###V1.35 (Jacobi22, 30.12.2014)
++ Fix:  Switch for mysql/mysqli (needed for Version > WB 2.8.3 SP3) in modify.php, view.php, admin/modify_cat.php, admin/modify_cat_sort.php, admin/modify_thumb.php, admin/save_settings.php, admin/sync.php, admin/scripts/delete_img.php, admin/scripts/upload.php (thx to Martin Hecht for the way)
++ Add: add  Folder "install" to the Array for Core-Folders
++ Fix: fix delete.php / delete images works with wrong field names (need gallery id, not parent_id)
++ Fix: fix save_settings.php / delete images works with wrong field names (need gallery id, not parent_id)
+
 ###V1.34 (beta version) (Jürg Rast, 26.09.2011)
 + BugFix: Support for Special-Characters in File-/Foldernames
 + BugFix: Set default Thumb if thumbcreation fails
@@ -54,7 +82,7 @@ GNU General Public License for more details.
 
 
 ###V1.21 (Jürg Rast, 30.03.2011)
-+ BugFix: Some categories where not displayed 
++ BugFix: Some categories where not displayed
 + BugFix: Library-/jQueryAdmin integration was missing
 + Made infomessages better visible (eg.: during saving the settings, sync, new page)
 

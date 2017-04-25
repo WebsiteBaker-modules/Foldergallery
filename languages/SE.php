@@ -30,10 +30,13 @@ $MOD_FOLDERGALLERY['CATEGORIES_TITLE']  = 'Kategorier';
 $MOD_FOLDERGALLERY['BACK_STRING']       = 'Tillbaka till &ouml;versikt';
 $MOD_FOLDERGALLERY['FRONT_END_ERROR']   = 'Antingen finns inte kategorin eller s&aring; inneh&aring;ller den varken bilder eller subkategorier.';
 $MOD_FOLDERGALLERY['PAGE']              = 'Sida';
-
+$MOD_FOLDERGALLERY['IMG_TITLE_TEXT']    = 'Bilder Title';
+$MOD_FOLDERGALLERY['GAL']              = 'Galleri';
+$MOD_FOLDERGALLERY['PAGINATION']        = 'Pagination Design';
 
 //Variables for the Backend
 $MOD_FOLDERGALLERY['PICS_PP']           = 'Bilder per sida';
+$MOD_FOLDERGALLERY['GAL_PP']            = 'Galleri per sida';
 $MOD_FOLDERGALLERY['LIGHTBOX']          = 'Lightbox';
 $MOD_FOLDERGALLERY['MODIFY_CAT_TITLE']  = '&Auml;ndra kategorier och bildinformation';
 $MOD_FOLDERGALLERY['MODIFY_CAT']        = '&Auml;ndra informationen f&ouml;r kategorin:';
@@ -43,11 +46,12 @@ $MOD_FOLDERGALLERY['MODIFY_IMG']        = '&Auml;ndra bilder:';
 $MOD_FOLDERGALLERY['IMAGE']             = 'Bild';
 $MOD_FOLDERGALLERY['IMAGE_NAME']        = 'Bildens namn';
 $MOD_FOLDERGALLERY['IMG_CAPTION']       = 'Beskrivning av bilden';
-$MOD_FOLDERGALLERY['REDIRECT']          = 'Du beh&ouml;ver utf&ouml;ra n&aring;gra inst&auml;llningar innan du anv&auml;nder galleriet. '
+$MOD_FOLDERGALLERY['REDIRECT']          = 'Du beh&ouml;ver utf&ouml;ra n&aring;gra <a href="{{SETTING_LINK}}">inst&auml;llningar</a> innan du anv&auml;nder galleriet. '
                                         . 'Du kommer att vidarebefordras innom tv&aring; sekunder (JavaScript beh&ouml;ver vara aktiverat)';
 $MOD_FOLDERGALLERY['TITEL_BACKEND']     = 'Foldergallery Admin';
 $MOD_FOLDERGALLERY['TITEL_MODIFY']      = '&Auml;ndra kategorier och bilder:';
 $MOD_FOLDERGALLERY['SETTINGS']          = 'Inst&auml;llningar';
+$MOD_FOLDERGALLERY['SETTINGS_STRING']   = 'Basic Inst&auml;llningar';
 $MOD_FOLDERGALLERY['ROOT_DIR']          = 'Rootmapp';
 $MOD_FOLDERGALLERY['EXTENSIONS']        = 'Till&aring;tna fil&auml;ndelser';
 $MOD_FOLDERGALLERY['INVISIBLE']         = 'G&ouml;mda foldrar';
@@ -58,7 +62,7 @@ $MOD_FOLDERGALLERY['ERROR_MESSAGE']     = 'Inga uppgifter';
 $MOD_FOLDERGALLERY['DB_ERROR']          = 'Database error!';
 $MOD_FOLDERGALLERY['FS_ERROR']          = 'Kan inte radera foldern.';
 $MOD_FOLDERGALLERY['NO_FILES_IN_CAT']   = 'Kategorin saknar bilder.';
-$MOD_FOLDERGALLERY['SYNC']              = 'Synkronisera databas med filsystem';
+$MOD_FOLDERGALLERY['SYNC']              = 'Synkronisera filsystem';
 $MOD_FOLDERGALLERY['EDIT_CSS']          = 'Redigera CSS';
 $MOD_FOLDERGALLERY['FOLDER_IN_FS']      = 'Filesystemfolder:';
 $MOD_FOLDERGALLERY['CAT_TITLE']         = 'Kategorins titel:';
@@ -93,6 +97,8 @@ $MOD_FOLDERGALLERY['CAT_ACTIVE']                = 'active, click to deactivate!'
 $MOD_FOLDERGALLERY['CAT_INACTIVE']              = 'inactive, click to activate!';
 $MOD_FOLDERGALLERY['CAT_TOGGLE_ACTIV_FAIL']     = 'Could not acvtivate/deactivate this categorie! Do you try to hack the system?';
 $MOD_FOLDERGALLERY['DELETE_ARE_YOU_SURE']       = 'Would you like to delete this file? The file is completely deleted from the server!';
+$MOD_FOLDERGALLERY['DELETE_IMG_ARE_YOU_SURE']   = 'Would you like to delete this file including title, description? The file will be completely deleted from the server!';
+$MOD_FOLDERGALLERY['DELETE_CAT_ARE_YOU_SURE']   = 'Would you like to delete this categorie including images, title, descriptions? The categorie and files will be completely deleted from the server!';
 $MOD_FOLDERGALLERY['ADD_MORE_PICS']             = 'Add more Pictures to this categorie';
 $MOD_FOLDERGALLERY['CATPIC_STRINGS'][0]         = 'Random';
 $MOD_FOLDERGALLERY['CATPIC_STRINGS'][1]         = 'First';
@@ -130,4 +136,16 @@ $MOD_FOLDERGALLERY['ROOT_FOLDER_STRING_TT'] = 'Rotmappen f&ouml;r att s&ouml;ka 
 $MOD_FOLDERGALLERY['EXTENSIONS_STRING_TT']  = 'Definiera de fil&auml;ndelser du vill till&aring;ta. (Skiftl&auml;gesok&auml;nsligt.) Anv&auml;nd "," (komma) som avgr&auml;nsare.';
 $MOD_FOLDERGALLERY['INVISIBLE_STRING_TT']   = 'Foldrar som visas h&auml;r kommer inte att skannas.';
 $MOD_FOLDERGALLERY['DELETE_TITLE_TT']       = 'Varning: Alla kategorier och bilder raderas! (&Auml;ven bilderna kommer att tas bort';
-?>
+
+$MOD_FOLDERGALLERY['PICTURES']  = 'fotos';
+$MOD_FOLDERGALLERY['1PICTURE']  = 'foto';
+$MOD_FOLDERGALLERY['2PICTURES'] = 'fotos';
+$MOD_FOLDERGALLERY['3PICTURES'] = 'fotos';
+$MOD_FOLDERGALLERY['CATEGORIE']     = 'Category';
+$MOD_FOLDERGALLERY['CATEGORIES']    = 'Categories';
+$MOD_FOLDERGALLERY['ALL_CATEGORIES']= 'All categories';
+$MOD_FOLDERGALLERY['ALL_PICTURES']  = 'All fotos';
+$MOD_FOLDERGALLERY['ALIGNMENT']  = 'Categories  Preview alignment';
+$MOD_FOLDERGALLERY['LEFT']       = 'left';
+$MOD_FOLDERGALLERY['RIGHT']      = 'right';
+$MOD_FOLDERGALLERY['CENTER']     = 'center';

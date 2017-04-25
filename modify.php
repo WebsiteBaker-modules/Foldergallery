@@ -19,121 +19,116 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 */
+/* -------------------------------------------------------- */
+// Must include code to prevent this file from being accessed directly
+if (defined('WB_PATH') == false) { die('Cannot access '.basename(__DIR__).'/'.basename(__FILE__).' directly'); }
+/* -------------------------------------------------------- */
+    // folderstructure steps to modules path
+    $sAddonPath = __DIR__;
 
-// prevent this file from being accessed directly
-if(!defined('WB_PATH')) die(header('Location: ../../index.php'));  
+    if (is_readable($sAddonPath.'/init.php')) {require ($sAddonPath.'/init.php');}
 
-
-// check if backend.css file needs to be included into <body></body>
-if(!method_exists($admin, 'register_backend_modfiles') && file_exists(WB_PATH ."/modules/foldergallery/backend.css")) {
-	echo '<style type="text/css">';
-	include(WB_PATH .'/modules/foldergallery/backend.css');
-	echo "\n</style>\n";
-}
-
-// include the default language
-require_once(WB_PATH .'/modules/foldergallery/languages/EN.php');
-// check if module language file exists for the language set by the user (e.g. DE, EN)
-if(file_exists(WB_PATH .'/modules/foldergallery/languages/'.LANGUAGE .'.php')) {
-    require_once(WB_PATH .'/modules/foldergallery/languages/'.LANGUAGE .'.php');
-}
-
-// Files includen
-require_once (WB_PATH.'/modules/foldergallery/info.php');
-require_once (WB_PATH.'/modules/foldergallery/admin/scripts/backend.functions.php');
-
-//  Set the mySQL encoding to utf8
-$oldMysqlEncoding = mysql_client_encoding();
-mysql_set_charset('utf8',$database->db_handle);
-
+    // to print with or without header, default is with header
+    $admin_header=false;
+    // Workout if the developer wants to show the info banner
+    $print_info_banner = false; // true/false
+    // Tells script to update when this page was last updated
+    $update_when_modified = false;
+    // Include WB admin wrapper script to sanitize page_id and section_id, print SectionInfoLine
+    require(WB_PATH.'/modules/admin.php');
+    // An associative array that by default contains the contents of $_GET, $_POST and $_COOKIE.
+    $aRequestVars = $_REQUEST;
 
 // Einstellungen zur aktuellen Foldergallery aus der DB
 $settings = getSettings($section_id);
 // Falls noch keine Einstellungen gemacht wurden auf die Einstellungsseite umleiten
 if($settings['root_dir'] == 'd41d8cd98f00b204e9800998ecf8427e') {
-	?>
-		<script language="javascript">
-			function Weiterleitung() {
-   				location.href= '<?php echo WB_URL; ?>/modules/foldergallery/admin/modify_settings.php?page_id=<?php echo $page_id; ?>&section_id=<?php echo $section_id; ?>';
-			}
-			window.setTimeout("Weiterleitung()", 2000); // in msecs 1000 => eine Sekunde
-		</script>
-	<?php
-	echo "<div class=\"info\">".$MOD_FOLDERGALLERY['REDIRECT']."\n</div>\n";
-} else {
-
-
-// Template
-$t = new Template(dirname(__FILE__).'/admin/templates', 'remove');
-$t->halt_on_error = 'no';
-$t->set_file('modify', 'modify.htt');
-// clear the comment-block, if present
-$t->set_block('modify', 'CommentDoc'); $t->clear_var('CommentDoc');
-$t->set_block('modify', 'ListElement', 'LISTELEMENT');
-$t->clear_var('ListElement'); // Löschen, da dies über untenstehende Funktion erledigt wird.
-
-// Links im Template setzen
-$t->set_var(array(
-	'SETTINGS_ONCLICK'  => 'javascript: window.location = \''.WB_URL.'/modules/foldergallery/admin/modify_settings.php?page_id='.$page_id.'&amp;section_id='.$section_id.'\';',
-	'SYNC_ONKLICK'      => 'javascript: window.location = \''.WB_URL.'/modules/foldergallery/admin/sync.php?page_id='.$page_id.'&amp;section_id='.$section_id.'\';',
-        'HELP_ONCLICK'      => 'javascript: window.location = \''.WB_URL.'/modules/foldergallery/help.php?page_id='.$page_id.'&amp;section_id='.$section_id.'\';',
-        'NEW_CAT_ONCLICK'   => 'javascript: window.location = \''.WB_URL.'/modules/foldergallery/admin/new_cat.php?page_id='.$page_id.'&amp;section_id='.$section_id.'\';',
-	'EDIT_PAGE'         => $page_id,
-	'EDIT_SECTION'      => $section_id,
-	'WB_URL'            => WB_URL
-));
-
-// Text im Template setzten
-$t->set_var(array(
-	'TITEL_BACKEND_STRING' 	=> $MOD_FOLDERGALLERY['TITEL_BACKEND'],
-	'TITEL_MODIFY' 		=> $MOD_FOLDERGALLERY['TITEL_MODIFY'],
-	'SETTINGS_STRING' 	=> $MOD_FOLDERGALLERY['SETTINGS'],
-	'FOLDER_IN_FS_STRING'	=> $MOD_FOLDERGALLERY['FOLDER_IN_FS'],
-	'CAT_TITLE_STRING'	=> $MOD_FOLDERGALLERY['CAT_TITLE'],
-	'ACTIONS_STRING'	=> $MOD_FOLDERGALLERY['ACTION'],
-	'SYNC_STRING'		=> $MOD_FOLDERGALLERY['SYNC'],
-	'EDIT_CSS_STRING'	=> $MOD_FOLDERGALLERY['EDIT_CSS'],
-        'EXPAND_COLAPSE_STRING' => $MOD_FOLDERGALLERY['EXPAND_COLAPSE'],
-        'HELP_STRING'           => $MOD_FOLDERGALLERY['HELP_INFORMATION'],
-        'NEW_CAT_STRING'        => $MOD_FOLDERGALLERY['NEW_CAT']
-));
-
-// Template ausgeben
-$t->pparse('output', 'modify');
-
-// Kategorien von der obersten Ebene aus DB hohlen
-$sql = "SELECT * FROM ".TABLE_PREFIX."mod_foldergallery_categories WHERE section_id=".$section_id." AND niveau=0;";
-$query = $database->query($sql);
-while($result = $query->fetchRow()){
-	$results[] = $result;
-}
-
-// Needed for display_categories()
-$url = array(
-	'edit'	=> WB_URL."/modules/foldergallery/admin/modify_cat.php?page_id=".$page_id."&section_id=".$section_id."&cat_id=",
-);
-
-
-echo '<script type="text/javascript">
-		var the_parent_id = "0";
-                var theme_url = "'.THEME_URL.'";
-                var fg_url = "'.WB_URL.'/modules/foldergallery";
-	</script>
-	<ul>
-		'.display_categories(-1, $section_id).'
-	</ul>
-<div id="dragableCategorie">
-	<ul>
-		'.display_categories(0, $section_id).'
-	</ul>
-</div>
-<div style="display: block; width: 90%; height: 15px; padding: 5px;"><div id="dragableResult"> </div></div><hr>
-';
-
-
-// Schluss vom else Teil ganz oben!
-}
-
-// reset the mySQL encoding
-mysql_set_charset($oldMysqlEncoding, $database->db_handle);
+    $sRedirectUrl = $sAddonUrl.'/admin/modify_settings.php?page_id='.$page_id.'&section_id='.$section_id.'';
 ?>
+<script >
+        function redirect() {
+             window.location.replace ('<?php echo $sRedirectUrl; ?>');
+        }
+        window.setTimeout("redirect()", 2000); // in msecs 1000 => eine Sekunde
+</script>
+<?php
+        echo "<div class=\"info\">".str_replace('{{SETTING_LINK}}', $sRedirectUrl, $MOD_FOLDERGALLERY['REDIRECT'])."\n</div>\n";
+} else {
+    // Template
+    $t = new Template($sAddonThemePath, 'remove');
+    $t->halt_on_error = 'no';
+    $t->set_file('modify', 'modify.htt');
+    // clear the comment-block, if present
+    $t->set_block('modify', 'CommentDoc'); $t->clear_var('CommentDoc');
+    $t->set_block('modify', 'ListElement', 'LISTELEMENT');
+    $t->clear_var('ListElement'); // Loeschen, da dies ueber untenstehende Funktion erledigt wird.
+
+    // Links im Template setzen
+    $t->set_var(array(
+            'SETTINGS_ONCLICK'  => 'window.location = \''.$sAddonUrl.'/admin/modify_settings.php?page_id='.$page_id.'&amp;section_id='.$section_id.'\';',
+            'SYNC_ONKLICK'      => 'window.location = \''.$sAddonUrl.'/admin/sync.php?page_id='.$page_id.'&amp;section_id='.$section_id.'\';',
+            'HELP_ONCLICK'      => 'window.location = \''.$sAddonUrl.'/help.php?page_id='.$page_id.'&amp;section_id='.$section_id.'\';',
+            'NEW_CAT_ONCLICK'   => 'window.location = \''.$sAddonUrl.'/admin/new_cat.php?page_id='.$page_id.'&amp;section_id='.$section_id.'\';',
+            'EDIT_PAGE'         => $page_id,
+            'EDIT_SECTION'      => $section_id,
+            'WB_URL'            => WB_URL,
+            'FTAN'              => $admin->getFTAN()
+    ));
+
+    $t->set_var($aTplDefaults);
+    $t->set_var($aLang);
+
+    // Text im Template setzten
+    $t->set_var(array(
+            'TITEL_BACKEND_STRING'         => $MOD_FOLDERGALLERY['TITEL_BACKEND'],
+            'TITEL_MODIFY'                 => $MOD_FOLDERGALLERY['TITEL_MODIFY'],
+            'SETTINGS_STRING'              => $MOD_FOLDERGALLERY['SETTINGS_STRING'],
+            'FOLDER_IN_FS_STRING'          => $MOD_FOLDERGALLERY['FOLDER_IN_FS'],
+            'CAT_TITLE_STRING'             => $MOD_FOLDERGALLERY['CAT_TITLE'],
+            'ACTIONS_STRING'               => $MOD_FOLDERGALLERY['ACTION'],
+            'SYNC_STRING'                  => $MOD_FOLDERGALLERY['SYNC'],
+            'EDIT_CSS_STRING'              => $MOD_FOLDERGALLERY['EDIT_CSS'],
+            'EXPAND_COLAPSE_STRING'        => $MOD_FOLDERGALLERY['EXPAND_COLAPSE'],
+            'HELP_STRING'                  => $MOD_FOLDERGALLERY['HELP_INFORMATION'],
+            'NEW_CAT_STRING'               => $MOD_FOLDERGALLERY['NEW_CAT'],
+            'CATEGORIE'                    => $MOD_FOLDERGALLERY['CATEGORIE'],
+            'DELETE_CAT_ARE_YOU_SURE'      => $MOD_FOLDERGALLERY['DELETE_CAT_ARE_YOU_SURE'],
+    ));
+
+    // Template ausgeben
+    $t->pparse('output', 'modify');
+
+    // Kategorien von der obersten Ebene aus DB hohlen
+    $sql  = 'SELECT * FROM `'.TABLE_PREFIX.'mod_foldergallery_categories` '
+          . 'WHERE `section_id`='.$section_id.' '
+          .   'AND `niveau`=0';
+    $query = $database->query($sql);
+    while($result = $query->fetchRow(MYSQLI_ASSOC)){
+        $results[] = $result;
+    }
+
+    // Needed for display_categories()
+    $url = array(
+            'edit' => $sAddonUrl."/admin/modify_cat.php?page_id=".$page_id."&section_id=".$section_id."&cat_id=",
+    );
+
+    echo '
+    <script type="text/javascript">
+            var the_parent_id = "0";
+            var theme_url = "'.THEME_URL.'";
+            var fg_url = "'.$sAddonUrl.'/";
+    </script>
+            <ul>
+                    '.display_categories(-1, $section_id).'
+            </ul>
+    <div id="dragableCategorie">
+            <ul>
+                    '.display_categories(0, $section_id).'
+            </ul>
+    </div>
+    <div style="display: block; width: 90%; height: 15px; padding: 5px;">
+      <div id="dragableResult"> </div>
+    </div>
+    <hr>
+    ';
+    }

@@ -20,174 +20,160 @@
 
 */
 
-require('../../../config.php');
-require(WB_PATH.'/modules/admin.php');
+    $sAddonPath = dirname(__DIR__);
+    if (is_readable($sAddonPath.'/init.php'))     {require ($sAddonPath.'/init.php');}
+    // to print with or without header, default is with header
+    $admin_header=true;
+    // Workout if the developer wants to show the info banner
+    $print_info_banner = false; // true/false
+    // Tells script to update when this page was last updated
+    $update_when_modified = false;
+    // Include WB admin wrapper script to sanitize page_id and section_id, print SectionInfoLine
+    require(WB_PATH.'/modules/admin.php');
+    // An associative array that by default contains the contents of $_GET, $_POST and $_COOKIE.
+    $aRequestVars = $_REQUEST;
 
-// Direkten Zugriff verhindern
-if (!defined('WB_PATH')) die (header('Location: index.php'));
+    $settings = getSettings($section_id);
 
-// check if module language file exists for the language set by the user (e.g. DE, EN)
-if(!file_exists(WB_PATH .'/modules/foldergallery/languages/'.LANGUAGE .'.php')) {
-	// no module language file exists for the language set by the user, include default module language file DE.php
-	require_once(WB_PATH .'/modules/foldergallery/languages/DE.php');
-} else {
-	// a module language file exists for the language defined by the user, load it
-	require_once(WB_PATH .'/modules/foldergallery/languages/'.LANGUAGE .'.php');
-}
-
-require_once(WB_PATH.'/modules/foldergallery/info.php');
-require_once(WB_PATH.'/modules/foldergallery/admin/scripts/backend.functions.php');
-require_once (WB_PATH.'/modules/foldergallery/class/DirectoryHandler.Class.php');
-
-//  Set the mySQL encoding to utf8
-$oldMysqlEncoding = mysql_client_encoding();
-mysql_set_charset('utf8',$database->db_handle);
-
-
-$settings = getSettings($section_id);
-
-$flag = false;
+    $flag = false;
 
 /* syncDB($galerie) ist kompletter updatealgorithmus */
 if(syncDB($settings)) {
 
-	echo "<div class=\"info\">".$MOD_FOLDERGALLERY['SYNC_DATABASE']."</div><br />";
-
-	// Wieder alle Angaben aus der DB holen um Sortierung festzulegen
-	$results = array();
-	$sql = "SELECT * FROM ".TABLE_PREFIX."mod_foldergallery_categories WHERE section_id =".$section_id;
-	$query = $database->query($sql);
-	
-	if ( $query->numRows() > 0 ) {
-		
-    	while($result = $query->fetchRow()) {
+        echo "<div class=\"info\">".$MOD_FOLDERGALLERY['SYNC_DATABASE']."</div><br />";
+        // Wieder alle Angaben aus der DB holen um Sortierung festzulegen
+        $results = array();
+        $sql = "SELECT * FROM ".TABLE_PREFIX."mod_foldergallery_categories WHERE `section_id` =".$section_id;
+        $query = $database->query($sql);
+        if ( $query->numRows() > 0 ) {
+            while($result = $query->fetchRow(MYSQLI_ASSOC)) {
             if($result['parent'] != -1) {
                 $folder = $settings['root_dir'].'/'.$result['parent'].'/'.$result['categorie'];
                 $pathToFolder = $path.$folder;
                 if(!is_dir(DirectoryHandler::DecodePath($pathToFolder))) {
-                    $delete_sql = 'DELETE FROM '.TABLE_PREFIX.'mod_foldergallery_categories WHERE id="'.$result['id'].'";';
+                    $delete_sql = 'DELETE FROM `'.TABLE_PREFIX.'mod_foldergallery_categories` '
+                                . 'WHERE `id`='.$result['id'].' ';
                     $database->query($delete_sql);
                     continue;
                 }
             }
             $results[] = $result;
+/*
+            $folder = $settings['root_dir'].'/'.$result['parent'].'/'.$result['categorie'];
+            $pathToFolder = $path.$folder;
+            var_dump($pathToFolder);
+            if ($result['parent'] != -1) {; //nicht die roots;
+                    //checken, ob es das Verzeichnis noch gibt:
+                    if(!is_dir(DirectoryHandler::DecodePath($pathToFolder))){
+                            $delete_sql = 'DELETE FROM '.TABLE_PREFIX.'mod_foldergallery_categories WHERE id="'.$result['id'].'";';
+                            $database->query($delete_sql);
+                            continue;
+                    }
+            }
+        $results[] = $result;
+print '<pre  class="mod-pre rounded">function <span>'.__FUNCTION__.'( '.''.' );</span>  filename: <span>'.basename(__FILE__).'</span>  line: '.__LINE__.' -> <br />';
+print_r( $results ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
+*/
+            }
 
-//			$folder = $settings['root_dir'].'/'.$result['parent'].'/'.$result['categorie'];
-//			$pathToFolder = $path.$folder;
-//                        var_dump($pathToFolder);
-//			if ($result['parent'] != -1) {; //nicht die roots;
-//				//checken, ob es das Verzeichnis noch gibt:
-//				if(!is_dir(DirectoryHandler::DecodePath($pathToFolder))){
-//					$delete_sql = 'DELETE FROM '.TABLE_PREFIX.'mod_foldergallery_categories WHERE id="'.$result['id'].'";';
-//					$database->query($delete_sql);
-//					continue;
-//				}
-//			}
-//    		$results[] = $result;
-    	}
+        $niveau = 0;
+        // Alle Kategorien durchlaufen zum Kinder und Parents und Level zuzuordnen
+        foreach($results as &$cat) {
+            $cat['niveau'] = substr_count($cat['parent'],'/');
+            if($cat['niveau'] > $niveau){
+                $niveau = $cat['niveau'];
+            }
+            // String bilden für Parentvergleich
+            $ast = $cat['parent']."/".$cat['categorie'];
+                $cat['ast'] = $ast;
+                $cat['childs'] = '';
+            // Alle Kategorien durchlaufen und auf gleichheit untersuchen
+            foreach($results as &$searchcat){
+                if($ast == $searchcat['parent']) {
+                    // Falls gleich, kann bestimmt werden wer Kind und welcher Parent ist
+                    $cat['has_child'] = 1;
+                    $searchcat['parent_id'] = $cat['id'];
+                }
+            }
+        }
 
-    	$niveau = 0;
-    	// Alle Kategorien durchlaufen zum Kinder und Parents und Level zuzuordnen
-    	foreach($results as &$cat) {
-    		$cat['niveau'] = substr_count($cat['parent'],'/');
-    		if($cat['niveau'] > $niveau){
-    			$niveau = $cat['niveau'];
-    		}
-    		// String bilden für Parentvergleich
-    		$ast = $cat['parent']."/".$cat['categorie'];
-			$cat['ast'] = $ast;
-			$cat['childs'] = '';
-    		// Alle Kategorien durchlaufen und auf gleichheit untersuchen
-    		foreach($results as &$searchcat){
-    			if($ast == $searchcat['parent']) {
-    				// Falls gleich, kann bestimmt werden wer Kind und welcher Parent ist
-    				$cat['has_child'] = 1;					
-    				$searchcat['parent_id'] = $cat['id'];
-    			}
-    		}
-    	}
-		
-		//Das ginge sicher besser:
-		//Childs finden
-		foreach($results as &$cat) {		
-			if ($cat['has_child'] == 0) continue;
-			foreach($results as $others) {
-				if ($cat['id'] == $others['id']) continue;
-				
-				if  (strpos($others['ast'], $cat['ast']) !== false) {
-					//others ist also ein Child von $cat
-					$cat['childs'].= ','.$others['id'];
-				}			
-			}
-		}
-		//-------------------------
+//Das ginge sicher besser:
+//Childs finden
+        foreach($results as &$cat) {
+            if ($cat['has_child'] == 0) continue;
+            foreach($results as $others) {
+                if ($cat['id'] == $others['id']) {continue;}
+                if  (strpos($others['ast'], $cat['ast']) !== false) {
+                    //others ist also ein Child von $cat
+                    $cat['childs'].= ','.$others['id'];
+                }
+            }
+        }
+//-------------------------
 
-    	// Sortierung festlegen
-    	foreach($results as &$cat) {
-    		if($cat['position'] == 0) {
-    			$last = 0;
-    			foreach($results as $vergleich) {
-    				if($cat['parent'] == $vergleich['parent']){
-    					if($last <= $vergleich['position']) {
-    						$last = $vergleich['position'];
-    					}
-    				}
-    			}
-    			$cat['position'] = $last+1;
-    		}
-    	}
+// Sortierung festlegen
+        foreach($results as &$cat) {
+            if($cat['position'] == 0) {
+                $last = 0;
+                foreach($results as $vergleich) {
+                    if($cat['parent'] == $vergleich['parent']){
+                        if($last <= $vergleich['position']) {
+                                $last = $vergleich['position'];
+                        }
+                    }
+                }
+                $cat['position'] = $last+1;
+            }
+        }
 
-    	// Datenkank Update
-    	$updatesql = 'UPDATE '.TABLE_PREFIX.'mod_foldergallery_categories SET ';
-    	for($i = 0; $i<count($results); $i++){
-			$childs = $results[$i]['childs'];
-			//$childs=substr($childs,1,strlen($childs-1)); //Führenden Beistrich belassen, der wird in view wieder benotigt
-    		$sql = $updatesql." niveau=".$results[$i]['niveau'].", parent_id=".$results[$i]['parent_id'].", has_child=".$results[$i]['has_child'].", position=".$results[$i]['position'].", childs='".$childs."' WHERE id=".$results[$i]['id'].";";
-                if($database->query($sql)){
-    			$flag = true;
-    		} else {
-    			break;
-    		}
-    	}
+// Datenkank Update
+        $updatesql = 'UPDATE '.TABLE_PREFIX.'mod_foldergallery_categories SET ';
+        for($i = 0; $i<count($results); $i++){
+            $childs = ltrim($results[$i]['childs'], ',');
+            //$childs=substr($childs,1,strlen($childs-1)); //Führenden Beistrich belassen, der wird in view wieder benotigt
+            $sql = $updatesql." `niveau`=".intval($results[$i]['niveau']).", `parent_id`=".intval($results[$i]['parent_id']).", `has_child`=".intval($results[$i]['has_child']).", `position`=".intval($results[$i]['position']).", `childs`='".$childs."' WHERE `id`=".intval($results[$i]['id']).";";
+            if($database->query($sql)){
+                $flag = true;
+            } else {
+                break;
+            }
+        }
 
-    	// Fehler/Lücken in der Sortierung beheben
-    	for($i = 0; $i<=$niveau; $i++) {
-    		$last_parent = 0;
-    		$counter = 1;
-    		$sql = "SELECT `position`,`id`, `parent_id` FROM ".TABLE_PREFIX."mod_foldergallery_categories WHERE section_id =".$section_id." AND niveau=".$i." ORDER BY position ASC, parent_id ASC;";
-    		$query = $database->query($sql);
-    		while($result = $query->fetchRow()){
-    			if($last_parent == $result['parent_id']) {
-    				if($counter != $result['position']){
-    					$sql = $updatesql." `position`=".$counter." WHERE id=".$result['id'].";";
-    					$database->query($sql);
-    				}
-    				$counter++;
-    			} else {
-    				$last_parent = $result['parent_id'];
-    				$counter = 1;
-    				if($counter != $result['position']){
-    					$sql = $updatesql." `position`=".$counter." WHERE id=".$result['id'].";";
-    					$database->query($sql);
-    				}
-    				$counter++;
-    			}
-    		}
-    	}
+// Fehler/Lücken in der Sortierung beheben
+        for($i = 0; $i<=$niveau; $i++) {
+            $last_parent = 0;
+            $counter = 1;
+            $sql = "SELECT `position`,`id`, `parent_id` FROM `".TABLE_PREFIX."mod_foldergallery_categories` WHERE `section_id` =".$section_id." AND `niveau`=".$i." ORDER BY `position` ASC, `parent_id` ASC;";
+            $query = $database->query($sql);
+            while($result = $query->fetchRow(MYSQLI_ASSOC)){
+                if($last_parent == $result['parent_id']) {
+                    if($counter != $result['position']){
+                        $sql = $updatesql." `position`=".$counter." WHERE `id`=".$result['id'].";";
+                        $database->query($sql);
+                    }
+                    $counter++;
+                } else {
+                    $last_parent = $result['parent_id'];
+                    $counter = 1;
+                    if($counter != $result['position']){
+                        $sql = $updatesql." `position`=".$counter." WHERE `id`=".$result['id'].";";
+                        $database->query($sql);
+                    }
+                    $counter++;
+                }
+            }
+        }
 
+      $sSectionIdPrefix = (defined( 'SEC_ANCHOR' ) && ( SEC_ANCHOR != '' )  ? SEC_ANCHOR : '' );
       if($flag) {
-      	$admin->print_success($TEXT['SUCCESS'], ADMIN_URL.'/pages/modify.php?page_id='.$page_id.'&section_id='.$section_id);
+          $admin->print_success(__LINE__.') '.$TEXT['SUCCESS'], ADMIN_URL.'/pages/modify.php?page_id='.$page_id.'#'.$sSectionIdPrefix.$section_id);
       } else {
-    	  $admin->print_error("Synchronisation fehlgeschlagen", WB_URL.'/modules/foldergallery/admin/modify_settings.php?page_id='.$page_id.'&section_id='.$section_id);
+          $admin->print_error("Synchronisation fehlgeschlagen", $sAddonUrl.'/admin/modify_settings.php?page_id='.$page_id.'&section_id='.$section_id);
       }
-
     }   // keine Kategorien vorhanden
     else {
-        $admin->print_error( $MOD_FOLDERGALLERY['NO_CATEGORIES'], WB_URL.'/modules/foldergallery/admin/modify_settings.php?page_id='.$page_id.'&section_id='.$section_id );
+        $admin->print_error( $MOD_FOLDERGALLERY['NO_CATEGORIES'], $sAddonUrl.'/admin/modify_settings.php?page_id='.$page_id.'&section_id='.$section_id );
     }
 }
 // Print admin footer
 $admin->print_footer();
-// reset the mySQL encoding
-mysql_set_charset($oldMysqlEncoding, $database->db_handle);
-?>

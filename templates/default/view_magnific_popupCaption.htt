@@ -1,0 +1,188 @@
+{ModuleScript}
+<script type="text/javascript">
+<!--
+    var MagnificPopupCss    = '{ModulesTemplateUrl}/js/magnific-popup/dist/magnific-popup.css';
+    var MagnificPopupCssTpl = '{ModulesTemplateUrl}/js/magnific-popup/template.css';
+    var PaginationCss       = "{ModulesTemplateUrl}/css/digg/{PAGINATIONCSS}.css";
+    if (typeof LoadOnFly==='undefined'){
+          $.insert(MagnificPopupCss);
+          $.insert(MagnificPopupCssTpl);
+          $.insert(PaginationCss);
+    } else {
+        LoadOnFly('head', MagnificPopupCss);
+        LoadOnFly('head', MagnificPopupCssTpl);
+        LoadOnFly('head', PaginationCss);
+    }
+-->
+</script>
+<script src="{ModulesTemplateUrl}/js/magnific-popup/dist/jquery.magnific-popup.js"></script>
+<script>
+jQuery(function($) {
+    $('.magnificPopup li').magnificPopup({
+      delegate: 'a', // child items selector, by clicking on it popup will open
+      type: 'image',
+      gallery:
+              {
+                enabled: true,
+                navigateByImgClick: true,
+                preload: [0,1] // Will preload 0 - before current, and 1 after the current image
+            },
+      image: {
+                tError: '<a href="%url%">Image #%curr%</a> could not be loaded.',
+                titleSrc: function(item) {
+                    var caption = item.el.attr('title');
+                    var url      = window.location.href;
+                    var imageUrl = item.el.attr('href');
+                    var facebookURL ='http://www.facebook.com/sharer.php?s=100&amp;p[title]='+caption+'&amp;p[url]='+url+'&amp;p[images][0]='+imageUrl+'&amp;p[summary]='+caption+'';
+                    var twitterURL = 'http://twitter.com/share?url='+imageUrl+'&text='+caption+'&count=horiztonal';
+                    return '<ul class="share-buttons">' +
+                        '<li><a href="'+facebookURL+'" onclick="window.open(\''+facebookURL+'\',\'newWindow\',\'width=670, height=350\'); return false;" ><img src="{ModulesTemplateUrl}/js/magnific-popup/images/simple_icons/Facebook.png"></a></li>' +
+                        '<li><a href="'+twitterURL+'" onclick="window.open(\''+twitterURL+'\',\'newWindow\',\'width=626, height=265\'); return false;"><img src="{ModulesTemplateUrl}/js/magnific-popup/images/simple_icons/Twitter.png"></a></li>' +
+                    '</ul>'+
+                    '<span class="mfp-caption">' +
+                    caption+
+                    '</span>'
+                    ;
+                }
+            }
+    });
+});
+</script>
+
+<div class="foldergallery-wrapper">
+    <div class="gallery">
+      <div class="gallerytitel">
+        <span class="view_title">{VIEW_TITLE}</span>&nbsp;&nbsp;<span class="categories_title">{CATEGORIES_TITLE}</span>&nbsp;<span class="categories_desc">{CAT_DESCRIPTION}&nbsp;</span>
+      </div>
+    </div>
+<!-- BEGIN show_breadcrumbs -->
+    <div class="pagenav" style="text-align: left">{CATBREAD}</div>
+<!-- END show_breadcrumbs -->
+
+    <div class="galimages" style="text-align: {TEXT_ALIGNMENT} !important;">
+<!-- BEGIN galimages -->
+        <div class="galinvisiblePre">
+    <!-- BEGIN galinvisiblePre -->
+        <div class="categories animate-onscroll  block_1" style="display:none;">
+            <a href="{CAT_LINK}">
+                <img src="{THUMB_LINK}" alt="{CAT_CAPTION}" style="width: {CATWIDTH}px; height: auto;"/>
+            </a>
+            <div class="categories-info">
+                <div class="categories-link">
+                    <a href="{CAT_LINK}"><span>{CAT_CAPTION}</span></a>
+                </div>
+                <div class="pagination" style="padding-bottom: {WORDCOUNT}px;">
+                    <ul class="fg_pages_nav">
+                        <li class="imgcount">
+                            <a href="{CAT_LINK}">{CAT_COUNT}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    <!-- END galinvisiblePre -->
+        </div>
+        <div class="galthumbnails">
+    <!-- BEGIN galthumbnails -->
+            <div class="categories animate-onscroll  block_2" style="width: {CATWIDTH}px; min-height: {CATHEIGHT}px;">
+                <a href="{CAT_LINK}">
+                    <img src="{THUMB_LINK}" alt="{CAT_CAPTION}" style="width: {GALWIDTH}px; min-height: {GALHEIGHT};"/>
+                </a>
+                <div class="categories-info">
+                    <div class="categories-link">
+                        <a href="{CAT_LINK}"><span>{CAT_CAPTION}</span></a>
+                    </div>
+                    <div class="pagination" style="padding-bottom: {WORDCOUNT}px;">
+                        <ul class="fg_pages_nav">
+                            <li class="imgcount">
+                                <a href="{CAT_LINK}">{CAT_COUNT}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        <!-- END galthumbnails -->
+        </div>
+        <div class="galinvisiblePost">
+    <!-- BEGIN galinvisiblePost -->
+        <div class="categories animate-onscroll block_3" style="display:none;">
+            <a href="{CAT_LINK}">
+                <img src="{THUMB_LINK}" alt="{CAT_CAPTION}" style="width: {CATWIDTH}px; height: auto;"/>
+            </a>
+            <div class="categories-info">
+                <div class="categories-link">
+                    <a href="{CAT_LINK}"><span>{CAT_CAPTION}</span></a>
+                </div>
+                <div class="pagination" style="padding-bottom: {WORDCOUNT}px;">
+                    <ul class="fg_pages_nav">
+                        <li class="imgcount">
+                            <a href="{CAT_LINK}">{CAT_COUNT}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    <!-- END galinvisiblePost -->
+        </div>
+<!-- END galimages -->
+    </div>
+
+<!-- BEGIN show_galnav_block -->
+    <div class="pagination" style="text-align: {TEXT_ALIGNMENT} !important;">
+        <ul class="fg_pages_nav">
+        <!-- BEGIN list_galnav_block -->
+            <li><a href="{GAL_NAV_LINK}?g={GAL_NAV_ID}{GAL_NAV_QUERY}" ><span class="{GAL_NAV_CURRENT}">{GAL_NAV_ID}</span></a></li>
+        <!-- END list_galnav_block -->
+        </ul>
+    </div>
+<!-- END show_galnav_block -->
+
+<!-- BEGIN hr -->
+<hr class="clear" />
+<!-- END hr -->
+
+    <div class="images" style="background-color: rgba({BACKGROUND_COLOR});">
+        <div style="margin: auto 1%;">
+        <!-- BEGIN images -->
+            <ul class="magnificPopup photostyle">
+              <!-- BEGIN invisiblePre -->
+                  <li style="display:none;">
+                      <a href="{ORIGINAL}" title="{CAPTION}">
+                        <img src="{THUMB}" alt="{CAPTION}" style="width: {CATWIDTH}px; height: auto;"/>
+                      </a>
+                  </li>
+              <!-- END invisiblePre -->
+              <!-- BEGIN thumbnails -->
+                  <li>
+                      <figure style="width: {CATWIDTH}px; max-height: 12.9525em;">
+                          <a href="{ORIGINAL}" title="{CAPTION}">
+                              <img src="{THUMB}" alt="{CAPTION}" style="width: {CATWIDTH}px; height: auto;"/>
+                          </a>
+                          <figcaption>
+                              <a href="{ORIGINAL}" title="{CAPTION}">{CAPTION}</a>
+                          </figcaption>
+                      </figure>
+                  </li>
+              <!-- END thumbnails -->
+              <!-- BEGIN invisiblePost -->
+                  <li style="display:none;">
+                      <a href="{ORIGINAL}" title="{CAPTION}">
+                        <img src="{THUMB}" alt="{CAPTION}" style="width: {CATWIDTH}px; height: auto;"/>
+                      </a>
+                  </li>
+              <!-- END invisiblePost -->
+            </ul>
+        <!-- END images -->
+        </div>
+    </div>
+
+<!-- BEGIN show_pagenav_block -->
+    <div class="pagination" style="text-align: {TEXT_ALIGNMENT} !important;">
+        <ul class="fg_pages_nav">
+        <!-- BEGIN list_pagenav_block -->
+            <li><a href="{PAGE_NAV_LINK}?p={PAGE_NAV_ID}{PAGE_NAV_QUERY}" ><span class="{PAGE_NAV_CURRENT}" >{PAGE_NAV_ID}</span></a></li>
+        <!-- END list_pagenav_block -->
+        </ul>
+    </div>
+<!-- END show_pagenav_block -->
+</div>

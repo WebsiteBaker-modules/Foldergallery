@@ -1,0 +1,234 @@
+#Foldergallery
+## Description
+Foldergallery is a module for Websitebaker CMS. It's a imagegallery to handle many images
+in different categorie. Categories are based on the folderstructure on the server, so they are created
+automaticly if you sync the filesystem with the databese in the foldergallery backend.
+
+##Licence
+This module is free software. You can redistribute it and/or modify it under
+the terms of the GNU General Public License - version 2 or later, as published
+by the Free Software Foundation: http://www.gnu.org/licenses/gpl.html.
+
+This module is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+##Changelog
+
+v2_0_23
++ small design fixes
++ recoded upgrade routine (fix the problem in the upgrade from older FG-Versions =< 1.34
+
+v2_0_8
++ Fix: works also with PHP 7.x
++ definable style for the output (background-color and transparency)
+
+v2_0_4-dev27
++ Add image counter for gallery's
++ upgrade all scripts in module like jscrop, colorbox etc
++ delete sub-category delete also the pictures and description for the images in this category
++ possible to set, how many subcategorys are visible pro page / pagination for images and for category's
++ pre-defined styles for pagination styles
++ resize bigger images to a definable max-width
++ responsive output
+
+###V2.0.4-dev15 (Luisehahne, 30.10.2016)
++ rewriting and reorganisation the code working with simple commmand dispatcher
+  makes handling more flexible, Create your own gallery template, that will not be
+  overwriting or deleted by a newer version
++ add upload settimgs, JPG quality and max image size in px
++ bug fix create double category
++ rework deleting categories and files too will now remove from media directory
+  better designed dialogbox to confirm deleting instead javascript prompt or confirm boxes
++ add html5 drag and drop uploader, no flash
++ add checkbox to force recreating thumbnails in all catogries listed in root directory
+
+###V1.39RC3 (Jacobi22, 03.08.2016)
++ fix some styles in frontend.css
++ add cat_name & description for root
++ add class.upload.php in functions.php
+
+###V1.39RC2 (Jacobi22, 02.08.2016)
++ fix DB-Update in save-cat.php
+
+###V1.39 (Jacobi22, 21.02.2016)
++ add Category-Pagination
++ fix some mysql-statements for mysql-strict mode
+- remove uplodify-script (secure issues)
++ some styling fixes in different file (width for some buttons etc, bigger rows in overview and settings etc)
++ upgrade jcrop to vers 0.9.12
++ fixes for PHP 7.x
++ upgrade scripts (pirobox, prettyPhoto, galleryView)
++ add gallery overview && gallery pagination
+
+###V1.38 (Jacobi22, 20.02.2016)
+- remove the switch for mysql / mysqli, implement in vers 1.35. wrong order in the close-part (was only needed on non-utf8-systems)
+
+###V1.37 (B. Martinovic, 16.02.2015)
++ Fix: re-activated line 65 in view.php for security reasons
+
+###V1.36 (Jacobi22, 30.12.2014)
++ Fix: fix Regex in class / class.upload.php (thx to DarkViper)
++ Fix: fix delete.php / delete images works with wrong field names (need gallery id, not parent_id)
++ Fix: fix save_settings.php / delete images works with wrong field names (need gallery id, not parent_id)
++ Fix: fix missing gallery title & gallery description in single gallery in view.php
+
+###V1.35 (Jacobi22, 30.12.2014)
++ Fix:  Switch for mysql/mysqli (needed for Version > WB 2.8.3 SP3) in modify.php, view.php, admin/modify_cat.php, admin/modify_cat_sort.php, admin/modify_thumb.php, admin/save_settings.php, admin/sync.php, admin/scripts/delete_img.php, admin/scripts/upload.php (thx to Martin Hecht for the way)
++ Add: add  Folder "install" to the Array for Core-Folders
++ Fix: fix delete.php / delete images works with wrong field names (need gallery id, not parent_id)
++ Fix: fix save_settings.php / delete images works with wrong field names (need gallery id, not parent_id)
+
+###V1.34 (beta version) (Jürg Rast, 26.09.2011)
++ BugFix: Support for Special-Characters in File-/Foldernames
++ BugFix: Set default Thumb if thumbcreation fails
++ BugFix: PrettyPhoto Bug
+
+###V1.33 (beta version) (Jürg Rast, 02.09.2011)
++ Updated: PrettyPoto, Colorbox, Fancybox
++ BugFix: Remove $timeadd from Filelink (this causes many Problems)
++ Better Language Handling
++ French language File added
+
+###V1.32 (beta version) (Jürg Rast, 30.8.2011)
++ French translation
++ Different little Adjustements
+
+###V1.31 (beta version) (Jürg Rast, 16.05.2011)
++ BugFix: Backend-Upload, allow Files with special chars
++ BugFix: Create new categories: filter special chars in folder name
++ BugFix: Wrong thumbpath in view.php
+
+###V1.30 (beta version) (Jürg Rast, 15.05.2011)
++ BugFix: Allow to display more than one foldergallery-section per page (with some restrictions)
++ BugFix: Some new language-variables added
++ BugFix: Removed restriction for the length of categoriedescription
++ Feautre: New Layout of the Settingstable (allow to create new settings "on the fly")
++ Feautre: Backend-Upload with jQuery and Flash
++ Feautre: Enable/Disable categorie with a click
++ Feautre: Create new categories via backend
++ Moved files to admin-folder to get a better structure
++ Added a simple Help/Infopage
++ Some work on the design
++ cleand up code
++ removed unused lightbox-scripts
++ updated lightbox-scripts
++ removed old files
+
+
+###V1.21 (Jürg Rast, 30.03.2011)
++ BugFix: Some categories where not displayed
++ BugFix: Library-/jQueryAdmin integration was missing
++ Made infomessages better visible (eg.: during saving the settings, sync, new page)
+
+This Changelog is from now on in english, a german changelog  can be found on foldergallery.ch
+
+###V1.20 (Juerg Rast, 09.03.2011)
++ Bugs behoben beim Aufrufen von nichtvorhandenen Seiten/Kategorien
++ Falls es mehrere Seiten für eine Kategorie gibt werden in der Lightbox jetzt alle Bilder angezeigt.
++ Dateien aufgeräumt
+
+###V1.18 (Juerg Rast)
++ Bilder können nun nach Dateiname aufsteigend/absteigend sortiert werden
++ Bilder sortieren überarbeitet (template erstellt)
+
+###V1.14 (Pumpi)
++ Behbet einen Thumbbug aus dem Release von 1.10
+
+###V1.10 (Pumpi, September 2010)
++ Änderung der Ordnungsmethode zur WB Core Funktion class.order.php
++ Einfügen der DragTable Funktion von jQuery für Sortierung mit Drag & Drop
++ Aufräumen des Scriptordners für kleinere zipgröße
++ Css Datei bearbeiten button hinzugefügt
++ Thumbnails können nun individuell mittels Javascript (jCrop) nachbearbeitet werden
++ Beheben aller notice Meldungen
++ Einfügen der Thumbnail Verhälniss funktion
++ Im Admin kann nun ausgewählt werden ob die Thumbs nach änderung von größe oder verhältniss neu erzeugt werden sollen
++ beheben kleiner Bugs
++ an die Bilder wurde nun ?t=timestamp angefügt um neu generierte Thumbs immer richtig anzeigen zu lassen
++ das thumbverzeichnis wurde auf fg-thumbs geändert um eventuelle probleme mit anderen Modulen vorzubeugen
++ die thumbs haben nun immer den selben Namen wie das original
++ es ist nun auch möglich die Foldergallery unterhalb des Mediaordners zu benutzen allerdings nicht in den Corefoldern
++ Die größe des Categorierahmen wird nun am ende der view.php der thumbsize angepasst
+
+###V1.05 (Pumpi, 13.08.2010)
++ Einbetten der Highslide Gallery nach Rücksprache mit Urheber des Highslide Scripts
++ kleinere Anpassungen der Templates für einheitlichen Style
+
+###v1.03 & 1.04 (Pumpi, August 2010)
++ kleinere Schönheitsfehler in der CSS Datei behoben und überflüssig gewordene einträge gelöscht
++ Optimirung der Ordneransicht für standartmässige Thumbs von 150px
++ Lightbox template Content Flow hinzugefügt
++ kleiner fehler in verschiedenen Templates behoben
+
+###v1.02 (Pumpi und Webbird, Juni 2010)
++ Erweiterung der Templates um zusammenarbeit mit jqueryAdmin 2.x zu ermöglichen
++ kleine schönheitsfehler in den Coretemplates beseitigt
+
+###v1.01 (Pumpi, Juli 2010)
++ Templateverarbeitung umgestellt um leichter weitere Lightboxes einzufügen
++ Anpassung der Thumberstellung um ein Ordentliches Erscheinungsbild im Frontent zu bieten.
++ ändern der Thumb und Ornerübersicht
+
+###v0.9c (Chio, Juni 2010)
++ Kreuz und quer durch alle Scripts.
+
+###v0.9 (Bianka Martinovic; 28.01.2010)
++ Lightbox jetzt im Backend auswählbar
++ Breadcrumb in Unterkategorien
++ Korrektur: Paging (es kamen nicht die Bilder, die man erwartet hat)
++ CSS aufbereitet
+
+###v0.8 (Bianka Martinovic; 28.10.2009)
++ englisches Sprachmodul
++ Korrektur: Einstellung für "unsichtbare" Verzeichnisse wurde beim Syncen nicht berücksichtigt
++ Korrektur: Klasse für NyroModal (nyroModal statt nyromodal)
+
+###v0.7 (Bianka Martinovic; 27.10.2009)
++ Unterstützung "NyroModal"
+
+###v0.6 (Bianka Martinovic; 27.10.2009)
++ Unterstützung "Highslide"
+
+###v0.5 (Bianka Martinovic; 27.10.2009)
++ Anzahl der Bilder pro Seite im Backend einstellbar (Default: 15)
+
+###v0.4 (Bianka Martinovic; 26.10.2009)
++ Korrektur: Das Rootverzeichnis wird nun auch als Kategorie verwaltet
++ Kategorietitel = Seitenüberschrift, Default: "Bildergalerie" (aus Sprachfile)
++ ermöglicht die Verwaltung der Bilder im Rootverzeichnis
+
+###v0.3  (schliffer; 17.10.2009)
++ Sortierung der Kategorien angepasst
++ Löschen von Ordner auf Laufwerk verhindern
++ Thumbnails ohne weissen Hintergrund erstellen
+
+###v0.2 (Jürg Rast; 6.5.2009)
++ Datenbankstruktur angepasst
++ Kategorie beschreibung hinzugefügt
++ Sortierung von Kategorien möglich
++ Backend erneuert
++ Filesystem <-> DB Synchronisierung verbessert
+
+###v0.13 (Jürg Rast; 18.2.2009)
++ Designfehler behoben
+
+###v0.12 (Jürg Rast; 16.2.2009)
++ in der view.php rontend.css überprüfung hinzugefügt.
++ im backend funktion "alle Ordner neu scannen" entfernt.
+
+###v0.12 (Jürg Rast; 14.2.2009)
++ Frontend verbessert (Fehlermeldung bei nicht vorhandnen Kategorien)
++ Backend:
+    + Neu scannen wird jetzt automatisch erledigt (in "allgemeine Einstellungen")
+    + add.php: Initialwerte hinzugefügt und direkte weiterleitung auf Einstellungen
++ shutter in scripts Ordner verschoben
++ Allen Ordner eine index.php verpasst
+
+###v0.11 (Jürg Rast; 12.2.2009)
++ Fehler im Frontend behoben
++ in allen Ordner eine index.php hinzugefügt
+
+###v0.1  (Jürg Rast; 12.2.2009)
++ erstes Release des Moduls

@@ -30,10 +30,13 @@ $MOD_FOLDERGALLERY['CATEGORIES_TITLE']  = 'categorie&euml;n';
 $MOD_FOLDERGALLERY['BACK_STRING']       = 'Terug naar overzicht';
 $MOD_FOLDERGALLERY['FRONT_END_ERROR']   = 'Deze categorie bestaat niet of bevat geen foto\'s en/of categorie&euml;n!';
 $MOD_FOLDERGALLERY['PAGE']              = 'Pagina';
-
+$MOD_FOLDERGALLERY['IMG_TITLE_TEXT']    = 'Titel Foto';
+$MOD_FOLDERGALLERY['GAL']               = 'Galerij';
+$MOD_FOLDERGALLERY['PAGINATION']        = 'Pagination Design';
 
 //Variables for the Backend
 $MOD_FOLDERGALLERY['PICS_PP']           = 'Foto\'s per pagina';
+$MOD_FOLDERGALLERY['GAL_PP']            = 'Galerij per pagina';
 $MOD_FOLDERGALLERY['LIGHTBOX']          = 'Lightbox';
 $MOD_FOLDERGALLERY['MODIFY_CAT_TITLE']  = 'Bewerk categorie&euml;n en foto\'s';
 $MOD_FOLDERGALLERY['MODIFY_CAT']        = 'Bewerk categorie details:';
@@ -43,11 +46,12 @@ $MOD_FOLDERGALLERY['MODIFY_IMG']        = 'Foto\'s bewerken:';
 $MOD_FOLDERGALLERY['IMAGE']             = 'Foto';
 $MOD_FOLDERGALLERY['IMAGE_NAME']        = 'Naam foto';
 $MOD_FOLDERGALLERY['IMG_CAPTION']       = 'Foto beschrijving';
-$MOD_FOLDERGALLERY['REDIRECT']		= 'Voordat je gebruik kunt maken van de fotogalerij moet je eerst het nodige instellen. '
+$MOD_FOLDERGALLERY['REDIRECT']          = 'Voordat je gebruik kunt maken van de fotogalerij moet je eerst het nodige <a href="{{SETTING_LINK}}">algemene instellen</a>. '
                                         . 'Je wordt binnen een paar seconden doorgelinkt (als javascript is geactiveerd)';
 $MOD_FOLDERGALLERY['TITEL_BACKEND']     = 'Fotoalbum bewerken';
 $MOD_FOLDERGALLERY['TITEL_MODIFY']      = 'Bewerk categorie&euml;n en foto\'s:';
-$MOD_FOLDERGALLERY['SETTINGS']          = 'Algemene instellingen';
+$MOD_FOLDERGALLERY['SETTINGS']          = 'Instellingen';
+$MOD_FOLDERGALLERY['SETTINGS_STRING']   = 'Algemene instellingen';
 $MOD_FOLDERGALLERY['ROOT_DIR']          = 'Hoofdmap';
 $MOD_FOLDERGALLERY['EXTENSIONS']        = 'Toegestane extensies';
 $MOD_FOLDERGALLERY['INVISIBLE']         = 'Mappen verbergen';
@@ -70,7 +74,7 @@ $MOD_FOLDERGALLERY['EDIT_THUMB_BUTTON']         = 'Maak nieuwe thumbnail';
 $MOD_FOLDERGALLERY['THUMB_SIZE']                = 'Thumbnail grootte';
 $MOD_FOLDERGALLERY['THUMB_RATIO']               = 'Thumbnail verhouding';
 $MOD_FOLDERGALLERY['THUMB_NOT_NEW']             = 'Geen thumbnails genereren';
-$MOD_FOLDERGALLERY['CHANGING_INFO']		= 'Grootte of Verhouding aanpassen van de thumbnails, verwijderd de huidige thumnails en wordt opnieuw gegenereerd.';
+$MOD_FOLDERGALLERY['CHANGING_INFO']             = 'Grootte of Verhouding aanpassen van de thumbnails, verwijderd de huidige thumnails en wordt opnieuw gegenereerd.';
 $MOD_FOLDERGALLERY['SYNC_DATABASE']             = 'Synchroniseer bestanden met database...';
 $MOD_FOLDERGALLERY['SAVE_SETTINGS']             = 'Veranderingen zijn opgeslagen...';
 $MOD_FOLDERGALLERY['BACK']                      = 'Back';
@@ -119,7 +123,8 @@ $MOD_FOLDERGALLERY['DELETE']                    = 'Delete';
 $MOD_FOLDERGALLERY['UPDATED_THUMB']             = 'Updated thumbnail successfully';
 $MOD_FOLDERGALLERY['ACTIVE']                    = 'active';
 
-
+$MOD_FOLDERGALLERY['DELETE_IMG_ARE_YOU_SURE']   = 'Would you like to delete this file including title, description? The file will be completely deleted from the server!';
+$MOD_FOLDERGALLERY['DELETE_CAT_ARE_YOU_SURE']   = 'Would you like to delete this categorie including images, title, descriptions? The categorie and files will be completely deleted from the server!';
 
 // Tooltips
 $MOD_FOLDERGALLERY['ROOT_FOLDER_STRING_TT'] = 'Dit is de hoofdmap (root) waar gezocht wordt naar foto\'s en mappen. '
@@ -127,4 +132,17 @@ $MOD_FOLDERGALLERY['ROOT_FOLDER_STRING_TT'] = 'Dit is de hoofdmap (root) waar ge
 $MOD_FOLDERGALLERY['EXTENSIONS_STRING_TT']  = 'Definieer de extensies die je beschikbaar wilt maken. (Hoofdlettergevoelig.) Gebruik "," (komma) als scheidingsteken.';
 $MOD_FOLDERGALLERY['INVISIBLE_STRING_TT']   = 'Mappen die hier aangegeven worden zullen niet zichtbaar zijn in de gallery.';
 $MOD_FOLDERGALLERY['DELETE_TITLE_TT']       = 'Waarschuwing: Dit verwijderd alle categorie&euml;n en foto\'s! (De foto\'s zullen dus ook verwijderd worden!)';
-?>
+
+
+$MOD_FOLDERGALLERY['PICTURES']  = 'fotos';
+$MOD_FOLDERGALLERY['1PICTURE']  = 'foto';
+$MOD_FOLDERGALLERY['2PICTURES'] = 'fotos';
+$MOD_FOLDERGALLERY['3PICTURES'] = 'fotos';
+$MOD_FOLDERGALLERY['CATEGORIE']     = 'Category';
+$MOD_FOLDERGALLERY['CATEGORIES']    = 'Categories';
+$MOD_FOLDERGALLERY['ALL_CATEGORIES']= 'All categories';
+$MOD_FOLDERGALLERY['ALL_PICTURES']  = 'All fotos';
+$MOD_FOLDERGALLERY['ALIGNMENT']  = 'Categories  Preview alignment';
+$MOD_FOLDERGALLERY['LEFT']       = 'left';
+$MOD_FOLDERGALLERY['RIGHT']      = 'right';
+$MOD_FOLDERGALLERY['CENTER']     = 'center';

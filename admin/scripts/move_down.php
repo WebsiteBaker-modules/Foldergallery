@@ -26,17 +26,17 @@
 require('../../../../config.php');
 
 // Get id
-if(isset($_GET['page_id']) AND is_numeric($_GET['page_id'])) {
-	if(isset($_GET['id']) AND is_numeric($_GET['id'])) {
-		$page_id = $_GET['page_id'];
-		$id = $_GET['id'];
-		$id_field = 'id';
-		$common_field = 'parent_id';
-		$table = TABLE_PREFIX.'mod_foldergallery_categories';
-	}
+if(isset($aRequestVars['page_id']) AND is_numeric($aRequestVars['page_id'])) {
+    if(isset($aRequestVars['id']) AND is_numeric($aRequestVars['id'])) {
+        $page_id = $aRequestVars['page_id'];
+        $id = $aRequestVars['id'];
+        $id_field = 'id';
+        $common_field = 'parent_id';
+        $table = TABLE_PREFIX.'mod_foldergallery_categories';
+    }
 } else {
-	header("Location: index.php");
-	exit(0);
+    header("Location: index.php");
+    exit(0);
 }
 
 // Create new admin object and print admin header
@@ -49,20 +49,19 @@ require(WB_PATH.'/framework/class.order.php');
 // Create new order object an reorder
 $order = new order($table, 'position', $id_field, $common_field);
 if($id_field == 'id') {
-	if($order->move_down($id)) {
-		$admin->print_success($MESSAGE['PAGES']['REORDERED'], ADMIN_URL.'/pages/modify.php?page_id='.$page_id);
-	} else {
-		$admin->print_error($MESSAGE['PAGES']['CANNOT_REORDER'], ADMIN_URL.'/pages/modify.php?page_id='.$page_id);
-	}
+    if($order->move_down($id)) {
+        $admin->print_success($MESSAGE['PAGES']['REORDERED'], ADMIN_URL.'/pages/modify.php?page_id='.$page_id);
+    } else {
+        $admin->print_error($MESSAGE['PAGES']['CANNOT_REORDER'], ADMIN_URL.'/pages/modify.php?page_id='.$page_id);
+    }
 } else {
-	if($order->move_down($id)) {
-		$admin->print_success($TEXT['SUCCESS'], ADMIN_URL.'/pages/modify.php?page_id='.$page_id);
-	} else {
-		$admin->print_error($TEXT['ERROR'], ADMIN_URL.'/pages/modify.php?page_id='.$page_id);
-	}
+    if($order->move_down($id)) {
+        $admin->print_success($TEXT['SUCCESS'], ADMIN_URL.'/pages/modify.php?page_id='.$page_id);
+    } else {
+        $admin->print_error($TEXT['ERROR'], ADMIN_URL.'/pages/modify.php?page_id='.$page_id);
+    }
 }
 
 // Print admin footer
 $admin->print_footer();
 
-?>

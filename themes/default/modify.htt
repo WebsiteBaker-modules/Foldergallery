@@ -1,0 +1,106 @@
+<!-- BEGIN CommentDoc -->
+<!-- This is a phplib-template for modify.php -->
+<!-- END CommentDoc -->
+{ModuleScript}
+<div class="remodal"></div>
+<script type="text/javascript">
+<!--
+  function warnBeforeDelete(elm) {
+//console.info(e);
+    var catName = elm.dataset.cat;
+    var linkURL = elm.dataset.source;
+    swal({
+        title: "{CATEGORIE} "+(typeof catName!=='undefined'?catName:''),
+        html:true,
+        text: '<h3 class="warning">{DELETE_CAT_ARE_YOU_SURE}</h3>',
+        type: "warning",
+        confirmButtonColor: "#DD6B55",
+        cancelButtonColor: "#9EB4D5",
+        showCancelButton: true,
+        allowOutsideClick: true,
+        cancelButtonText: "{TEXT_NO} {TEXT_CANCEL}!",
+        confirmButtonText: "{TEXT_YES} {TEXT_DELETE}!",
+        closeOnConfirm: true,
+        closeOnCancel: true
+    }, function(isConfirm) {
+      // Redirect the user
+        if ((typeof linkURL!=='undefined')&&isConfirm){
+            window.location.href = linkURL;
+        }
+    });
+  }
+
+-->
+</script>
+<div class="foldergallery">
+    <h2>{TITEL_BACKEND_STRING}</h2>
+    <table style="width: 100%;">
+    <tbody>
+        <tr>
+            <td >
+              <ul class="w3-navbar w3-row-padding" >
+                <li class="w3-quarter"><input type="button" value="{SETTINGS_STRING}" onclick="{SETTINGS_ONCLICK}" class="FG_button fg-btn fg-btn-gradient"/></li>
+                <li class="w3-quarter"><input type="button" value="{SYNC_STRING}" onclick="{SYNC_ONKLICK}" class="FG_button fg-btn fg-btn-gradient"/></li>
+                <li class="w3-quarter"><form name="edit_module_file" action="{WB_URL}/modules/edit_module_files.php?page_id={EDIT_PAGE}" method="post">
+                    <input name="page_id" value="{EDIT_PAGE}" type="hidden"/>
+                    <input name="section_id" value="{EDIT_SECTION}" type="hidden"/>
+                    <input name="mod_dir" value="foldergallery" type="hidden"/>
+                    <input name="edit_file" value="frontend.css" type="hidden"/>
+                    <input name="action" value="edit" type="hidden"/>
+                    {FTAN}
+                    <input value="{EDIT_CSS_STRING}" type="submit" class="FG_button fg-btn fg-btn-gradient"/>
+                </form></li>
+                <li class="w3-quarter"><input type="button" value="{HELP_STRING}" class="FG_button fg-btn fg-btn-gradient" onclick="{HELP_ONCLICK}"/></li>
+              </ul>
+
+            </td>
+        </tr>
+    </tbody>
+    </table>
+    <h2>{TITEL_MODIFY}</h2>
+    <div class=" w3-container">
+    <input type="button" value="{NEW_CAT_STRING}" class="FG_button fg-btn fg-btn-gradient" onclick="{NEW_CAT_ONCLICK}" style="margin-bottom: 1.525em;" />
+    </div>
+    <!-- Tabellen Überschrift -->
+    <div class="FG_cat_list">
+        <table style="width: 100%;" class="cat_list">
+          <thead>
+            <tr>
+                <th style="width: 20px;">
+                </th>
+                <th style="width: 400px;">
+                    {CAT_TITLE_STRING}
+                </th>
+                <th style="float: left;">
+                    {FOLDER_IN_FS_STRING}
+                </th>
+                <th  style="width: 130px; text-align: center;">
+                    {ACTIONS_STRING}
+                </th>
+            </tr>
+          </thead>
+        </table>
+        <!-- Liste erstellen -->
+        <div id="dragableTable">
+        <!-- BEGIN ListElement -->
+            <ul id="p{COUNTER}">
+                <li>
+                    <table style="width: 100%;" class="cat_table">
+                        <tr onmouseover="this.style.backgroundColor = '#F1F8DD';" onmouseout="this.style.backgroundColor = '#ECF3F7';">
+                            <td style="padding-left: 5px; width: 20px;">
+                                <a onclick="toggle_visibility('p{NCOUNTER}');" href="#" title="{EXPAND_COLAPSE_STRING}">
+                                    <img class="fg" src="{THEME_URL}/images/plus_16.png" onclick="toggle_plus_minus('{NCOUNTER}');" id="plus_minus_{NCOUNTER}" alt="+" />
+                                </a>
+                             </td>
+                             <td>
+                                {FOLDER_VALUE}
+                             </td>
+                        </tr>
+                    </table>
+                </li>
+                {SUBELEM}
+            </ul>
+        <!-- END ListElement -->
+        </div>
+    </div>
+</div>

@@ -1,23 +1,38 @@
 <?PHP
+/*
+*/
+    $sAddonPath = dirname(__DIR__);
+    if (is_readable($sAddonPath.'/init.php'))     {require ($sAddonPath.'/init.php');}
+/* -------------------------------------------------------- */
+// Must include code to prevent this file from being accessed directly
+if(defined('WB_PATH') == false) { die('Cannot access '.basename(__DIR__).'/'.basename(__FILE__).' directly'); }
+/* -------------------------------------------------------- */
 
-// Direkter Zugriff verhindern
-if (!defined('WB_PATH'))
-    die(header('Location: index.php'));
-
-require_once (WB_PATH . '/modules/foldergallery/class/DirectoryHandler.Class.php');
-
-function getSettings($section_id) {
-    global $database;
-    $sql = 'SELECT `s_name`, `s_value` FROM ' . TABLE_PREFIX . 'mod_foldergallery_settings WHERE '
-            . '`section_id` = ' . $section_id;
-    $query = $database->query($sql);
-    while ($row = $query->fetchRow()) {
-        $settings[$row['s_name']] = $row['s_value'];
+    function getSettings($section_id) {
+        global $database, $aDefaults, $oAddonReg, $page_id;
+        $settings  = array();
+//        $aDefaults = $oAddonReg->aDefaults;
+        $sql  = 'SELECT `s_name`, `s_value` FROM `'.TABLE_PREFIX.'mod_foldergallery_settings` '
+              . 'WHERE `section_id` = ' . $section_id;
+        if ($query = $database->query($sql)){
+            while ($row = $query->fetchRow(MYSQLI_ASSOC)) {
+                $settings[$row['s_name']] = $row['s_value'];
+            }
+            if (isset($settings['tbSettings'])){
+                $settings['tbSettings'] = unserialize($settings['tbSettings']);
+//                $settings['page_id'] = $page_id;
+            }
+            $settings['section_id'] = $section_id;
+        }
+        if (is_array($aDefaults)) {
+            $aTmp = array_diff_key($aDefaults, $settings);
+            if ($aTmp){
+                UpdateKeyValue('mod_foldergallery_settings', $aTmp, '', array('section_id'=>$section_id ));
+                $settings = array_merge($aDefaults,$settings);
+            }
+        }
+        return $settings;
     }
-    $settings['tbSettings'] = unserialize($settings['tbSettings']);
-    $settings['section_id'] = $section_id;
-    return $settings;
-}
 
 /**
  * @deprecated Use the class.upload instead!
@@ -27,7 +42,7 @@ function getSettings($section_id) {
  * @param string $file  Pfadangabe zum original File
  * @param string $thumb Pfadangabe zum Thumbfile
  * @param bool $showmessage Logging ein/aus
- * @param string $ratio SeitenverhÃ¤ltniss der Thumbs
+ * @param string $ratio Seitenverhaeltniss der Thumbs
  * @param int $fullpercent Prozentangabe, wie das Originalbild beschniten werden muss
  * @param string $bg_color Farbe des Hintergrunds, falls das Bild nicht das richtige Format hat
  * @param string $positionX Position X von jCrop ansonsten 0
@@ -37,7 +52,7 @@ function getSettings($section_id) {
  */
 function generateThumb($file, $thumb, $thumb_size, $showmessage, $ratio, $fullpercent = 100, $bg_color = '999999', $positionX = 0, $positionY = 0, $positionW = 0, $positionH = 0) {
 
-    //Von Chio eingefï¿½gt:
+    //Von Chio eingefuegt:
     global $megapixel_limit;
     if ($megapixel_limit < 2) {
         $megapixel_limit = 5;
@@ -83,7 +98,6 @@ function generateThumb($file, $thumb, $thumb_size, $showmessage, $ratio, $fullpe
 
     $thumbFolder = dirname($thumb);
 
-
     //Verzeichnis erstellen, falls noch nicht vorhanden
     if (!is_dir($thumbFolder)) {
         $u = umask(0);
@@ -95,7 +109,7 @@ function generateThumb($file, $thumb, $thumb_size, $showmessage, $ratio, $fullpe
 
     // Thumb erstellen
     if (!is_file($thumb)) {
-        //checken, ob megapixel Ã¼ber 5:
+        //checken, ob megapixel ueber 5:
         if (function_exists('getimagesize')) {
             list($width, $height, $type, $attr) = getimagesize($file);
             $fl = ceil(($width * $height) / 1000000);
@@ -106,7 +120,6 @@ function generateThumb($file, $thumb, $thumb_size, $showmessage, $ratio, $fullpe
                 return -2;
             }
         }
-
 
         if ($type == 2) {
             $original = @imagecreatefromjpeg($file);
@@ -119,10 +132,7 @@ function generateThumb($file, $thumb, $thumb_size, $showmessage, $ratio, $fullpe
         if (isset($original)) {
             if (function_exists('getimagesize')) {
                 list($width, $height, $type, $attr) = getimagesize($file);
-            } else {
-                continue;
             }
-
 
             //------------------------------------------------------------//
             //Werte berechnen:
@@ -140,7 +150,6 @@ function generateThumb($file, $thumb, $thumb_size, $showmessage, $ratio, $fullpe
                 $newwidth = $thumb_size * $ratio;
                 $newheight = $thumb_size;
             }
-
 
             $pic_ratio = $width / $height;
             if ($pic_ratio > $ratio) {
@@ -172,7 +181,6 @@ function generateThumb($file, $thumb, $thumb_size, $showmessage, $ratio, $fullpe
                 $ofx2 = ($newwidth - $smallwidth2) / 2;
             }
 
-
             //mix crped and non-cropped values by percent:
             $f1 = 0.01 * $fullpercent;
             $f2 = 1.0 - $f1;
@@ -180,8 +188,6 @@ function generateThumb($file, $thumb, $thumb_size, $showmessage, $ratio, $fullpe
             $smallheight = floor(($f1 * $smallheight) + ($f2 * $smallheight2));
             $ofx = floor(($f1 * $ofx) + ($f2 * $ofx2));
             $ofy = floor(($f1 * $ofy) + ($f2 * $ofy2));
-
-
 
             $newwidth = floor($newwidth);
             $newheight = floor($newheight);
@@ -203,7 +209,6 @@ function generateThumb($file, $thumb, $thumb_size, $showmessage, $ratio, $fullpe
                 $ofx = 0;
             }
 
-
             if (function_exists('imagecreatetruecolor')) {
                 if ($ratio > 1) {
                     $small = imagecreatetruecolor($thumb_size, $thumb_size / $ratio);
@@ -217,13 +222,13 @@ function generateThumb($file, $thumb, $thumb_size, $showmessage, $ratio, $fullpe
             $b = imagecolorallocate($small, $red, $green, $blue);
             imagefill($small, 0, 0, $b);
             if ($original) {
-                //Ã„nderungen der Variablen die fÃ¼r JCrop Thumberstellung anderst sein mÃ¼ssen
+                //aenderungen der Variablen die fuer JCrop Thumberstellung anderst sein muessen
                 if (!empty($positionW) && !empty($positionH)) {
                     $width = $positionW;
                     $height = $positionH;
 
                     //wenn ein Ratio eingestellt ist werden die small Atribute des Thumbs angepasst
-                    //die ist allerdings nur bei JCrop nÃ¶tig normal wird die grÃ¶ÃŸe vom 0Punkt aus errechnet
+                    //die ist allerdings nur bei JCrop noetig normal wird die groesse vom 0Punkt aus errechnet
 
                     if ($ratio > 1) {
                         $smallwidth = $thumb_size;
@@ -265,7 +270,7 @@ function generateThumb($file, $thumb, $thumb_size, $showmessage, $ratio, $fullpe
  */
 function FG_cleanCat($string) {
     if (is_string($string)) {
-        if (!preg_match('~^(/([.a-zA-Z0-9_-\s]/{0,1})*[^/])$~', $string)) {
+        if (!preg_match('~^(/([.a-zA-Z0-9_\-\s]/{0,1})*[^/])$~', $string)) {
             return '';
         } else {
             return $string;
@@ -274,56 +279,93 @@ function FG_cleanCat($string) {
         return '';
     }
 }
+function FG_getCatId($sectionID, $kategorie) {
+    global $database;
+    global $MOD_FOLDERGALLERY;
+
+    $activeTerm = 'AND active = 1 ';
+    if ($kategorie == '') {
+        $kategorie = '-1/Root';
+        $activeTerm = '';
+    }
+    $sql = "SELECT `id` FROM `" . TABLE_PREFIX . "mod_foldergallery_categories` WHERE " .
+            "`section_id` = " . $sectionID . " AND `is_empty` = 0 " . $activeTerm .
+            "AND CONCAT(`parent`,'/',`categorie`) = '" . $kategorie . "'";
+    $query = $database->query($sql);
+    $ergebnis = $query->fetchRow();
+    if (!$ergebnis) {
+        return 0;
+    }
+    $katID = $ergebnis['id'];
+    return $katID;
+}
+
 
 /**
- * Gibt die Kategorie ID der Kategorie zurÃ¼ck
+ * Gibt die Kategorie ID der Kategorie zurueck
  *
  * @global $database
  * @param int $sectionID WB section_id
  * @param string $kategorie String wie er im URL angezeigt wird
  * @return int
  */
-function FG_getCatId($sectionID, $kategorie) {
+function _FG_getCatId($sectionID, $kategorie='') {
     global $database;
-    $activeTerm = 'AND active = 1 ';
+    global $MOD_FOLDERGALLERY;
+    $retVal = 0;
+    $activeFlag = 1;
     if ($kategorie == '') {
         $kategorie = '-1/Root';
-        $activeTerm = '';
+        $activeFlag = 0;
     }
-    $sql = "SELECT id FROM " . TABLE_PREFIX . "mod_foldergallery_categories WHERE " .
-            "section_id = " . $sectionID . " AND is_empty = 0 " . $activeTerm .
-            "AND CONCAT(parent,'/',categorie) = '" . $kategorie . "'";
-    $query = $database->query($sql);
-    $ergebnis = $query->fetchRow();
-    if (!$ergebnis) {
-        throw new Exception('Kategorie nicht vorhanden!', 001);
+    $sql = 'SELECT `id` FROM `' . TABLE_PREFIX . 'mod_foldergallery_categories` '
+    . 'WHERE '.'`section_id` = ' . $sectionID . ' '
+//    .   'AND `is_empty` = 0 '
+    .   'AND `active` = '.$activeFlag.' '
+    .   'AND CONCAT(`parent`,'/',`categorie`) = \''. $kategorie .'\' ';
+
+    if ($oCat = $database->query($sql)) {
+        $aCategories = $oCat->fetchRow(MYSQLI_ASSOC);
+        $retVal = @$aCategories['id']?:$retVal;
     }
-    $katID = $ergebnis['id'];
-    return $katID;
+print '<pre  class="mod-pre rounded">function <span>'.__FUNCTION__.'( '.''.' );</span>  filename: <span>'.basename(__FILE__).'</span>  line: '.__LINE__.' -> <br />';
+print_r( $sql ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
+    return $retVal;
 }
 
-function display_categories($parent_id, $section_id, $tiefe = 0) {
-    $padding = $tiefe * 20;
+function display_categories($parent_id, $section_id, $level = 0) {
     global $database;
     global $url;
     global $page_id;
     global $MOD_FOLDERGALLERY;
+    global $sAddonName,$sAddonUrl, $sAddonThemeUrl;
     global $settings;
+    global $sCategorie;
+
+    $padding    = (($level >= 1)? ($level*20)+20 : 20);
+    $width_left =  $padding+20;
+
+/*
+ 20     00            Root             width = 370      root
+ 40     20            folder_1         width = 370-20   level 0
+ 60     40            folder_1_1       width = 370-40   level 1
+ 80     60            folder_1_1_1     width = 370-60   level 2
+100     80            folder_1_1_1_1   width = 370-80   level 3
+usw
+*/
 
     $list = "\n";
-    $sql = 'SELECT * FROM ' . TABLE_PREFIX . 'mod_foldergallery_categories WHERE parent_id=' . $parent_id . ' AND section_id =' . $section_id . ' ORDER BY `position` ASC;';
+    $sql  = 'SELECT * FROM `'.TABLE_PREFIX . 'mod_foldergallery_categories` '
+          . 'WHERE `parent_id` ='.$parent_id.' '
+          .   'AND `section_id` ='.$section_id.' '
+          . 'ORDER BY `position` ASC';
     $query = $database->query($sql);
     $zagl = $query->numRows();
-
-
     $arrup = false;
     $arrdown = true;
-    if ($zagl > 1) {
-        
-    }
-
+    if ($zagl > 1) {  }
     $counter = 0;
-    while ($result = $query->fetchRow()) {
+    while ($result = $query->fetchRow(MYSQLI_ASSOC)) {
         $counter++;
         if ($counter > 1) {
             $arrup = true;
@@ -332,6 +374,10 @@ function display_categories($parent_id, $section_id, $tiefe = 0) {
             $arrdown = false;
         }
 
+        $padding    = (($parent_id==-1) ?  0 : $padding);
+        $width_left = (($parent_id==-1) ? 20 : $width_left);
+        $sScatName  =  mb_strlen($result['cat_name']) > 35 ? mb_substr($result['cat_name'], 0, 34).'…' : $result['cat_name'];
+
         if ($parent_id != "-1") {
             $cursor = ' cursor: move;';
             $result['categorie'] = $settings['root_dir'] . $result['parent'] . '/' . $result['categorie'];
@@ -339,6 +385,7 @@ function display_categories($parent_id, $section_id, $tiefe = 0) {
             $cursor = '';
             $result['categorie'] = $settings['root_dir'];
         }
+        $sCategorie =  mb_strlen($result['categorie']) > 85 ? mb_substr($result['categorie'], 0, 84).'…' : $result['categorie'];
 
         if ($result['active'] == 1) {
             $activ_string = $MOD_FOLDERGALLERY['CAT_ACTIVE'];
@@ -346,54 +393,68 @@ function display_categories($parent_id, $section_id, $tiefe = 0) {
             $activ_string = $MOD_FOLDERGALLERY['CAT_INACTIVE'];
         }
 
-        $list .= "<li id='recordsArray_" . $result['id'] . "' style='padding: 1px 0px 1px 0px;" . $cursor . "'>\n"
-                . "<table width='100%' cellpadding='0' cellspacing='0' border='0' class='cat_table'>\n"
+        $list .= "<li id='recordsArray_".$result['id']."' style='padding: 1px 0px 1px 0px;".$cursor."'>\n"
+                . "<table style='width: 100%;' class='cat_table'>\n"
                 . '<tr onmouseover="this.style.backgroundColor = \'#F1F8DD\';" onmouseout="this.style.backgroundColor = \'#ECF3F7\';">'
-                . "<td width='20px' style='padding-left:" . $padding . "px'>\n";
+                . "<td style='width: ".$width_left."px; padding-left:".$padding."px'>\n";
 
         if ($result['has_child']) {
             // Display Expand Sign
-            $list .= '<a href="javascript: toggle_visibility(\'p' . $result['id'] . '\');" title="' . $MOD_FOLDERGALLERY['EXPAND_COLAPSE'] . '">'
-                    . '<img src="' . THEME_URL . '/images/plus_16.png" name="plus_minus_p' . $result['id'] . '" border="0" alt="+" />'
+            $list .= '<a href="#self" onclick="toggle_visibility(\'p'.$result['id'].'\');" title="'.$MOD_FOLDERGALLERY['EXPAND_COLAPSE'] . '">'
+                    . '<img class="fg" src="'.THEME_URL.'/images/plus_16.png" id="plus_minus_p'.$result['id'].'" alt="+'.$result['has_child'].'" />'
                     . '</a>';
         }
         // Categorie Name and Folder
         $list .= '</td>'
-                . "<td width='" . (350 - $padding) . "px'><a href='" . $url['edit'] . $result['id'] . "' title='" . $MOD_FOLDERGALLERY['EDIT_CATEGORIE'] . "'>"
-                . '<img src="' . THEME_URL . '/images/visible_16.png" alt="edit" border="0" align="left" style="margin-right: 5px" />'
-                . ($result['cat_name']) . "</a></td>"
-                . "<td align='left'>" . $result['categorie'] . "</td>"
-                . '<td width="30">';
+                . '<td style="width:'.(400 - $padding).'px; white-space: nowrap; overflow: hidden;" >'.PHP_EOL
+                . '<a href="'.$url['edit'].$result['id'].'" >'.PHP_EOL
+                . '<img class="fg" src="' . THEME_URL . '/images/visible_16.png" alt="edit" style="margin-right: 5px; text-align: left;" />'
+//                . '<span class="tooltip">'.$result['cat_name'].'</span>'.PHP_EOL
+                . ''.$sScatName.PHP_EOL.'</a>'.PHP_EOL
+                .'</td>'.PHP_EOL
+                . '<td style="float: left; white-space: nowrap; overflow: hidden; " title="">'.$sCategorie.PHP_EOL
+                . '</td>'.PHP_EOL
+                . '<td style="width: 20px;">'.PHP_EOL;
 
-        // Active / Inactive Sign
+        // Active / Inactive Sign href=""
         if ($parent_id != "-1") {
-            $list .= '<a class="FG_active_categorie" href="javascript: toggle_active_inactive(\'p' . $result['id'] . '\');"><img id="ip' . $result['id'] . '" src="' . WB_URL . '/modules/foldergallery/images/active' . $result['active'] . '.gif" border="0" alt="" title="' . $activ_string . '" /></a>&nbsp;&nbsp;';
+            $list .= '<a class="FG_active_categorie" id="'.$result['id'].'" onclick="toggle_active_inactive('.$result['id'].');" >
+            <img  id="i'.$result['id'].'" src="'.$sAddonThemeUrl.'/img/active' . $result['active'] . '.gif" alt="" title="' . $activ_string . '" />
+            </a>';
         }
 
-        $list .='</td>'
-                . "<td width='20'>";
+        $list .='
+          </td>
+          <td style="width: 20px;">
+        ';
 
         if ($arrup == true) {
             // Move up arrow
-            $list .="<a href='" . WB_URL . "/modules/foldergallery/admin/scripts/move_up.php?page_id=" . $page_id . "&section_id=" . $section_id . "&id=" . $result['id'] . "' title='" . $MOD_FOLDERGALLERY['MOVE_UP'] . "'>"
-                    . "<img src='" . THEME_URL . "/images/up_16.png' border='0' alt='v' /></a>";
+            $list .="<a href='".$sAddonUrl."/admin/scripts/move_up.php?page_id=".$page_id . "&section_id=" . $section_id . "&id=" . $result['id'] . "' title='" . $MOD_FOLDERGALLERY['MOVE_UP'] . "'>"
+                    . "<img src='" . THEME_URL . "/images/up_16.png' alt='v' /></a>";
         }
 
         $list .="</td>"
-                . "<td width='20'>";
+                . "<td style=\"width: 30px;\">";
 
         if ($arrdown == true) {
             // Move down arrow
-            $list .="<a href='" . WB_URL . "/modules/foldergallery/admin/scripts/move_down.php?page_id=" . $page_id . "&section_id=" . $section_id . "&id=" . $result['id'] . "' title='" . $MOD_FOLDERGALLERY['MOVE_DOWN'] . "'>"
-                    . "<img src='" . THEME_URL . "/images/down_16.png' border='0' alt='u' /></a>";
+            $list .="<a href='" . $sAddonUrl."/admin/scripts/move_down.php?page_id=" . $page_id . "&section_id=" . $section_id . "&id=" . $result['id'] . "' title='" . $MOD_FOLDERGALLERY['MOVE_DOWN'] . "'>"
+                    . "<img src='" . THEME_URL . "/images/down_16.png' alt='u' /></a>";
         }
-
-        $list .="</td>"
-                . "</tr></table>\n"
-                . "<ul id='p" . $result['id'] . "'style='padding: 1px 0px 1px 0px;' class='cat_subelem'>";
+              $list .="</td>\n"
+                    . "<td style=\"width: 20px;\">\n";
+        if (($arrup == true)  || ($arrdown == true) || $parent_id>=0){
+              $sDeleteLink = $sAddonUrl."/admin/scripts/delete_cat.php?page_id=" . $page_id . "&section_id=" . $section_id . "&cat_id=" . $result['id'];
+              $list .="<a onclick=\"warnBeforeDelete(this)\" data-cat=\"".$result['cat_name']."\" data-source='".$sDeleteLink."' href='#' title='" . $MOD_FOLDERGALLERY['DELETE'] . "'>"
+                    . "<img src='" . THEME_URL . "/images/delete_16.png' alt='u' /></a>\n";
+        }
+        $list .="</td>\n"
+                . "</tr>\n</table>\n"
+                . "<ul id='p" . $result['id'] . "' style='padding: 1px 0px 1px 0px;' class='cat_subelem'>";
 
         if ($result['has_child']) {
-            $list .= display_categories($result['id'], $section_id, $tiefe + 1);
+            $list .= display_categories($result['id'], $section_id, $level + 1);
         }
 
         $list .= "</ul></li>\n ";
@@ -422,7 +483,7 @@ function FG_appendThumbSettings(&$handle, $settings, $filename) {
 }
 
 function FG_updateFilename($catID, $path, $oldFilename, $newFilename) {
-    global $database;
+    global $database, $section_id;
     if (file_exists($path . $oldFilename)) {
         // OK, file exists in FS
     } else {
@@ -430,12 +491,13 @@ function FG_updateFilename($catID, $path, $oldFilename, $newFilename) {
     }
     $sql = 'SELECT id FROM ' . TABLE_PREFIX . 'mod_foldergallery_files WHERE parent_id=' . $catID . ' AND file_name=\'' . $oldFilename . '\';';
     $query = $database->query($sql);
-    if ($result = $query->fetchRow(MYSQL_ASSOC)) {
+    if ($result = $query->fetchRow(MYSQLI_ASSOC)) {
         // OK, file exists in DB
     } else {
         return;
     }
     $sql = 'UPDATE ' . TABLE_PREFIX . 'mod_foldergallery_files SET file_name=\'' . $newFilename . '\' WHERE id=' . $result['id'];
+    $sql = 'UPDATE ' . TABLE_PREFIX . 'mod_foldergallery_files SET section_id='.$section_id.', file_name=\'' . $newFilename . '\' WHERE id=' . $result['id'];
     $database->query($sql);
     rename($path . $oldFilename, $path . $newFilename);
 }
@@ -456,17 +518,18 @@ function FG_updateFilename($catID, $path, $oldFilename, $newFilename) {
  * @return boolean
  */
 function FG_createThumb($imagePath, $imageName, $thumbPath, $settings) {
-    $handle = new upload(DirectoryHandler::DecodePath($imagePath));
+    global $sAddonName,$sAddonUrl,$sAddonPath;
+    $handle = new FgUpload(DirectoryHandler::DecodePath($imagePath));
     if (!$handle->file_is_image) {
         switch ($handle->file_src_mime) {
             case 'application/x-shockwave-flash' :
-                $handle = new upload(WB_PATH . '/modules/foldergallery/images/swf_icon.png');
+                $handle = new FgUpload($sAddonPath.'/images/swf_icon.png');
                 break;
             case 'video/quicktime' :
-                $handle = new upload(WB_PATH . '/modules/foldergallery/images/quicktime_icon.png');
+                $handle = new FgUpload($sAddonPath.'/images/quicktime_icon.png');
                 break;
             default:
-                $handle = new upload(WB_PATH . '/modules/foldergallery/images/unknown_icon.png');
+                $handle = new FgUpload($sAddonPath.'/images/unknown_icon.png');
         }
     }
 
@@ -479,5 +542,3 @@ function FG_createThumb($imagePath, $imageName, $thumbPath, $settings) {
     }
     return false;
 }
-
-?>

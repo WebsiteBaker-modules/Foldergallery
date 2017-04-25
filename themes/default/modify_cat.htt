@@ -1,0 +1,453 @@
+<!-- BEGIN CommentDoc -->
+<!--
+This is a phplib-template for modify_cat.php
+-->
+<!-- END CommentDoc -->
+</div><!-- end SectionInfoLine -->
+<div class="remodal"></div>
+{ModuleScript}
+<script type="text/javascript">
+        var upSettings = {
+            folder         : '{UPLOAD_FOLDER}',
+            catID          : '{CAT_ID_VALUE}',
+            sectionID      : '{SECTION_ID_VALUE}',
+            pageID         : '{PAGE_ID_VALUE}',
+            data           : '{UPLOAD_SEC_NUM}',
+            defaultQuality : '{defaultQuality}',
+            maxImageSize   : '{maxImageSize}',
+        }
+</script>
+<script type="text/javascript">
+<!--
+//    var UploadCss = "{sAddonThemeUrl}/css/upload/upload.css";
+    var UploadCss         = "{AddonThemeUrl}/FineUpload/fine-uploader.css";
+    var FineUploadCss     = "{AddonThemeUrl}/FineUpload/fine-uploader-new.css";
+    var JsUploadTemplate  = "{AddonThemeUrl}/FineUpload/templates/new_gallery.htt"
+//console.info(UploadCss);
+    if (typeof LoadOnFly==='undefined'){
+//        $.insert(UploadCss);
+        $.insert(FineUploadCss);
+    } else {
+//        LoadOnFly('head', UploadCss);
+        LoadOnFly('head', FineUploadCss);
+    }
+-->
+</script>
+<script src="{AddonThemeUrl}/FineUpload/all.fine-uploader.js"></script>
+<!-- Fine Uploader DOM Element
+====================================================================== -->
+<!-- Your code to create an instance of Fine Uploader and bind to the DOM/template trigger
+====================================================================== -->
+<!--
+    This is a legacy template and is not meant to be used in new Fine Uploader integrated projects.
+    Read the "Getting Started Guide" at http://docs.fineuploader.com/quickstart/01-getting-started.html
+    if you are not yet familiar with Fine Uploader UI.
+-->
+
+<!-- BEGIN show_template_manual_trigger_block -->
+<script type="text/template" id="qq-template">
+        <div class="qq-uploader-selector qq-uploader" qq-drop-area-text="Drop files here">
+            <div class="qq-total-progress-bar-container-selector qq-total-progress-bar-container">
+                <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-total-progress-bar-selector qq-progress-bar qq-total-progress-bar"></div>
+            </div>
+            <div class="qq-upload-drop-area-selector qq-upload-drop-area" qq-hide-dropzone>
+                <span class="qq-upload-drop-area-text-selector"></span>
+            </div>
+            <div class="qq-buttons">
+                <div class="qq-upload-button-selector qq-upload-button">
+                    <div>Select files</div>
+                </div>
+                <button type="button" id="trigger-upload" class="fg-btn fg-btn-primary">
+                    <i class="icon-upload icon-white"></i> Upload
+                </button>
+            </div>
+            <span class="qq-drop-processing-selector qq-drop-processing">
+                <span>Processing dropped files...</span>
+                <span class="qq-drop-processing-spinner-selector qq-drop-processing-spinner"></span>
+            </span>
+            <ul class="qq-upload-list-selector qq-upload-list" aria-live="polite" aria-relevant="additions removals">
+                <li>
+                    <div class="qq-progress-bar-container-selector">
+                        <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-progress-bar-selector qq-progress-bar"></div>
+                    </div>
+                    <span class="qq-upload-spinner-selector qq-upload-spinner"></span>
+                   <!-- -->
+                    <img class="qq-thumbnail-selector" qq-max-size="{UploadThumbnailSize}" qq-server-scale>
+                    <span class="qq-upload-file-selector qq-upload-file"></span>
+                    <span class="qq-edit-filename-icon-selector qq-edit-filename-icon" aria-label="Edit filename"></span>
+                    <input class="qq-edit-filename-selector qq-edit-filename" tabindex="0" type="text">
+                    <span class="qq-upload-size-selector qq-upload-size"></span>
+                    <button type="button" class="qq-btn qq-upload-cancel-selector qq-upload-cancel" style="padding: 0.225em 0.925em;">Cancel</button>
+                    <button type="button" class="qq-btn qq-upload-retry-selector qq-upload-retry" style="padding: 0.225em 0.925em;">Retry</button>
+                    <button type="button" class="qq-btn qq-upload-delete-selector qq-upload-delete" style="padding: 0.225em 0.925em;">Delete</button>
+                    <span role="status" class="qq-upload-status-text-selector qq-upload-status-text" style="padding: 0.225em 0.925em;"></span>
+                </li>
+            </ul>
+
+            <dialog class="qq-alert-dialog-selector">
+                <div class="qq-dialog-message-selector"></div>
+                <div class="qq-dialog-buttons">
+                    <button type="button" class="qq-cancel-button-selector">Close</button>
+                </div>
+            </dialog>
+
+            <dialog class="qq-confirm-dialog-selector">
+                <div class="qq-dialog-message-selector"></div>
+                <div class="qq-dialog-buttons">
+                    <button type="button" class="qq-cancel-button-selector">No</button>
+                    <button type="button" class="qq-ok-button-selector">Yes</button>
+                </div>
+            </dialog>
+
+            <dialog class="qq-prompt-dialog-selector">
+                <div class="qq-dialog-message-selector"></div>
+                <input type="text">
+                <div class="qq-dialog-buttons">
+                    <button type="button" class="qq-cancel-button-selector">Cancel</button>
+                    <button type="button" class="qq-ok-button-selector">Ok</button>
+                </div>
+            </dialog>
+        </div>
+</script>
+<!-- END show_template_manual_trigger_block -->
+
+<!-- BEGIN show_template_default_block -->
+<script type="text/template" id="qq-template">
+    <div class="qq-uploader-selector qq-uploader" qq-drop-area-text="Drop files here">
+        <div class="qq-total-progress-bar-container-selector qq-total-progress-bar-container">
+            <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-total-progress-bar-selector qq-progress-bar qq-total-progress-bar"></div>
+        </div>
+        <div class="qq-upload-drop-area-selector qq-upload-drop-area" qq-hide-dropzone>
+            <span class="qq-upload-drop-area-text-selector"></span>
+        </div>
+        <div class="qq-upload-button-selector qq-upload-button">
+            <div>Upload a file</div>
+        </div>
+        <span class="qq-drop-processing-selector qq-drop-processing">
+            <span>Processing dropped files...</span>
+            <span class="qq-drop-processing-spinner-selector qq-drop-processing-spinner"></span>
+        </span>
+        <ul class="qq-upload-list-selector qq-upload-list" aria-live="polite" aria-relevant="additions removals">
+            <li>
+<!--
+                <div class="qq-progress-bar-container-selector">
+                    <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-progress-bar-selector qq-progress-bar"></div>
+                </div>
+-->
+                <span class="qq-upload-spinner-selector qq-upload-spinner"></span>
+                <img class="qq-thumbnail-selector" qq-max-size="100" qq-server-scale>
+                <span class="qq-upload-file-selector qq-upload-file"></span>
+                <span class="qq-edit-filename-icon-selector qq-edit-filename-icon" aria-label="Edit filename"></span>
+                <input class="qq-edit-filename-selector qq-edit-filename" tabindex="0" type="text">
+                <span class="qq-upload-size-selector qq-upload-size"></span>
+                <button type="button" class="qq-btn qq-upload-cancel-selector qq-upload-cancel">Cancel</button>
+                <button type="button" class="qq-btn qq-upload-retry-selector qq-upload-retry">Retry</button>
+                <button type="button" class="qq-btn qq-upload-delete-selector qq-upload-delete">Delete</button>
+                <span role="status" class="qq-upload-status-text-selector qq-upload-status-text"></span>
+            </li>
+        </ul>
+
+        <dialog class="qq-alert-dialog-selector">
+            <div class="qq-dialog-message-selector"></div>
+            <div class="qq-dialog-buttons">
+                <button type="button" class="qq-cancel-button-selector">Close</button>
+            </div>
+        </dialog>
+
+        <dialog class="qq-confirm-dialog-selector">
+            <div class="qq-dialog-message-selector"></div>
+            <div class="qq-dialog-buttons">
+                <button type="button" class="qq-cancel-button-selector">No</button>
+                <button type="button" class="qq-ok-button-selector">Yes</button>
+            </div>
+        </dialog>
+
+        <dialog class="qq-prompt-dialog-selector">
+            <div class="qq-dialog-message-selector"></div>
+            <input type="text">
+            <div class="qq-dialog-buttons">
+                <button type="button" class="qq-cancel-button-selector">Cancel</button>
+                <button type="button" class="qq-ok-button-selector">Ok</button>
+            </div>
+        </dialog>
+    </div>
+</script>
+<!-- END show_template_default_block -->
+
+<script type="text/javascript">
+<!--
+/**
+ * http://t4t5.github.io/sweetalert/
+ */
+  function warnBeforeDelete(elm) {
+//console.info(elm);
+    var imgName = elm.dataset.img;
+    var imgUrl  = elm.dataset.img_url;
+    var linkURL = elm.dataset.href;
+    swal({
+//        title: "{IMAGE_STRING} "+(typeof imgName!=='undefined'?imgName:''),
+        title : '<img src="'+imgUrl+'" alt="'+imgName+'" class="thumbb"/>'+
+                '<h4 style="text-align: center;">'+imgName+'</h4>',
+        html:true,
+        text: '<h3 class="warning">{ONCLICK_DELETE_CONFIRM}</h3>',
+        type: "warning",
+        confirmButtonColor: "#DD6B55",
+        cancelButtonColor: "#9EB4D5",
+        showCancelButton: true,
+        cancelButtonText: "{TEXT_NO} {TEXT_CANCEL}!",
+        confirmButtonText: "{TEXT_YES} {TEXT_DELETE}!",
+        allowOutsideClick: true,
+        closeOnCancel: true
+    }, function(isConfirm) {
+      // Redirect the user
+        if (isConfirm && (typeof linkURL!=='undefined')){
+            window.location.href = linkURL;
+        } else {
+            swal("Cancelled", "Your imaginary file is safe :)", "error");
+        }
+    });
+  }
+
+  function uploadImages(elm) {
+    var imgName = elm.dataset.upload;
+    var linkURL = elm.dataset.href;
+    var UploadFolder = FOLDERGALLERY.MediaRel+upSettings.folder;
+    var fileNum = 0;
+    var string = "{EXTENSIONS}",
+        aExtensions = string.split(",");
+    swal({
+        title: "{TEXT_UPLOAD_FILES} {TEXT_TO} "+(typeof linkURL!=='undefined'?linkURL:''),
+        html:true,
+        text: '<div id="fine-uploader"></div>',
+        type: "info",
+        confirmButtonColor: "#DD6B55",
+        showConfirmButton: false,
+        showCancelButton: true,
+        cancelButtonText: "{TEXT_CANCEL}!",
+        closeOnCancel: true,
+        allowOutsideClick: true,
+        allowEscapeKey:true
+    }, function(isConfirm) {
+      // Redirect the user
+        if (isConfirm && (typeof linkURL!=='undefined')){
+console.info(elm);
+        } else {
+            swal("Cancelled", "Your imaginary file is safe :)", "error");
+        }
+    });
+/**
+ * http://fineuploader.com/demos.html
+ */
+    var manualUploader = new qq.FineUploader({
+            element: document.getElementById('fine-uploader'),
+            template: 'qq-template',
+            autoUpload: false,
+            blobs : {
+                defaultName : 'blubber'
+            },
+            request: {
+                method  : 'POST',
+                params: {
+                  TargetDir: "{UPLOAD_FOLDER}",
+                  fileNum: function () {
+                      return fileNum++;
+                  }
+                },
+                endpoint: "{AddonUrl}/admin/uploadify/endpoint.php"
+            },
+            text: {
+              uploadButton: '<i class="icon-plus icon-White"></i> Select Files'
+            },
+            thumbnails: {
+                orient: true,
+                placeholders: {
+                    waitingPath: '{AddonThemeUrl}/FineUpload/placeholders/waiting-generic.png',
+                    notAvailablePath: '{AddonThemeUrl}/FineUpload/placeholders/not_available-generic.png'
+                }
+            },
+            failedUploadTextDisplay: {
+                mode: 'custom',
+                responseProperty: 'error',
+                maxChars: 120,
+                enableTooltip: true
+            },
+            text: {
+                defaultResponseError: "An unknown upload error occurred."
+            },
+            deleteFile: {
+                enabled: false,
+                endpoint: "{AddonUrl}/admin/uploadify/endpoint.php"
+            },
+            chunking: {
+                enabled: true,
+                concurrent: {
+                    enabled: true
+                },
+                success: {
+                    endpoint: "{AddonUrl}/admin/uploadify/endpoint.php?done"
+                }
+            },
+            resume: {
+                enabled: true
+            },
+            retry: {
+                enableAuto: true,
+                showButton: true
+            },
+            maxConnections: 6,
+            validation: {
+                allowedExtensions: aExtensions,
+                itemLimit: 200,
+                sizeLimit: 500*2048*10 //
+            },
+            scaling: {
+                defaultQuality: upSettings.defaultQuality,
+                sendOriginal: false,
+                includeExif: true,
+                orient: true,
+                sizes: [
+                    {name: "", maxSize: (upSettings.maxImageSize<1600?upSettings.maxImageSize:1536 ) }
+                ]
+            },
+            text: {
+              failUpload: 'Upload files are failed',
+            },
+            debug: true
+        });
+    qq(document.getElementById("trigger-upload")).attach("click", function() {
+        manualUploader.uploadStoredFiles();
+    });
+
+  }
+/*-----------------------------------------------------------------------------------*/
+
+-->
+</script>
+<h2>{MODIFY_CAT_TITLE}</h2><br />
+<form action="{SAVE_CAT_LINK}" method="post" style="margin: 0.925em 0;">
+    <input type="hidden" name="section_id" value="{SECTION_ID_VALUE}">
+    <input type="hidden" name="page_id" value="{PAGE_ID_VALUE}">
+    <input type="hidden" name="cat_id" value="{CAT_ID_VALUE}">
+    <input type="hidden" name="old_cat_name" value="{CAT_NAME_VALUE}">
+    <div class="block-outer" style="margin-bottom: 0.625em;">
+      <h3>{MODIFY_CAT_STRING}</h3>
+        <table class="fg-table" >
+            <tbody>
+                <tr>
+                    <td class="settingdata">{FOLDER_IN_FS_STRING}</td>
+                    <td class="fg-path"><span title="{FOLDER_IN_FS_TITLE}">{FOLDER_IN_FS_VALUE}</span></td>
+                </tr>
+                <tr>
+                    <td class="settingdata">{CAT_NAME_STRING}</td>
+                    <td><input name='cat_name' type='text' size='80' value='{CAT_NAME_VALUE}'></td>
+                </tr>
+                <tr>
+                    <td class="settingdata">{CAT_ACTIVE_STRING}:</td>
+                    <td><input name="active" type="checkbox" value="1" {CAT_ACTIVE_CHECKED}></td>
+                </tr>
+                <tr>
+                        <td class="settingdata">{CAT_DESCRIPTION_STRING}</td>
+                        <td><textarea cols="78" rows="3" name="cat_description" style="width: 100%; height: 10.225em;">{CAT_DESCRIPTION_VALUE}</textarea></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="block-outer container-relative">
+    <table style="width: 100%; border-collapse: collapse; margin: 0.925em 0;">
+        <tbody>
+            <tr>
+                <td style="float: left;">
+                    <input name="save" type="submit" value="{TEXT_CATEGORIES} {SAVE_STRING}" class="FG_button fg-btn fg-btn-gradient" style="width: 100%; margin-top: 0.225em; min-width: 12.525em;;" />
+                </td>
+                <td >
+                    <input onclick="uploadImages(this)" data-href="{UPLOAD_FOLDER}" name="upload" type="button" value="{TEXT_UPLOAD_FILES} " class="FG_button fg-btn fg-btn-gradient" style="width: 100%; margin-top: 5px;" />
+                </td>
+                <td style="float: right;">
+                    <input type="button" value="{TEXT_CANCEL}/{TEXT_BACK}" onclick="{CANCEL_ONCLICK}" class="FG_button fg-btn fg-btn-gradient" style="width: 100% margin-top: 5px;" />
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+</form>
+
+<form action="{SAVE_FILES_LINK}" method="post" >
+    <input type="hidden" name="section_id" value="{SECTION_ID_VALUE}"/>
+    <input type="hidden" name="page_id" value="{PAGE_ID_VALUE}"/>
+    <input type="hidden" name="cat_id"  value="{CAT_ID_VALUE}" />
+    <div class="block-outer" style="margin-bottom: 0.625em;">
+
+        <h3>{MODIFY_IMG_STRING} | <a href="modify_cat_sort.php?page_id={PAGE_ID_VALUE}&section_id={SECTION_ID_VALUE}&cat_id={CAT_ID_VALUE}">{SORT_IMAGES_STRING}</a>
+            <a href="" onclick="{SYNC_ONKLICK}" style="display: inline;" > | {SYNC_STRING}</a>
+        </h3>
+
+        <table style="width: 100%; border:0px none #999999; border-collapse: collapse;" id="FG_table" class="sort_cat">
+            <thead>
+                <tr style="height: 34px;border-bottom: 1px solid #999999;">
+                        <th  style="text-align: center;">{IMAGE_STRING}</th>
+                        <th>{IMAGE_NAME_STRING}</th>
+                        <th>{IMAGE_CAPTION_STRING}</th>
+                        <th >{IMAGE_ACTION_STRING}</th>
+                        <th > </th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- BEGIN file_loop -->
+                <tr id="m_{COUNTER}">
+                        <td style="text-align: center;">
+                                <a href='{THUMB_EDIT_LINK}' title="{IMAGE_NAME_VALUE}"><img src="{IMAGE_VALUE}" alt="{IMAGE_NAME_VALUE}" class="thumbb"/></a>
+                        </td>
+                        <td style="text-align: left;">
+                                <b>{IMAGE_NAME_VALUE}</b>
+                        </td>
+                        <td>
+                            <table class="img_info">
+                                <tbody>
+                                    <tr>
+                                        <td class="td1">
+                                        {IMG_TITLE_TEXT}:
+                                        </td>
+                                        <td><input type="text" name="img_title[{COUNTER}]" value="{IMG_TITLE}" style="width:99%;"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>{IMAGE_CAPTION_STRING}:</td>
+                                        <td><textarea cols="40" rows="3" style="width:99%;"  name="caption[{COUNTER}]" >{CAPTION_VALUE}</textarea>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                        <td  style="text-align: center;">
+                                <a href='{THUMB_EDIT_LINK}' title="{THUMB_EDIT_ALT}"><img src='{EDIT_THUMB_SOURCE}' alt="{THUMB_EDIT_ALT}"></a>
+                        </td>
+                        <td  style="text-align: center;">
+                                <a onclick="warnBeforeDelete(this)" data-img="{IMAGE_NAME_VALUE}" data-img_url="{IMAGE_VALUE}" href="#m_{COUNTER}" data-href="{ONCLICK_DELETE_URL}" data-toggle="modal" id="L{ROW}cb" class="amodal" title="{IMAGE_DELETE_ALT}">
+                                <img src='{DELETE_IMG_SOURCE}' alt="{IMAGE_DELETE_ALT}">
+                                </a>
+                        </td>
+                </tr>
+                <!-- END file_loop -->
+                </tbody>
+        </table>
+    </div>
+    <div class="block-outer container-relative" >
+        <table style="width: 100%; margin-top: 0.625em; margin-bottom: 0.625em;">
+            <tbody>
+                <tr>
+                    <td style="float: left;">
+                        <input name="save" type="submit" value="{TEXT_PICTURES} {SAVE_STRING}" style="width: 100%; min-width: 12.525em; " class="FG_button fg-btn fg-btn-gradient" />
+                    </td>
+                    <td >
+                        <input onclick="uploadImages(this)" data-href="{UPLOAD_FOLDER}" name="upload" type="button" value="{TEXT_UPLOAD_FILES} " class="FG_button fg-btn fg-btn-gradient" style="width: 100%; margin-top: 5px;" />
+                    </td>
+                   <td style="float: right;">
+                        <input type="button" value="{TEXT_CANCEL}/{TEXT_BACK}" onclick="{CANCEL_ONCLICK}" style="width: 100%;" class="FG_button fg-btn fg-btn-gradient" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</form>
+<!-- Events -->

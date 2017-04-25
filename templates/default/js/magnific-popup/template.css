@@ -1,0 +1,27 @@
+html {overflow-y:scroll!important; } /*bugfix: http://dimsemenov.com/plugins/magnific-popup/documentation.html#known-issues*/
+ul.magnificPopup {
+    margin: 0;
+    padding: 0;
+}
+ul.magnificPopup li {
+    list-style: none;
+    display: inline;
+}
+ul.magnificPopup li img {
+    max-width: 100%;
+}
+.mfp-title {
+    position: relative;
+}
+ul.share-buttons{
+    position: absolute;
+    right: 0px;
+    top: -35px;
+    list-style: none;
+    display: inline;
+    padding: 0;
+    margin: 0;
+}
+ul.share-buttons li{
+    display: inline;
+}

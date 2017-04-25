@@ -1,0 +1,194 @@
+{ModuleScript}
+<script type="text/javascript">
+<!--
+    var HighSlideCss  = '{ModulesTemplateUrl}/js/highslide/highslide.css';
+    var PaginationCss = "{ModulesTemplateUrl}/css/digg/{PAGINATIONCSS}.css";
+    if (typeof LoadOnFly==='undefined'){
+        $.insert(HighSlideCss);
+        $.insert(PaginationCss);
+    } else {
+        LoadOnFly('head', HighSlideCss);
+        LoadOnFly('head', PaginationCss);
+    }
+-->
+</script>
+<script type="text/javascript" src="{ModulesTemplateUrl}/js/highslide/highslide-full.js"></script>
+<script type="text/javascript">
+    hs.graphicsDir = '{ModulesTemplateUrl}/js/highslide/graphics/';
+    hs.showCredits = false;
+    hs.align = 'center';
+    hs.transitions = ['expand', 'crossfade'];
+    hs.fadeInOut = true;
+    hs.dimmingOpacity = 0.8;
+    hs.wrapperClassName = 'borderless floating-caption';
+    hs.captionEval = 'this.thumb.alt';
+    hs.marginLeft = 100; // make room for the thumbstrip
+    hs.marginBottom = 80 // make room for the controls and the floating caption
+    hs.numberPosition = 'caption';
+    hs.lang.number = '%1 von %2';
+
+    // Add the slideshow providing the controlbar and the thumbstrip
+    hs.addSlideshow({
+        //slideshowGroup: 'group1',
+        interval: 5000,
+        repeat: false,
+        useControls: true,
+        overlayOptions: {
+            className: 'text-controls',
+            position: 'bottom center',
+            relativeTo: 'viewport',
+            offsetX: 50,
+            offsetY: -5
+        },
+        thumbstrip: {
+            position: 'middle left',
+            mode: 'vertical',
+            relativeTo: 'viewport'
+        }
+    });
+</script>
+
+<div class="foldergallery-wrapper">
+    <div class="gallery">
+        <div class="gallerytitel">
+            <span class="view_title">{VIEW_TITLE}</span>&nbsp;&nbsp;<span class="categories_title">{CATEGORIES_TITLE}</span>&nbsp;<span class="categories_desc">{CAT_DESCRIPTION}&nbsp;</span>
+        </div>
+    </div>
+
+<!-- BEGIN show_breadcrumbs -->
+    <div class="pagenav" style="text-align: left">{CATBREAD}</div>
+<!-- END show_breadcrumbs -->
+
+    <div class="galimages" style="text-align: {TEXT_ALIGNMENT} !important;">
+<!-- BEGIN galimages -->
+        <div class="galinvisiblePre">
+    <!-- BEGIN galinvisiblePre -->
+        <div class="categories animate-onscroll  block_1" style="display:none;">
+            <a href="{CAT_LINK}">
+                <img src="{THUMB_LINK}" alt="{CAT_CAPTION}" style="width: {CATWIDTH}px; height: auto;"/>
+            </a>
+            <div class="categories-info">
+                <div class="categories-link">
+                    <a href="{CAT_LINK}" ><span>{CAT_CAPTION}</span></a>
+                </div>
+                <div class="pagination" style="padding-bottom: {WORDCOUNT}px;">
+                    <ul class="fg_pages_nav">
+                        <li class="imgcount">
+                            <a href="{CAT_LINK}">{CAT_COUNT}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    <!-- END galinvisiblePre -->
+        </div>
+        <div class="galthumbnails">
+    <!-- BEGIN galthumbnails -->
+            <div class="categories animate-onscroll  block_2" style="width: {CATWIDTH}px; min-height: {CATHEIGHT}px;">
+                <a href="{CAT_LINK}">
+                    <img src="{THUMB_LINK}" alt="{CAT_CAPTION}" style="width: {GALWIDTH}px; min-height: {GALHEIGHT};"/>
+                </a>
+                <div class="categories-info">
+                    <div class="categories-link">
+                        <a href="{CAT_LINK}" ><span>{CAT_CAPTION}</span></a>
+                    </div>
+                    <div class="pagination" style="padding-bottom: {WORDCOUNT}px;">
+                        <ul class="fg_pages_nav">
+                            <li class="imgcount">
+                                <a href="{CAT_LINK}">{CAT_COUNT}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+    <!-- END galthumbnails -->
+        </div>
+        <div class="galinvisiblePost">
+    <!-- BEGIN galinvisiblePost -->
+        <div class="categories animate-onscroll block_3" style="display:none;">
+            <a href="{CAT_LINK}">
+                <img src="{THUMB_LINK}" alt="{CAT_CAPTION}" style="width: {CATWIDTH}px; height: auto;"/>
+            </a>
+            <div class="categories-info">
+                <div class="categories-link">
+                    <a href="{CAT_LINK}" ><span>{CAT_CAPTION}</span></a>
+                </div>
+                <div class="pagination" style="padding-bottom: {WORDCOUNT}px;">
+                    <ul class="fg_pages_nav">
+                        <li class="imgcount">
+                            <a href="{CAT_LINK}">{CAT_COUNT}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    <!-- END galinvisiblePost -->
+        </div>
+<!-- END galimages -->
+    </div>
+
+<!-- BEGIN show_galnav_block -->
+    <div class="pagination" style="text-align: {TEXT_ALIGNMENT} !important;">
+        <ul class="fg_pages_nav">
+        <!-- BEGIN list_galnav_block -->
+            <li><a href="{GAL_NAV_LINK}?g={GAL_NAV_ID}{GAL_NAV_QUERY}" ><span class="{GAL_NAV_CURRENT}">{GAL_NAV_ID}</span></a></li>
+        <!-- END list_galnav_block -->
+        </ul>
+    </div>
+<!-- END show_galnav_block -->
+
+<!-- BEGIN hr -->
+<hr class="clear" />
+<!-- END hr -->
+
+    <div class="images" style="background-color: rgba({BACKGROUND_COLOR});">
+        <div style="margin: auto 1%;">
+        <!-- BEGIN images -->
+            <ul class="photostyle">
+            <!-- BEGIN invisiblePre -->
+                <li style="display:none;">
+                    <a href="{ORIGINAL}" title="{CAPTION}" class="highslide" onclick="return hs.expand(this)"><img src="{THUMB}" alt="{CAPTION}"/></a>
+                    <div class='highslide-caption'>
+                           {CAPTION}
+                    </div>
+                </li>
+            <!-- END invisiblePre -->
+            <!-- BEGIN thumbnails -->
+                <li>
+                    <!--<figure style="width: {CATWIDTH}px; max-height: 13.325em;">-->
+                        <a href="{ORIGINAL}" title="{CAPTION}" class="highslide" onclick="return hs.expand(this)" target="_blank">
+                        <img src="{THUMB}" alt="{CAPTION}" style="text-align: center; width: {CATWIDTH}px; height: auto;"/>
+                        </a>
+                        <div class='highslide-caption' style="text-align: center;" >
+                             {CAPTION}
+                        </div>
+                        <!--<figcaption style="width: {CATWIDTH}px;">
+                            <a href="{ORIGINAL}" title="{CAPTION}" class="highslide" onclick="return hs.expand(this)" target="_blank">{CAPTION}</a>
+                        </figcaption>-->
+                    <!--</figure>-->
+                </li>
+            <!-- END thumbnails -->
+            <!-- BEGIN invisiblePost -->
+                <li style="display:none;">
+                    <a href="{ORIGINAL}" title="{CAPTION}" class="highslide" onclick="return hs.expand(this)">
+                    <img src="{THUMB}" alt="{CAPTION}" style="width: {CATWIDTH}px; height: auto;"/></a>
+                    <div class='highslide-caption'>
+                           {CAPTION}
+                    </div>
+                </li>
+            <!-- END invisiblePost -->
+            </ul>
+        <!-- END images -->
+        </div>
+    </div>
+
+<!-- BEGIN show_pagenav_block -->
+    <div class="pagination" style="text-align: {TEXT_ALIGNMENT} !important;">
+        <ul class="fg_pages_nav">
+        <!-- BEGIN list_pagenav_block -->
+            <li><a href="{PAGE_NAV_LINK}?p={PAGE_NAV_ID}{PAGE_NAV_QUERY}" ><span class="{PAGE_NAV_CURRENT}" >{PAGE_NAV_ID}</span></a></li>
+        <!-- END list_pagenav_block -->
+        </ul>
+    </div>
+<!-- END show_pagenav_block -->
+</div>

@@ -1,20 +1,24 @@
 <!-- BEGIN CommentDoc -->
 <!-- This is the template for the Foldergallery help and info page -->
 <!-- END CommentDoc -->
+</div><!-- end SectionInfoLine -->
+{ModuleScript}
 <h2>{TITLE}</h2>
-<hr />
-<h3>{VERSION}</h3>
-<p>{VERSION_COMPARE}</p>
-<p>
-    {YOUR_VERSION_TEXT}<br />
-    {VERSION_TEXT}
-</p>
-<h3>Homepage</h3>
-<p>{HOMEPAGE_TEXT}</p>
-<h3>{HELP_TITLE}</h3>
-<p>{HELP_TEXT}</p>
-<h3>{BUG_TITLE}</h3>
-<p>{BUG_TEXT}</p>
+<div class="block-outer">
+    <h3>{VERSION}</h3>
+    <p>{VERSION_COMPARE}</p>
+    <p>
+        {YOUR_VERSION_TEXT}<br />
+        {VERSION_TEXT}
+    </p>
+    <h3>Homepage</h3>
+    <p>{HOMEPAGE_TEXT}</p>
+    <h3>{HELP_TITLE}</h3>
+    <p>{HELP_TEXT}</p>
+    <h3>{BUG_TITLE}</h3>
+    <p>{BUG_TEXT}</p>
+    <hr />
+</div>
 <div style="width:150px;">
-    <input type="button" value="{BACK_STRING}" onclick="{BACK_ONCLICK}" class="FG_button" />
+    <input type="button" value="{BACK_STRING}" onclick="{BACK_ONCLICK}" class="FG_button fg-btn fg-btn-gradient" />
 </div>

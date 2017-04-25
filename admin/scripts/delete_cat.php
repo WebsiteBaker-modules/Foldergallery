@@ -1,58 +1,35 @@
 <?php
-    require('../../../../config.php');
-require(WB_PATH.'/modules/admin.php');
 
-// check if backend.css file needs to be included into <body></body>
-if(!method_exists($admin, 'register_backend_modfiles') && file_exists(WB_PATH ."/modules/foldergallery/backend.css")) {
-echo '<style type="text/css">';
-include(WB_PATH .'/modules/foldergallery/backend.css');
-echo "\n</style>\n";
-}
-// check if backend.js file needs to be included into <body></body>
-if(!method_exists($admin, 'register_backend_modfiles') && file_exists(WB_PATH ."/modules/foldergallery/backend.js")) {
-echo '<script type="text/javascript">';
-include(WB_PATH .'/modules/foldergallery/backend.js');
-echo "</script>";
-}
+    $sAddonPath = dirname(dirname(__DIR__));
+    if (is_readable($sAddonPath.'/init.php'))     {require ($sAddonPath.'/init.php');}
+    // to print with or without header, default is with header
+    $admin_header=true;
+    // Workout if the developer wants to show the info banner
+    $print_info_banner = false; // true/false
+    // Tells script to update when this page was last updated
+    $update_when_modified = false;
+    // Include WB admin wrapper script to sanitize page_id and section_id, print SectionInfoLine
+    require(WB_PATH.'/modules/admin.php');
+    // An associative array that by default contains the contents of $aRequestVars, $aRequestVars and $_COOKIE.
+    $aRequestVars = $_REQUEST;
 
-// check if module language file exists for the language set by the user (e.g. DE, EN)
-if(!file_exists(WB_PATH .'/modules/foldergallery/languages/'.LANGUAGE .'.php')) {
-// no module language file exists for the language set by the user, include default module language file DE.php
-require_once(WB_PATH .'/modules/foldergallery/languages/DE.php');
-} else {
-// a module language file exists for the language defined by the user, load it
-require_once(WB_PATH .'/modules/foldergallery/languages/'.LANGUAGE .'.php');
-}
+    if(isset($aRequestVars['cat_id']) && is_numeric($aRequestVars['cat_id'])) {
+        $cat_id = intval($aRequestVars['cat_id']);
+        $sql  = 'SELECT `categorie`, `parent`, `has_child` FROM `'.TABLE_PREFIX.'mod_foldergallery_categories` '
+              . 'WHERE `id`='.$cat_id.';';
+        $query = $database->query($sql);
+        if($result = $query->fetchRow(MYSQLI_ASSOC)){
+            // Dateien löschen
+            $settings = getSettings($section_id);
+            $sCategorie = $MediaRel.$settings['root_dir'];
+//            $sCategorie = $MediaRel.'/'.$sAddonName;
+            $delete_path = $path.$settings['root_dir'].$result['parent'].'/'.$result['categorie'];
+            // DB Einträge löschen
+            rek_db_delete($cat_id);
+            $admin->print_success($result['categorie'].' '.$TEXT['SUCCESS'].' '.$TEXT['DELETED'], ADMIN_URL.'/pages/modify.php?page_id='.$page_id.'&section_id='.$section_id);
+        } else {
+            $admin->print_error($MOD_FOLDERGALLERY['ERROR_MESSAGE'], ADMIN_URL.'/pages/modify.php?page_id='.$page_id.'&section_id='.$section_id);
+        }
 
-// Files includen
-require_once (WB_PATH.'/modules/foldergallery/info.php');
-require_once (WB_PATH.'/modules/foldergallery/scripts/backend.functions.php');
-
-if(isset($_GET['page_id']) && is_numeric($_GET['page_id'])) {
-	$page_id = $_GET['page_id'];
-}
-
-if(isset($_GET['section_id']) && is_numeric($_GET['section_id'])){
-	$section_id = $_GET['section_id'];
-}
-
-
-
-if(isset($_GET['cat_id']) && is_numeric($_GET['cat_id'])) {
-	$cat_id = $_GET['cat_id'];
-	$sql = 'SELECT categorie, parent, has_child FROM '.TABLE_PREFIX.'mod_foldergallery_categories WHERE id='.$cat_id.';';
-	$query = $database->query($sql);
-	if($result = $query->fetchRow()){
-		// Dateien löschen
-		$settings = getSettings($section_id);
-		$delete_path = $path.$settings['root_dir'].$result['parent'].'/'.$result['categorie'];
-		// DB Einträge löschen
-		rek_db_delete($cat_id);
-		$admin->print_success($TEXT['SUCCESS'], ADMIN_URL.'/pages/modify.php?page_id='.$page_id.'&section_id='.$section_id);
-	} else {
-		$admin->print_error($MOD_FOLDERGALLERY['ERROR_MESSAGE'], ADMIN_URL.'/pages/modify.php?page_id='.$page_id.'&section_id='.$section_id);
-	}
-
-}
-$admin->print_footer();
-?>
+    }
+    $admin->print_footer();

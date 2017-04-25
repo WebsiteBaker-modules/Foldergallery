@@ -1,0 +1,169 @@
+{ModuleScript}
+<script type="text/javascript">
+<!--
+    var ColorBoxCss   = "{ModulesTemplateUrl}/js/colorbox/1/colorbox.css";
+    var PaginationCss = "{ModulesTemplateUrl}/css/digg/{PAGINATIONCSS}.css";
+    if (typeof LoadOnFly==='undefined'){
+        $.insert(ColorBoxCss);
+        $.insert(PaginationCss);
+    } else {
+        LoadOnFly('head', ColorBoxCss);
+        LoadOnFly('head', PaginationCss);
+    }
+-->
+</script>
+<script src="{ModulesTemplateUrl}/js/colorbox/jquery.colorbox.js" ></script>
+<script type="text/javascript">
+        $(document).ready(function(){
+          $('.group4').colorbox({
+                  rel:'group4',
+                  maxWidth:"90%",
+                  maxHeight:"90%",
+                  transition:"elastic",
+                  speed:500,
+                  opacity: "0.7",
+                  previous:"zurück",
+                  next:"vor",
+                  close:"schließen",
+                  slideshowStart: "Diashow starten",
+                  slideshowStop: "Diashow anhalten",
+                  slideshow:true
+          });
+        });
+</script>
+{INCLUDE_PRESENTATION_JS}
+<!-- BEGIN error -->
+{FRONT_END_ERROR_STRING}<br />
+<!-- END error -->
+
+<div class="foldergallery-wrapper">
+    <div class="gallery">
+        <div class="gallerytitel">
+            <span class="view_title">{VIEW_TITLE}</span>&nbsp;&nbsp;<span class="categories_title">{CATEGORIES_TITLE}</span>&nbsp;<span class="categories_desc">{CAT_DESCRIPTION}&nbsp;</span>
+        </div>
+    </div>
+
+<!-- BEGIN show_breadcrumbs -->
+    <div class="pagenav" >{CATBREAD}</div>
+<!-- END show_breadcrumbs -->
+
+    <div class="galimages" style="text-align: {TEXT_ALIGNMENT} !important;">
+    <!-- BEGIN galimages -->
+        <div class="galinvisiblePre">
+        <!-- BEGIN galinvisiblePre -->
+            <div class="categories animate-onscroll  block_1" style="display:none;width: {CATWIDTH}px;">
+                <a href="{CAT_LINK}">
+                    <img src="{THUMB_LINK}" alt="{CAT_CAPTION}" style="width: {CATWIDTH}px; height: auto;"/>
+                </a>
+                <div class="categories-info" >
+                    <div class="categories-link">
+                        <a href="{CAT_LINK}"><span>{CAT_CAPTION}</span></a>
+                    </div>
+                    <div class="pagination">
+                        <ul class="fg_pages_nav" style="padding-bottom: {WORDCOUNT}px;">
+                            <li class="imgcount">
+                                <a href="{CAT_LINK}">{CAT_COUNT}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        <!-- END galinvisiblePre -->
+        </div>
+        <div class="galthumbnails">
+        <!-- BEGIN galthumbnails -->
+            <div class="categories animate-onscroll  block_2" style="width: {CATWIDTH}px; min-height: {CATHEIGHT}px;">
+                <a href="{CAT_LINK}">
+                    <img src="{THUMB_LINK}" alt="{CAT_CAPTION}" style="width: {GALWIDTH}px; min-height: {GALHEIGHT};"/>
+                </a>
+                <div class="categories-info" >
+                    <div class="categories-link">
+                        <a href="{CAT_LINK}"><span>{CAT_CAPTION}</span></a>
+                    </div>
+                    <div class="pagination">
+                        <ul class="fg_pages_nav" style="padding-bottom: {WORDCOUNT}px;">
+                            <li class="imgcount">
+                                <a href="{CAT_LINK}">{CAT_COUNT}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        <!-- END galthumbnails -->
+        </div>
+        <div class="galinvisiblePost">
+        <!-- BEGIN galinvisiblePost -->
+            <div class="categories animate-onscroll block_3" style="display:none;width: {CATWIDTH}px;">
+                <a href="{CAT_LINK}">
+                    <img src="{THUMB_LINK}" alt="{CAT_CAPTION}" style="width: {CATWIDTH}px; height: auto;"/>
+                </a>
+                <div class="categories-info" >
+                    <div class="categories-link">
+                        <a href="{CAT_LINK}"><span>{CAT_CAPTION}</span></a>
+                    </div>
+                    <div class="pagination" style="top: 0.9525em;">
+                        <ul class="fg_pages_nav" style="padding-bottom: {WORDCOUNT}px;">
+                            <li class="imgcount">
+                                <a href="{CAT_LINK}">{CAT_COUNT}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        <!-- END galinvisiblePost -->
+        </div>
+    <!-- END galimages -->
+    </div>
+
+<!-- BEGIN show_galnav_block -->
+    <div class="pagination" style="text-align: {TEXT_ALIGNMENT} !important;">
+        <ul class="fg_pages_nav">
+        <!-- BEGIN list_galnav_block -->
+            <li><a href="{GAL_NAV_LINK}?g={GAL_NAV_ID}{GAL_NAV_QUERY}" ><span class="{GAL_NAV_CURRENT}">{GAL_NAV_ID}</span></a></li>
+        <!-- END list_galnav_block -->
+        </ul>
+    </div>
+<!-- END show_galnav_block -->
+
+<!-- BEGIN hr -->
+    <hr class="clearfix" />
+<!-- END hr -->
+
+    <div class="images" style="background-color: rgba({BACKGROUND_COLOR});">
+        <div style="margin: auto 3%;">
+        <!-- BEGIN images -->
+        <ul class="photostyle">
+            <!-- BEGIN invisiblePre -->
+                <li style="display:none;">
+                    <a href="{ORIGINAL}" title="{CAPTION}" ></a>
+                </li>
+            <!-- END invisiblePre -->
+
+            <!-- BEGIN thumbnails -->
+                <li>
+                    <a href="{ORIGINAL}" title="{CAPTION}" class="group4" target="_blank">
+                        <img src="{THUMB}" alt="{CAPTION}" style="width: {CATWIDTH}px; height: auto;"/>
+                    </a>
+                </li>
+            <!-- END thumbnails -->
+
+            <!-- BEGIN invisiblePost -->
+                <li style="display:none;">
+                    <a href="{ORIGINAL}" title="{CAPTION}" ></a>
+                </li>
+            <!-- END invisiblePost -->
+        </ul>
+        <!-- END images -->
+        </div>
+    </div>
+
+<!-- BEGIN show_pagenav_block -->
+    <div class="pagination" style="text-align: {TEXT_ALIGNMENT} !important;">
+        <ul class="fg_pages_nav">
+        <!-- BEGIN list_pagenav_block -->
+            <li><a href="{PAGE_NAV_LINK}?p={PAGE_NAV_ID}{PAGE_NAV_QUERY}" ><span class="{PAGE_NAV_CURRENT}" >{PAGE_NAV_ID}</span></a></li>
+        <!-- END list_pagenav_block -->
+        </ul>
+    </div>
+<!-- END show_pagenav_block -->
+</div>

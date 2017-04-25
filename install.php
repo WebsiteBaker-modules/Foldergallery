@@ -1,69 +1,30 @@
 <?php
-
-/*
-
-  Website Baker Project <http://www.websitebaker.org/>
-  Copyright (C) 2004-2008, Ryan Djurovich
-
-  Website Baker is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2 of the License, or
-  (at your option) any later version.
-
-  Website Baker is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with Website Baker; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
+/**
+ *
+ * @category        modules
+ * @package         katalog
+ * @author          WebsiteBaker Project / Jacobi22
+ * @copyright       WebsiteBaker Org. e.V.
+ * @link            http://www.jacobi22.com/
+ * @platform        WebsiteBaker 2.8.x
+ * @requirements    PHP 5.2.2 and higher
+ * @version         $Id: install.php 55 2016-09-29 14:10:47Z dietmar $
+ * @lastmodified    $Date: 2016-09-29 16:10:47 +0200 (Do, 29. Sep 2016) $
+ *
  */
-
+/* -------------------------------------------------------- */
+// Must include code to stop this file being accessed directly
+//if(!defined('DEBUG')) { define('DEBUG', true); }
 // prevent this file from being accessed directly
-if (!defined('WB_PATH'))
-    die(header('Location: index.php'));
+/* -------------------------------------------------------- */
+// Must include code to prevent this file from being accessed directly
+if(defined('WB_PATH') == false) {
+    die('Cannot access '.basename(__DIR__).'/'.basename(__FILE__).' directly');
+} else {
+    // create tables from sql dump file
+    if (is_readable(__DIR__.'/install-struct.sql')) {
+        $database->SqlImport(__DIR__.'/install-struct.sql', TABLE_PREFIX, false );
+    }
+}
 
-/*
- * Delete existing tables
- */
-$database->query("DROP TABLE IF EXISTS `" . TABLE_PREFIX . "mod_foldergallery_settings`");
-$database->query("DROP TABLE IF EXISTS `" . TABLE_PREFIX . "mod_foldergallery_files`");
-$database->query("DROP TABLE IF EXISTS `" . TABLE_PREFIX . "mod_foldergallery_categories`");
-
-// create a new, clean module DB-table)
-
-$sql = "CREATE TABLE IF NOT EXISTS `" . TABLE_PREFIX . "mod_foldergallery_settings` ("
-        . "`id` int(11) NOT NULL AUTO_INCREMENT,"
-        . "`section_id` int(11) NOT NULL,"
-        . "`s_name` varchar(100) NOT NULL,"
-        . "`s_value` TEXT NOT NULL,"
-        . "PRIMARY KEY (`id`));";
-$database->query($sql);
-
-$sql = 'CREATE TABLE `' . TABLE_PREFIX . 'mod_foldergallery_files` ( '
-        . '`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,'
-        . '`parent_id` INT NOT NULL DEFAULT \'0\','
-        . '`file_name` VARCHAR(255) NOT NULL DEFAULT \'\','
-        . '`position` INT NOT NULL DEFAULT \'0\', '
-        . '`caption` TEXT NOT NULL DEFAULT \'\');';
-$database->query($sql);
-
-$sql = 'CREATE TABLE `' . TABLE_PREFIX . 'mod_foldergallery_categories` ( '
-        . '`id` INT AUTO_INCREMENT,'
-        . '`section_id` INT NOT NULL DEFAULT \'0\','
-        . '`parent_id` INT NOT NULL DEFAULT \'0\','
-        . '`categorie` VARCHAR(255) NOT NULL DEFAULT \'\','
-        . '`parent` VARCHAR(255) NOT NULL DEFAULT \'\','
-        . '`cat_name` VARCHAR(255) NOT NULL DEFAULT \'\','
-        . '`active` TINYINT NOT NULL DEFAULT \'1\','
-        . '`is_empty` INT NOT NULL DEFAULT \'1\','
-        . '`position`INT NOT NULL DEFAULT \'0\','
-        . '`niveau` INT NOT NULL DEFAULT \'-1\','
-        . '`has_child` INT NOT NULL DEFAULT \'0\','
-        . '`childs` VARCHAR(255) NOT NULL DEFAULT \'\','
-        . '`description` TEXT NOT NULL DEFAULT \'\','
-        . 'PRIMARY KEY (id));';
-$database->query($sql);
-?>
+// end of file
