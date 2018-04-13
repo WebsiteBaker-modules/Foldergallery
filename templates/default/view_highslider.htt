@@ -1,5 +1,5 @@
 {ModuleScript}
-<script type="text/javascript">
+<script>
 <!--
     var HighSlideCss  = '{ModulesTemplateUrl}/js/highslide/highslide.css';
     var PaginationCss = "{ModulesTemplateUrl}/css/digg/{PAGINATIONCSS}.css";
@@ -12,8 +12,8 @@
     }
 -->
 </script>
-<script type="text/javascript" src="{ModulesTemplateUrl}/js/highslide/highslide-full.js"></script>
-<script type="text/javascript">
+<script src="{ModulesTemplateUrl}/js/highslide/highslide-full.js"></script>
+<script>
     hs.graphicsDir = '{ModulesTemplateUrl}/js/highslide/graphics/';
     hs.showCredits = false;
     hs.align = 'center';
@@ -51,7 +51,7 @@
 <div class="foldergallery-wrapper">
     <div class="gallery">
         <div class="gallerytitel">
-            <span class="view_title">{VIEW_TITLE}</span>&nbsp;&nbsp;<span class="categories_title">{CATEGORIES_TITLE}</span>&nbsp;<span class="categories_desc">{CAT_DESCRIPTION}&nbsp;</span>
+            <span class="view_title">{VIEW_TITLE}</span>&nbsp;&nbsp;<span class="categories_title">&#160;</span>&nbsp;<span class="categories_desc">{CAT_DESCRIPTION}&nbsp;</span>
         </div>
     </div>
 
@@ -156,14 +156,14 @@
             <!-- BEGIN thumbnails -->
                 <li>
                     <!--<figure style="width: {CATWIDTH}px; max-height: 13.325em;">-->
-                        <a href="{ORIGINAL}" title="{CAPTION}" class="highslide" onclick="return hs.expand(this)" target="_blank">
+                        <a href="{ORIGINAL}" title="{CAPTION}" class="highslide" onclick="return hs.expand(this)" >
                         <img src="{THUMB}" alt="{CAPTION}" style="text-align: center; width: {CATWIDTH}px; height: auto;"/>
                         </a>
                         <div class='highslide-caption' style="text-align: center;" >
                              {CAPTION}
                         </div>
                         <!--<figcaption style="width: {CATWIDTH}px;">
-                            <a href="{ORIGINAL}" title="{CAPTION}" class="highslide" onclick="return hs.expand(this)" target="_blank">{CAPTION}</a>
+                            <a href="{ORIGINAL}" title="{CAPTION}" class="highslide" onclick="return hs.expand(this)" >{CAPTION}</a>
                         </figcaption>-->
                     <!--</figure>-->
                 </li>

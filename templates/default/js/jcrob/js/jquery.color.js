@@ -182,7 +182,6 @@
 				spaceName = parser.space || "rgba",
 				cache = spaces[ spaceName ].cache;
 
-
 			if ( values ) {
 				parsed = inst[ spaceName ]( values );
 
@@ -483,7 +482,6 @@
 			a
 		];
 	};
-
 
 	each( spaces, function( spaceName, space ) {
 		var props = space.props,

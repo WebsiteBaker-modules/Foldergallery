@@ -36,7 +36,6 @@ config. BalloonStemOffset      = -7    // Integer - horizontal offset of left st
 config. BalloonImgExt          = "gif";// File name extension of default balloon images, e.g. "gif" or "png"
 //=======  END OF TOOLTIP CONFIG, DO NOT CHANGE ANYTHING BELOW  ==============//
 
-
 // Create a new tt_Extension object (make sure that the name of that object,
 // here balloon, is unique amongst the extensions available for wz_tooltips.js):
 var balloon = new tt_Extension();

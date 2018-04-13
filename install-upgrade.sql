@@ -18,21 +18,13 @@ SET time_zone = "+00:00";
 DROP TABLE IF EXISTS `{TABLE_PREFIX}mod_foldergallery_settings`;
 CREATE TABLE IF NOT EXISTS `{TABLE_PREFIX}mod_foldergallery_settings` (
   `section_id` int(11) NULL DEFAULT '0',
-  `s_name` varchar(255) {FIELD_COLLATION} NOT NULL DEFAULT '',
-  `s_value` text {FIELD_COLLATION} NOT NULL
- ) {TABLE_ENGINE=MyISAM};
--- ALTER TABLE `{TABLE_PREFIX}mod_foldergallery_settings` ADD PRIMARY KEY ( `section_id` );
-ALTER TABLE `{TABLE_PREFIX}mod_foldergallery_settings` ADD UNIQUE `ident` ( `section_id`,`s_name` );
+  `s_name` varchar(200){FIELD_COLLATION} NOT NULL DEFAULT '',
+  `s_value` text NOT NULL
+  ){TABLE_ENGINE};
+ALTER TABLE `{TABLE_PREFIX}mod_foldergallery_settings`{FIELD_COLLATION} ;
+ALTER TABLE `{TABLE_PREFIX}mod_foldergallery_settings` CHANGE `s_name` `s_name`  varchar(200) {FIELD_COLLATION}  NOT NULL DEFAULT '';
+ALTER TABLE `{TABLE_PREFIX}mod_foldergallery_settings` CHANGE `s_value` `s_value` TEXT {FIELD_COLLATION} NOT NULL;
+ALTER TABLE `{TABLE_PREFIX}mod_foldergallery_settings` ADD UNIQUE `ident_foldergallery` ( `section_id`,`s_name` );
+
 -- --------------------------------------------------------
--- ALTER TABLE `{TABLE_PREFIX}mod_foldergallery_categories` CHANGE `niveau` `level` INT(11) NOT NULL DEFAULT '0';
-ALTER TABLE `{TABLE_PREFIX}mod_foldergallery_categories` CHANGE `categorie` `categorie` VARCHAR(78) {FIELD_COLLATION} NOT NULL DEFAULT '';
-ALTER TABLE `{TABLE_PREFIX}mod_foldergallery_categories` CHANGE `description` `description` TEXT {FIELD_COLLATION} NOT NULL;
---ALTER TABLE `{TABLE_PREFIX}mod_foldergallery_settings` CHANGE `s_name` `name`  varchar(255) NOT NULL DEFAULT '';
---ALTER TABLE `{TABLE_PREFIX}mod_foldergallery_settings` CHANGE `s_value` `value` TEXT {FIELD_COLLATION} NOT NULL;
-ALTER TABLE `{TABLE_PREFIX}mod_foldergallery_files` ADD `section_id` INT(11) NOT NULL DEFAULT '0' AFTER `id`;
-ALTER TABLE `{TABLE_PREFIX}mod_foldergallery_files` ADD `active` INT(11) NOT NULL DEFAULT '1' AFTER `section_id`;
-ALTER TABLE `{TABLE_PREFIX}mod_foldergallery_files` ADD `img_title` VARCHAR(255) {FIELD_COLLATION} NOT NULL DEFAULT '';
--- --------------------------------------------------------
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+

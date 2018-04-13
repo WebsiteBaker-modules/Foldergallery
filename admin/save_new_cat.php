@@ -11,7 +11,10 @@
     // Include WB admin wrapper script to sanitize page_id and section_id, print SectionInfoLine
     require(WB_PATH.'/modules/admin.php');
 
-    $sBacklink = $sAddonUrl.'/admin/new_cat.php?page_id='.$page_id.'&amp;section_id='.$section_id;
+    $sSamelink = $sAddonUrl.'/admin/new_cat.php?page_id='.$page_id.'&amp;section_id='.$section_id;
+    $sSectionIdPrefix = (defined( 'SEC_ANCHOR' ) && ( SEC_ANCHOR != '' )  ? SEC_ANCHOR : 'Sec' );
+    $sBacklink = ADMIN_URL.'/pages/modify.php?page_id='.$page_id.'#'.$sSectionIdPrefix.$section_id;
+    $sSynclink = $sAddonUrl.'/admin/sync.php?page_id='.$page_id.'&section_id='.$section_id;
 
 // Validate Data
     $v = new Validator();
@@ -35,7 +38,7 @@
     $request['cat_desc']    = $admin->StripCodeFromText($request['cat_desc']);
 
 // Get the settings for this section
-    $settings = getSettings($section_id);
+    $settings = getFGSettings($section_id);
 
     $request['cat_parent'] = str_replace($request['root'], '', $request['cat_parent']);
 // Check if Parent Directory exists
@@ -96,7 +99,7 @@
            .'WHERE `id` = '.$parent_id.';';
     $database->query($sql);
 
-    $admin->print_success($TEXT['SUCCESS'], ADMIN_URL.'/pages/modify.php?page_id='.$page_id.'&section_id='.$section_id);
+    $admin->print_success($TEXT['SUCCESS'], $sSynclink);
 
     $admin->print_footer();
 

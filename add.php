@@ -21,11 +21,11 @@
 */
 /* -------------------------------------------------------- */
 // Must include code to prevent this file from being accessed directly
-if(defined('WB_PATH') == false) { die('Cannot access '.basename(__DIR__).'/'.basename(__FILE__).' directly'); }
+if (!defined('SYSTEM_RUN')) {header($_SERVER['SERVER_PROTOCOL'].' 404 Not Found'); echo '404 File not found'; flush(); exit;}
 /* -------------------------------------------------------- */
     $sAddonPath = __DIR__;
 
-    if (is_readable($sAddonPath.'/init.php'))     {require ($sAddonPath.'/init.php');}
+    if (is_readable($sAddonPath.'/init.php')) {require ($sAddonPath.'/init.php');}
     if (is_readable($sAddonPath.'/presets/thumbPresets.php')){require($sAddonPath.'/presets/thumbPresets.php');}
 //    if (!isset($aDefaults)&& is_readable($sAddonPath.'/presets/defaults.php')){require($sAddonPath.'/presets/defaults.php');}
 
@@ -36,10 +36,10 @@ if(defined('WB_PATH') == false) { die('Cannot access '.basename(__DIR__).'/'.bas
  * damit ueberprueft werden kann, ob bereits ein Ordner festgelegt wurde
  * (Fuer interessierte: Es ist der MD5-Hashwert einer leeren Zeichenkette)
  */
-    $root_dir = 'd41d8cd98f00b204e9800998ecf8427e';
+    $root_dir = '/d41d8cd98f00b204e9800998ecf8427e';
     $extensions = 'jpg,jpeg,gif,png';
-    $cfg = array(
-        "page_id"      => (@$page_id?:"0"),
+    $aCfg = array(
+        "page_id"      => (isset($page_id) ? $page_id : "0"),
         'cat_pp'         => '-1',
         'catpic'         => '0',
         'extensions'     => $extensions,
@@ -49,6 +49,7 @@ if(defined('WB_PATH') == false) { die('Cannot access '.basename(__DIR__).'/'.bas
         'imageName'      => '0',
         'pagination'     => 'NewYahooStyle',
         'galleryStyle'   => 'default',
+        'opacity'        => 1,
         'alignment'      => 'left',
         'loadPreset'     => '1:1Croped150',
         'pics_pp'        => '20',
@@ -63,11 +64,11 @@ if(defined('WB_PATH') == false) { die('Cannot access '.basename(__DIR__).'/'.bas
 // Fill in values in existing table fieldlist, first entry is an extra index in WHERE statement
 // checked for existing fields in table fieldlist
     $aFieldsList = array(
-        "section_id"   => (@$section_id?:"0"),
-        "page_id"      => (@$page_id?:"0"),
+        "section_id"   => (isset($section_id) ? $section_id : '0'),
+        "page_id"      => (isset($page_id) ? $page_id : '0'),
     );
 
-    if (is_array($msg = UpdateKeyValue('mod_foldergallery_settings', $cfg, '', $aFieldsList)))
+    if (is_array($msg = UpdateKeyValue('mod_foldergallery_settings', $aCfg, '', $aFieldsList)))
     {
       echo implode('<br />', $msg);
     }

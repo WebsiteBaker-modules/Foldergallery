@@ -1,11 +1,11 @@
 {ModuleScript}
-<script type="text/javascript">
+<script>
 <!--
     var JqFancyBoxCss = '{ModulesTemplateUrl}/js/jqfancybox/jquery.fancybox-1.3.4.css';
     var PaginationCss = "{ModulesTemplateUrl}/css/digg/{PAGINATIONCSS}.css";
     if (typeof LoadOnFly==='undefined'){
-          $.insert(JqFancyBoxCss);
-          $.insert(PaginationCss);
+        $.insert(JqFancyBoxCss);
+        $.insert(PaginationCss);
     } else {
         LoadOnFly('head', JqFancyBoxCss);
         LoadOnFly('head', PaginationCss);
@@ -13,38 +13,37 @@
 -->
 </script>
 <!-- Jquery Fancybox -->
-<script type="text/javascript" src="{ModulesTemplateUrl}/js/jqfancybox/jquery.mousewheel-3.0.4.pack.js"></script>
-<script type="text/javascript" src="{ModulesTemplateUrl}/js/jqfancybox/jquery.fancybox-1.3.4.js"></script>
-<script type="text/javascript">
-        $(document).ready(function() {
-                $("a[data-fancybox-group=group]").fancybox({
-                        transitionIn        : 'elastic',
-                        transitionOut       : 'elastic',
-                        titlePosition       : 'inside',
-                        autoPlay            : true,
-                        playSpeed           : 3000,
-                        scrolling           : 'auto',
-                        autoScale           : true,
-                        autoDimensions      : true,
-                        showNavArrows       : true,
-                        showCloseButton     : true,
-                        titleFormat         : function(title, currentArray, currentIndex, currentOpts) {
-                                return '<span id="fancybox-title-wrap"><span id="fancybox-title-left">'
-                                + '</span><span id="fancybox-title-main">Bild '
-                                + (currentIndex + 1) + ' / ' + currentArray.length + (title.length ? ' &nbsp; ' + title : '')
-                                + '</span><span id="fancybox-title-right"></span></span>';
-                        }
-                });
+<script src="{ModulesTemplateUrl}/js/jqfancybox/jquery.mousewheel-3.0.4.pack.js"></script>
+<script src="{ModulesTemplateUrl}/js/jqfancybox/jquery.fancybox-1.3.4.js"></script>
+<script>
+    $(document).ready(function() {
+        $("a[data-fancybox-group=group]").fancybox({
+                transitionIn        : 'elastic',
+                transitionOut       : 'elastic',
+                titlePosition       : 'inside',
+                autoPlay            : true,
+                playSpeed           : 3000,
+                scrolling           : 'auto',
+                autoScale           : true,
+                autoDimensions      : true,
+                showNavArrows       : true,
+                showCloseButton     : true,
+                titleFormat         : function(title, currentArray, currentIndex, currentOpts) {
+                        return '<span id="fancybox-title-wrap"><span id="fancybox-title-left">'
+                        + '</span><span id="fancybox-title-main">Bild '
+                        + (currentIndex + 1) + ' / ' + currentArray.length + (title.length ? ' &nbsp; ' + title : '')
+                        + '</span><span id="fancybox-title-right"></span></span>';
+                }
         });
+    });
 </script>
 
 <div class="foldergallery-wrapper centered">
     <div class="gallery">
         <div class="gallerytitel">
-            <span class="view_title">{VIEW_TITLE}</span>&nbsp;&nbsp;<span class="categories_title">{CATEGORIES_TITLE}</span>&nbsp;<span class="categories_desc">{CAT_DESCRIPTION}&nbsp;</span>
+            <span class="view_title">{VIEW_TITLE}</span>&nbsp;&nbsp;<span class="categories_title">&#160;</span>&nbsp;<span class="categories_desc">{CAT_DESCRIPTION}&nbsp;</span>
         </div>
     </div>
-
 <!-- BEGIN show_breadcrumbs -->
     <div class="pagenav" style="text-align: left">{CATBREAD}</div>
 <!-- END show_breadcrumbs -->
@@ -58,9 +57,9 @@
                 <img src="{THUMB_LINK}" alt="{CAT_CAPTION}" style="width: {CATWIDTH}px; height: auto;"/>
             </a>
             <div class="categories-info">
-                    <div class="categories-link">
-                        <a href="{CAT_LINK}">{CAT_CAPTION}</a>
-                    </div>
+                <div class="categories-link">
+                    <a href="{CAT_LINK}">{CAT_CAPTION}</a>
+                </div>
                 <div class="pagination" style="padding-bottom: {WORDCOUNT}px;">
                     <ul class="fg_pages_nav">
                         <li class="imgcount">
@@ -79,9 +78,9 @@
                     <img src="{THUMB_LINK}" alt="{CAT_CAPTION}" style="width: {GALWIDTH}px; min-height: {GALHEIGHT};"/>
                 </a>
                 <div class="categories-info">
-                        <div class="categories-link">
-                            <a href="{CAT_LINK}">{CAT_CAPTION}</a>
-                        </div>
+                    <div class="categories-link">
+                        <a href="{CAT_LINK}">{CAT_CAPTION}</a>
+                    </div>
                     <div class="pagination" style="padding-bottom: {WORDCOUNT}px;">
                         <ul class="fg_pages_nav">
                             <li class="imgcount">
@@ -137,7 +136,7 @@
             <ul class="photostyle" id="lightbox">
             <!-- BEGIN invisiblePre -->
                     <li style="display:none;">
-                        <a href="{ORIGINAL}" title="{CAPTION}" class="fancybox" data-fancybox-group="group" target="_blank">
+                        <a href="{ORIGINAL}" title="{CAPTION}" class="fancybox" data-fancybox-group="group" >
                           <img src="{sAddonUrl}/images/1px.gif" alt="{CAPTION}" style="width: {CATWIDTH}px; height: auto;"/>
                         </a>
                     </li>

@@ -3,7 +3,7 @@
 <!-- END CommentDoc -->
 {ModuleScript}
 <div class="remodal"></div>
-<script type="text/javascript">
+<script>
 <!--
   function warnBeforeDelete(elm) {
 //console.info(e);

@@ -10,11 +10,11 @@
     // Include WB admin wrapper script to sanitize page_id and section_id, print SectionInfoLine
     require(WB_PATH.'/modules/admin.php');
     // An associative array that by default contains the contents of $aRequestVars, $aRequestVars and $_COOKIE.
-    $aRequestVars = $_REQUEST;
+//    $aRequestVars = $_REQUEST;
 
     if(isset($aRequestVars['id']) && is_numeric($aRequestVars['id']))
     {
-        $settings = getSettings($section_id);
+        $settings = getFGSettings($section_id);
         $root_dir = $settings['root_dir']; //Chio
         $iId = 0;
         $cat_id = intval($aRequestVars['cat_id']);

@@ -18,7 +18,6 @@ Browser Support
 -------------
 IE7+
 
-
 Usage
 ------
 

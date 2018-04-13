@@ -50,7 +50,6 @@ allowSizeReduction: true, // allow the image to reduce to fit client size. If fa
 outlineType : 'drop-shadow', // set null to disable outlines
 // END OF YOUR SETTINGS
 
-
 // declare internal properties
 preloadTheseImages : [],
 continuePreloading: true,
@@ -218,7 +217,6 @@ expand : function(a, params, custom, type) {
     } catch (e) { return true; }
 },
 
-
 focusTopmost : function() {
     var topZ = 0,
         topmostKey = -1,
@@ -347,11 +345,9 @@ keyHandler : function(e) {
     return true;
 },
 
-
 registerOverlay : function (overlay) {
     hs.push(hs.overlays, hs.extend(overlay, { hsId: 'hsId'+ hs.idCounter++ } ));
 },
-
 
 getWrapperKey : function (element, expOnly) {
     var el, re = /^highslide-wrapper-([0-9]+)$/;
@@ -422,7 +418,6 @@ mouseClickHandler : function(e)
                 clickX: e.clientX,
                 clickY: e.clientY
             };
-
 
             hs.addEventListener(document, 'mousemove', hs.dragHandler);
             if (e.preventDefault) e.preventDefault(); // FF
@@ -558,7 +553,6 @@ preloadImages : function (number) {
     if (hs.restoreCursor) var cur = hs.createElement('img', { src: hs.graphicsDir + hs.restoreCursor });
 },
 
-
 init : function () {
     if (!hs.container) {
 
@@ -643,7 +637,6 @@ updateAnchors : function() {
 getAnchors : function() {
     return hs.anchors || hs.updateAnchors();
 },
-
 
 close : function(el) {
     var exp = hs.getExpander(el);
@@ -915,7 +908,6 @@ calcExpanded: function() {
     var exp = this.exp;
     this.justify = 'auto';
 
-
     // size and position
     this.pos = this.tpos - this.cb + this.tb;
 
@@ -1144,7 +1136,6 @@ contentLoaded : function() {
         this.justify(y);
         if (this.overlayBox) this.sizeOverlayBox(0, 1);
 
-
         if (this.allowSizeReduction) {
                 this.correctRatio(ratio);
             if (this.isImage && this.x.full > (this.x.imgSize || this.x.size)) {
@@ -1190,14 +1181,11 @@ justify : function (p, moveOnly) {
             allowReduce = false;
         }
 
-
-
     if (p.pos < p.marginMin) {
         var tmpMin = p.pos;
         p.pos = p.marginMin;
 
         if (allowReduce && !moveOnly) p.size = p.size - (p.pos - tmpMin);
-
 
     }
 },
@@ -1249,7 +1237,6 @@ correctRatio : function(ratio) {
         if (this.overlayBox) this.sizeOverlayBox();
     }
 
-
 },
 fitOverlayBox : function(ratio, changed) {
     var x = this.x, y = this.y;
@@ -1295,7 +1282,6 @@ changeSize : function(up, to, dur) {
         if (up) this.outline.setPosition();
         else this.outline.destroy();
     }
-
 
     if (!up) this.destroyOverlays();
 
@@ -1347,9 +1333,6 @@ changeSize : function(up, to, dur) {
     }
 },
 
-
-
-
 afterExpand : function() {
     this.isExpanded = true;
     this.focus();
@@ -1362,7 +1345,6 @@ afterExpand : function() {
 
 },
 
-
 prepareNextOutline : function() {
     var key = this.key;
     var outlineType = this.outlineType;
@@ -1370,13 +1352,11 @@ prepareNextOutline : function() {
         function () { try { hs.expanders[key].preloadNext(); } catch (e) {} });
 },
 
-
 preloadNext : function() {
     var next = this.getAdjacentAnchor(1);
     if (next && next.onclick.toString().match(/hs\.expand/))
         var img = hs.createElement('img', { src: hs.getSrc(next) });
 },
-
 
 getAdjacentAnchor : function(op) {
     var current = this.getAnchorIndex(), as = hs.anchors.groups[this.slideshowGroup || 'none'];
@@ -1390,7 +1370,6 @@ getAnchorIndex : function() {
     }
     return null;
 },
-
 
 cancelLoading : function() {
     hs.discardElement (this.wrapper);
@@ -1451,7 +1430,6 @@ getInline : function(types, addOverlay) {
     }
 },
 
-
 // on end move and resize
 doShowHide : function(visibility) {
     if (hs.hideSelects) this.showHideElements('SELECT', visibility);
@@ -1474,7 +1452,6 @@ showHideElements : function (tagName, visibility) {
                 var elPos = hs.getPosition(els[i]);
                 elPos.w = els[i].offsetWidth;
                 elPos.h = els[i].offsetHeight;
-
 
                     var clearsX = (elPos.x + elPos.w < this.x.get('opos')
                         || elPos.x > this.x.get('opos') + this.x.get('osize'));
@@ -1609,7 +1586,6 @@ createOverlay : function (o) {
         dur: (o.fade === 0 || o.fade === false || (o.fade == 2 && hs.ie)) ? 0 : 250
     });
     hs.extend(overlay, o);
-
 
     if (this.gotOverlays) {
         this.positionOverlay(overlay);
@@ -1779,8 +1755,6 @@ destroyOverlays : function() {
     if (!this.overlays.length) return;
     hs.discardElement(this.overlayBox);
 },
-
-
 
 createFullExpand : function () {
     this.fullExpandLabel = hs.createElement(

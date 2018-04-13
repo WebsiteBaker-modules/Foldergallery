@@ -21,7 +21,7 @@
 */
 /* -------------------------------------------------------- */
 // Must include code to prevent this file from being accessed directly
-if (defined('WB_PATH') == false) { die('Cannot access '.basename(__DIR__).'/'.basename(__FILE__).' directly'); }
+if (!defined('SYSTEM_RUN')) {header($_SERVER['SERVER_PROTOCOL'].' 404 Not Found'); echo '404 File not found'; flush(); exit;}
 /* -------------------------------------------------------- */
     // folderstructure steps to modules path
     $sAddonPath = __DIR__;
@@ -40,10 +40,10 @@ if (defined('WB_PATH') == false) { die('Cannot access '.basename(__DIR__).'/'.ba
     $aRequestVars = $_REQUEST;
 
 // Einstellungen zur aktuellen Foldergallery aus der DB
-$settings = getSettings($section_id);
+$settings = getFGSettings($section_id);
 // Falls noch keine Einstellungen gemacht wurden auf die Einstellungsseite umleiten
-if($settings['root_dir'] == 'd41d8cd98f00b204e9800998ecf8427e') {
-    $sRedirectUrl = $sAddonUrl.'/admin/modify_settings.php?page_id='.$page_id.'&section_id='.$section_id.'';
+    if (isset($settings['root_dir']) && ($settings['root_dir'] == '/d41d8cd98f00b204e9800998ecf8427e')) {
+        $sRedirectUrl = $sAddonUrl.'/admin/modify_settings.php?page_id='.$page_id.'&section_id='.$section_id.'';
 ?>
 <script >
         function redirect() {
@@ -53,6 +53,7 @@ if($settings['root_dir'] == 'd41d8cd98f00b204e9800998ecf8427e') {
 </script>
 <?php
         echo "<div class=\"info\">".str_replace('{{SETTING_LINK}}', $sRedirectUrl, $MOD_FOLDERGALLERY['REDIRECT'])."\n</div>\n";
+
 } else {
     // Template
     $t = new Template($sAddonThemePath, 'remove');
@@ -76,7 +77,7 @@ if($settings['root_dir'] == 'd41d8cd98f00b204e9800998ecf8427e') {
     ));
 
     $t->set_var($aTplDefaults);
-    $t->set_var($aLang);
+    $t->set_var($aLangFG);
 
     // Text im Template setzten
     $t->set_var(array(
@@ -102,22 +103,23 @@ if($settings['root_dir'] == 'd41d8cd98f00b204e9800998ecf8427e') {
     $sql  = 'SELECT * FROM `'.TABLE_PREFIX.'mod_foldergallery_categories` '
           . 'WHERE `section_id`='.$section_id.' '
           .   'AND `niveau`=0';
-    $query = $database->query($sql);
-    while($result = $query->fetchRow(MYSQLI_ASSOC)){
-        $results[] = $result;
+    if ($query = $database->query($sql)){
+        while($result = $query->fetchRow(MYSQLI_ASSOC)){
+            $results[] = $result;
+        }
     }
-
     // Needed for display_categories()
     $url = array(
             'edit' => $sAddonUrl."/admin/modify_cat.php?page_id=".$page_id."&section_id=".$section_id."&cat_id=",
     );
 
     echo '
-    <script type="text/javascript">
+    <script>
             var the_parent_id = "0";
             var theme_url = "'.THEME_URL.'";
             var fg_url = "'.$sAddonUrl.'/";
     </script>
+
             <ul>
                     '.display_categories(-1, $section_id).'
             </ul>
@@ -131,4 +133,5 @@ if($settings['root_dir'] == 'd41d8cd98f00b204e9800998ecf8427e') {
     </div>
     <hr>
     ';
+
     }

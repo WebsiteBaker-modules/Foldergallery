@@ -9,13 +9,14 @@
             $sMessage = $MESSAGE['RECORD_MODIFIED_FAILED'];
     } else {
         // check if user has permissions to access the  module
+        if(!class_exists('admin')){ include(WB_PATH.'/framework/class.admin.php'); }
         $admin = new admin('Modules', 'module_view', false, false);
         if (!($admin->is_authenticated() && $admin->get_permission($sAddonName, 'module'))){
             $sMessage = $MESSAGE['RECORD_MODIFIED_FAILED'];
         } else {
             // Sanitized variables
             $action = $admin->add_slashes($aRequestVars['action']);
-            $updateRecordsArray = isset($aRequestVars['recordsArray']) ? $aRequestVars['recordsArray'] : array();
+            $updateRecordsArray = isset($aRequestVars['recordsArray']) ? $aRequestVars['recordsArray'] : [];
         // This line verifies that in &action is not other text than "updateRecordsListings", if something else is inputed (to try to HACK the DB), there will be no DB access..
             if ($action == "updateRecordsListings")
             {

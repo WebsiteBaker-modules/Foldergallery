@@ -1,5 +1,5 @@
 {ModuleScript}
-<script type="text/javascript">
+<script>
 <!--
     var ColorBoxCss   = "{ModulesTemplateUrl}/js/galleryViewer/viewer.css";
     var PaginationCss = "{ModulesTemplateUrl}/css/digg/{PAGINATIONCSS}.css";
@@ -13,8 +13,8 @@
 -->
 </script>
 
-<script src="{ModulesTemplateUrl}/js/galleryViewer/viewer.js" type="text/javascript" charset="utf-8"></script>
-<script src="{ModulesTemplateUrl}/js/galleryViewer/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="{ModulesTemplateUrl}/js/galleryViewer/viewer.js" charset="utf-8"></script>
+<script src="{ModulesTemplateUrl}/js/galleryViewer/main.js" charset="utf-8"></script>
 
 {INCLUDE_PRESENTATION_JS}
 <!-- BEGIN error -->
@@ -24,7 +24,7 @@
 <div class="foldergallery-wrapper">
     <div class="gallery">
         <div class="gallerytitel">
-            <span class="view_title">{VIEW_TITLE}</span>&nbsp;&nbsp;<span class="categories_title">{CATEGORIES_TITLE}</span>&nbsp;<span class="categories_desc">{CAT_DESCRIPTION}&nbsp;</span>
+            <span class="view_title">{VIEW_TITLE}</span>&nbsp;&nbsp;<span class="categories_title">&#160;</span>&nbsp;<span class="categories_desc">{CAT_DESCRIPTION}&nbsp;</span>
         </div>
     </div>
 

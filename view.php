@@ -4,7 +4,7 @@
  */
 /* -------------------------------------------------------- */
 // Must include code to prevent this file from being accessed directly
-if (defined('WB_PATH') == false) { die('Cannot access '.basename(__DIR__).'/'.basename(__FILE__).' directly'); }
+if (!defined('SYSTEM_RUN')) {header($_SERVER['SERVER_PROTOCOL'].' 404 Not Found'); echo '404 File not found'; flush(); exit;}
 /* -------------------------------------------------------- */
     if (is_readable(__DIR__.'/init.php')) {require (__DIR__.'/init.php');}
     if (is_readable($sAddonPath.'/presets/thumbPresets.php')){require($sAddonPath.'/presets/thumbPresets.php');}
@@ -15,12 +15,15 @@ if (defined('WB_PATH') == false) { die('Cannot access '.basename(__DIR__).'/'.ba
 #    $wb->ami_group_member($wb->get_groups_id());
     $isEmpty = false;
     $bIsAdmin = ($wb->is_authenticated() && $wb->ami_group_member('1'));
-
+try {
 // get Foldergallery settings
-    $settings = getSettings($section_id);
-/*
-*/
+    $settings = getFGSettings($section_id);
 //    $root_dir = MEDIA_DIRECTORY.$settings['root_dir']; //Chio
+    $title = '';
+    if (!isset($settings['root_dir'])) {
+        throw new \Exception ( $MOD_FOLDERGALLERY['FRONT_END_ERROR']);
+    }
+
     $root_dir = $MediaRel.$settings['root_dir'];
     $catpic = (int) $settings['catpic']; //Chio
     // Get page-link from database
@@ -31,17 +34,16 @@ if (defined('WB_PATH') == false) { die('Cannot access '.basename(__DIR__).'/'.ba
     $sPaginationStyle = (isset($settings['pagination']) && ($settings['pagination']!='')?$settings['pagination']:'NewYahooStyle');
     $path = WB_PATH;
 
-    $ergebnisse = array(); // Da drin werden dann alle Ergebnisse aus der DB gespeichert
-    $unterKats  = array();  // Hier rein kommen die Unterkategorien der aktuellen Kategorie
-    $bilder     = array();     // hier kommen alle Bilder der aktuellen Kategorie rein
-    $title      = PAGE_TITLE;   // Page title of the actual page (WB Core)
+    $ergebnisse = []; // Da drin werden dann alle Ergebnisse aus der DB gespeichert
+    $unterKats  = [];  // Hier rein kommen die Unterkategorien der aktuellen Kategorie
+    $bilder     = [];     // hier kommen alle Bilder der aktuellen Kategorie rein
     $NoImages   = false;
     $NoCategory = false;
 // Ist die angegebene Kategorie gueltig? (erlaubter String)
     $aktuelleKat = '';
     $FG_Error['CatNotValid'] = false;
-    $sQueryCat = (@$aRequestVars['cat']?:null);
-    $iQuerySectionId = (@$aRequestVars['section_id']?:0);
+    $sQueryCat = (isset($aRequestVars['cat'])?$aRequestVars['cat']:null);
+    $iQuerySectionId = (isset($aRequestVars['section_id'])?$aRequestVars['section_id']:0);
     if ($sQueryCat  && $iQuerySectionId==$section_id) {
         $aktuelleKat = urldecode($sQueryCat);
         $aktuelleKat = FG_cleanCat(urldecode($sQueryCat));
@@ -60,7 +62,7 @@ if (defined('WB_PATH') == false) { die('Cannot access '.basename(__DIR__).'/'.ba
     }
 
     if (!$aktuelleKat_id) {
-        echo '<b>'.$MOD_FOLDERGALLERY['FRONT_END_ERROR'].'</b>';
+        throw new \Exception ( $MOD_FOLDERGALLERY['NO_FILES_IN_CAT']);
     }
 
     //SQL fuer die Kategorien
@@ -81,7 +83,7 @@ if (defined('WB_PATH') == false) { die('Cannot access '.basename(__DIR__).'/'.ba
     }
 /*
 print '<pre  class="mod-pre rounded">function <span>'.__FUNCTION__.'( '.$aktuelleKat_id.' );</span>  filename: <span>'.basename(__FILE__).'</span>  line: '.__LINE__.' -> <br />';
-print_r( $sql ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
+print_r( $ergebnisse ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
 */
     if (count($ergebnisse) == 0) {
         $NoCategory = $error['NoImages'] = true;
@@ -100,7 +102,7 @@ print_r( $sql ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
             default :
                 $catpicstring = 'RAND()';
         }
-        $aErrorMsg =array();
+        $aErrorMsg = [];
         foreach ($ergebnisse as $key=>$ergebnis)
         {
             $catCrumb = $ergebnis['parent'].'/'.$ergebnis['categorie'];
@@ -129,11 +131,13 @@ print_r( $sql ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
             $imageID = $imageData['id'];
             $imageName = $imageData['file_name'];
             $imageParentID = intval($imageData['parent_id']);
+            $title = PAGE_TITLE;   // Page title of the actual page (WB Core)
             if ($imageParentID != $catID) {
                 // OK, its a image of a subcat, so we need the folder of this cat
                 $sql = 'SELECT `id`, `parent`, `categorie` FROM '
                       .'`'.TABLE_PREFIX.'mod_foldergallery_categories` '
-                      .'WHERE `id` ='.$imageParentID.' ';
+                      .'WHERE `id` ='.$imageParentID.' '
+                      .  'AND `active` = 1 ';
                 $query = $database->query($sql);
                 $result = $query->fetchRow(MYSQLI_ASSOC);
                 $imageCrumb = $root_dir.$result['parent'].'/'.$result['categorie'];
@@ -156,11 +160,6 @@ print_r( $sql ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
                 $thumbImageURL  = WB_URL.$imageCrumb.$settings['thumbPath'].'/'.$imageName;
             }
 
-           # echo "imagePath1 ".$imagePath."<br>";
-           # echo "thumbPath1 ".$thumbPath."<br>";
-           # echo "thumbImagePath ".$thumbImagePath."<br>";
-           # echo "thumbImageURL ".$thumbImageURL."<br><br>";
-
 //            if (!is_file(DirectoryHandler::DecodePath($thumbImagePath))) {
             $sImagePattern = '/.*?[\/\\\\](unknown_).*?/is';
             if (!is_file(DirectoryHandler::DecodePath($thumbImagePath))&& !preg_match($sImagePattern, $thumbImagePath)) {
@@ -175,10 +174,6 @@ print_r( $sql ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
                 'name' => $catName,
                 'parent_id' => $catID
             );
-/*
-print '<pre  class="mod-pre rounded">function <span>'.__FUNCTION__.'( '.$aktuelleKat_id.' );</span>  filename: <span>'.basename(__FILE__).'</span>  line: '.__LINE__.' -> <br />';
-print_r( $query ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
-*/
 
         } // end of foreach $ergebnisse
 
@@ -188,7 +183,7 @@ print_r( $query ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
     }
 
 // Gibt es Bilder in dieser Kategorie
-    $bilder[] = array();
+    $bilder[] = [];
     $sql = 'SELECT * FROM `'.TABLE_PREFIX.'mod_foldergallery_files` '
           .'WHERE `parent_id`= '. $aktuelleKat_id.' '
           .'ORDER BY `position` ASC ';
@@ -212,13 +207,9 @@ print_r( $query ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
               'img_title' => '',
         );
         $bilder[] = $aTmp;
-/*
-print '<pre  class="mod-pre rounded">function <span>'.__FUNCTION__.'( '.$aktuelleKat_id.' );</span>  filename: <span>'.basename(__FILE__).'</span>  line: '.__LINE__.' -> <br />';
-print_r( $bilder ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
-*/
     }
 //echo '<h1>'.$aktuelleKat_id.'</h1>';
-    $titel = '';
+    $title = '';
     $description = '';
     if (count($bilder) != 0)
     {
@@ -230,11 +221,12 @@ print_r( $bilder ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
              . 'WHERE `section_id` = '.$section_id.' '
              .   'AND `categorie` = \''.$bildkat.'\' '
              .   'AND `parent` = \''.$bildparent.'\' '
+             .   'AND `active` = 1 '
 //             . 'LIMIT 1 '
              . '';
         $query = $database->query($sql);
         $result = $query->fetchRow(MYSQLI_ASSOC);
-        $titel = $result['cat_name'];
+        $title = $result['cat_name'];
         $description = $result['description'];
 
         if (!empty($result['categorie'])){
@@ -242,29 +234,28 @@ print_r( $bilder ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
         } else{
             $folder = $root_dir.$result['parent'].'/';
         }
-        $pathToFolder = WB_PATH.$folder;
+        $pathToFolder = $folder;
 //        $pathToThumb  = WB_PATH.$folder.$thumbDirName;
 //        $urlToFolder  = $url.$folder;
         $urlToThumb   = $url.$folder.$thumbDirName.'/';
-
         $sql = 'SELECT `cat_name`,`description` FROM `'.TABLE_PREFIX.'mod_foldergallery_categories` '
               .'WHERE `section_id` = '.$section_id.' '
-              .'AND `id` = '.$aktuelleKat_id.' ';
+              .  'AND `id` = '.$aktuelleKat_id.' '
+              .  'AND `active` = 1 ';
         $query = $database->query($sql);
         $result = $query->fetchRow(MYSQLI_ASSOC);
         $description = $result['description'];
-        $titel = $result['cat_name'];
+        $title = $result['cat_name'];
     } else {
         $sql = 'SELECT `cat_name`,`description` FROM `'.TABLE_PREFIX.'mod_foldergallery_categories` '
               .'WHERE `section_id` = '.$section_id.' '
-              .'AND `id` = '.$aktuelleKat_id.' ';
-
+              .  'AND `id` = '.$aktuelleKat_id.' '
+              .  'AND `active` = 1 ';
         $query = $database->query($sql);
         $result = $query->fetchRow(MYSQLI_ASSOC);
         $description = $result['description'];
-        $titel = $result['cat_name'];
+        $title = $result['cat_name'];
     }
-
 // Zurueck Link
     if ($aktuelleKat) {
         $temp = explode('/', $aktuelleKat);
@@ -294,10 +285,11 @@ print_r( $bilder ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
     } else {
         $viewTemplate = 'view.htt';
     // --- added by WebBird, 29.07.2010 ---
-        $t = new Template(dirname(__FILE__).'/templates', 'remove');
+        $t = new Template($sAddonTemplatePath);
     // --- end added by WebBird, 29.07.2010 ---
     }
 // --- commented by WebBird, 29.07.2010 ---
+
     $t->halt_on_error = 'yes';
     $t->set_file('view', $viewTemplate);
     $t->set_block('view', 'CommentDoc');
@@ -351,8 +343,9 @@ print_r( $bilder ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
         $iLast = sizeof($path)-1;
         foreach ($path as $i => $cat_name) {
            $sql = 'SELECT `cat_name`, `id` FROM `'.TABLE_PREFIX.'mod_foldergallery_categories` '
-                 .'WHERE `categorie` = \''.$cat_name.'\' AND '
-                 .'`section_id` = '.$section_id.' ';
+                 .'WHERE `categorie` = \''.$cat_name.'\' '
+                 .  'AND  `section_id` = '.$section_id.' '
+                 .  'AND `active` = 1 ';
            if($catres = $database->query($sql)) {
             $cat = $catres->fetchRow(MYSQL_ASSOC);
             $sAktKatName = ucfirst($cat['cat_name']);
@@ -436,15 +429,17 @@ print_r( $bilder ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
         for ($ix = 0; $ix < $anzahlGal; $ix++)
         {
             $sql = 'SELECT count(*) FROM `'.TABLE_PREFIX .'mod_foldergallery_categories` '
-                  .'WHERE `parent_id` = '.$unterKats[$ix]['parent_id'];
+                  .'WHERE `parent_id` = '.$unterKats[$ix]['parent_id'].' '
+                  .  'AND `active` = 1 ';
             $query = $database->query($sql);
                 if ($result = $query->fetchRow(MYSQLI_BOTH)) {
                     $subkatcount[$ix] = $result[0];
                 } else {
                     $subkatcount[$ix] = 0;
                 };
-            $sql = 'SELECT count(*) `count`, `file_name` FROM `'.TABLE_PREFIX .'mod_foldergallery_files` '
-                  .'WHERE `parent_id` = '.$unterKats[$ix]['parent_id'];
+            $sql = 'SELECT count(*) `count` FROM `'.TABLE_PREFIX .'mod_foldergallery_files` '
+                  .'WHERE `parent_id` = '.$unterKats[$ix]['parent_id'].' '
+                  .  'AND `active` = 1 ';
             $oFiles = $database->query($sql);
             if ($aFiles = $oFiles->fetchRow(MYSQLI_ASSOC)) {
                 if($aFiles['count'] > 0){
@@ -456,8 +451,6 @@ print_r( $bilder ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
                 $katcount[$ix] = '';
             };
 
-/*
-*/
             if($katcount[$ix] == "1") {
                         $katcount[$ix].= " ".$MOD_FOLDERGALLERY['1PICTURE'];
             } else if($katcount[$ix] == "2") {
@@ -476,10 +469,6 @@ print_r( $bilder ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
                     $katcount[$ix].= " ".$MOD_FOLDERGALLERY['PICTURES'];
                 }
             };
-/*
-print '<pre  class="mod-pre rounded">function <span>'.__FUNCTION__.'( '.$iRatio.' );</span>  filename: <span>'.basename(__FILE__).'</span>  line: '.__LINE__.' -> <br />';
-print_r( $bilder ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
-*/
             $sCatGalleryLink = $unterKats[$ix]['link'];
             $sCatThumbUrl = (!is_dir($unterKats[$ix]['thumb'])? $unterKats[$ix]['thumb']:'');
             $sCatName = $unterKats[$ix]['name'];
@@ -487,20 +476,18 @@ print_r( $bilder ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
             $isEmpty = ((intval($katcount[$ix])==0)?true:$isEmpty);
             $bIsThumbLink = ($sCatThumbUrl);
             if ($isEmpty &&!$bIsAdmin){continue;}
+
             $aCategorie = array(
                 'CAT_LINK' => $sCatGalleryLink,
                 'THUMB_LINK' => $sCatThumbUrl.'?t='.time(),
                 'CAT_CAPTION' => $sCatName,
-                'CATEGORIES_TITLE' => $titel,
+                'CATEGORIES_TITLE' => $title,
                 'CAT_DESCRIPTION' => $description,
                 'CAT_COUNT' => $katcount[$ix],
                 'IsEmpty' =>$isEmpty
             );
             $t->set_var($aCategorie);
-/*
-print '<pre  class="mod-pre rounded">function <span>'.__FUNCTION__.'( '.''.' );</span>  filename: <span>'.basename(__FILE__).'</span>  line: '.__LINE__.' -> <br />';
-print_r( $aCategorie ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
-*/
+
             $iRatio = (float)($thumbPresets[$settings ['loadPreset']]['thumb_ratio']);
             $iRatio = (float)($iRatio>1?$iRatio:1.34);
             $catWidth  = (float)$settings['tbSettings']['image_x'];
@@ -510,7 +497,7 @@ print_r( $aCategorie ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die
             $t->set_var(array(
                 'CATWIDTH'  => $catWidth,
                 'CATHEIGHT' => $catHeight,
-                'WORDCOUNT' => str_word_count($titel)*3,
+                'WORDCOUNT' => str_word_count($title)*3,
             ));
 
             $t->parse('SHOW_CATEGORIES', 'show_categories', true);
@@ -567,7 +554,7 @@ print_r( $aCategorie ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die
         } else {
             $current_page = 1;
         }
-        $t->set_var('CATEGORIES_TITLE', $titel);
+        $t->set_var('CATEGORIES_TITLE', $title);
         $t->set_var('CAT_DESCRIPTION', $description);
 
         if (is_numeric($pages))
@@ -608,13 +595,13 @@ print_r( $aCategorie ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die
             if (sizeof($bilder[$i])==0) {continue;}
             $bildfilename = $bilder[$i]['file_name'];
 
-            $urlToFolder  = $url.$folder;
+            $urlToFolder  = $folder;
             $urlToThumb   = $url.$folder.$thumbDirName.'/';
             $pathToThumb  = WB_PATH.$folder.$thumbDirName;
 
             $thumb        = $pathToThumb.'/'.$bildfilename;
             $thumburl     = $urlToThumb.$bildfilename;
-            $file         = $pathToFolder.$bildfilename;
+            $file         = WB_PATH.$pathToFolder.$bildfilename;
 
             if (($bilder[$i]['id']!=0) && !is_file(DirectoryHandler::DecodePath($file))) {
                 $deletesql = 'DELETE FROM `'.TABLE_PREFIX.'mod_foldergallery_files` WHERE `id` ='.$bilder[$i]['id'];
@@ -622,7 +609,7 @@ print_r( $aCategorie ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die
             }
             $sImagePattern = '/.*?[\/\\\\](unknown_).*?/is';
             if (!is_file(DirectoryHandler::DecodePath($thumb))&& !preg_match($sImagePattern, $thumb)) {
-                $file = $pathToFolder.$bildfilename;
+                $file = WB_PATH.$pathToFolder.$bildfilename;
                 FG_createThumb($file, $bildfilename, $pathToThumb, $settings['tbSettings']);
             }
             if ($settings['lightbox'] != 'contentFlow'){
@@ -630,20 +617,32 @@ print_r( $aCategorie ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die
             }else{
                 $timeadd = '';
             }
+
    // what shall we show as lightbox title/caption
+            $sCaption = '';
             $sOrginalFilename = $bildfilename;
-            $bildfilename = ($bilder[$i]['img_title']!=''?$bilder[$i]['img_title'] : (intval($settings['imageName'])>0?$bildfilename:''));
-            $sCaption = ($bilder[$i]['caption']!=''?$bilder[$i]['caption']:$bildfilename);
+            if ($settings['imageName']){
+                $bildfilename = ($bilder[$i]['img_title']!=''?$bilder[$i]['img_title'] : (intval($settings['imageName'])>0?$bildfilename:''));
+                $sCaption = ($bilder[$i]['caption']!=''?$bilder[$i]['caption']:$bildfilename);
+            }
 
-//            $ImgInfo = (!is_dir($pathToFolder.$sOrginalFilename)?getimagesize($pathToFolder.$sOrginalFilename):null);
+            $ImgInfo = (!is_dir(WB_PATH.$pathToFolder.$sOrginalFilename) ? getimagesize(WB_PATH.$pathToFolder.$sOrginalFilename) : null);
+//            'preview.php?img='.$urlToFolder.$sOrginalFilename
 
-            $t->set_var(array(
-                'ORIGINAL' => $urlToFolder.$sOrginalFilename,
+            $sImageFile = function ($sImage) use ($ImgInfo){
+                return __DIR__.'/preview.php?img='.$sImage;  // '
+            };
+            $sFilename = $url.$pathToFolder.$sOrginalFilename;
+//            $sImageFilename = $sImageFile($pathToFolder.$sOrginalFilename);
+
+            $aShowImages = [
+                'ORIGINAL' => $sFilename,
                 'ALT_NAME' => $sOrginalFilename,
                 'THUMB'    => $thumburl.'?t='.time(),
                 'CAPTION'  => $sCaption,
                 'NUMBER'   => $i
-            ));
+            ];
+            $t->set_var($aShowImages);
 
             $iRatio = floatval($thumbPresets[$settings ['loadPreset']]['thumb_ratio']);
             $iRatio = floatval($iRatio>0?$iRatio:1.34);
@@ -653,13 +652,15 @@ print_r( $aCategorie ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die
             $galWidth  = $catWidth;
             $galHeight = $galWidth * $iRatio;
 
-            $t->set_var(array(
+            $aShowCats = [
                 'CATWIDTH'  => $catWidth,
                 'CATHEIGHT' => $catHeight,
                 'GALWIDTH'  => $galWidth,
                 'GALHEIGHT' => $galHeight,
-                'WORDCOUNT' => str_word_count($titel)*2,
-            ));
+                'WORDCOUNT' => str_word_count($title)*2,
+            ];
+            $t->set_var($aShowCats);
+
             // Bild sichtbar oder unsichtbar?
             if ($i < $offset) {
                 $t->parse('INVISIBLEPRE', 'invisiblePre', true);
@@ -684,12 +685,17 @@ print_r( $aCategorie ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die
 //ueberschreibt die fest eingestellte Groesse von ul.categories li a auf die Thumbgroessenwerte
 /*
     $catWidth  = $settings['tbSettings']['image_x'] + 10;
-    $catHeight = $settings['tbSettings']['image_y'] - str_word_count($titel)*3;
+    $catHeight = $settings['tbSettings']['image_y'] - str_word_count($title)*3;
     $t->set_var(array(
     'CATWIDTH'  => $catWidth,
     'CATHEIGHT' => $catHeight,
-    'WORDCOUNT' => str_word_count($titel)*3,
+    'WORDCOUNT' => str_word_count($title)*3,
     ));
 */
 $t->pparse('output', 'view');
+
+}catch (\Exception $ex) {
+    $sErrMsg = xnl2br(\sprintf('<h5 class="w3-panel w3-leftbar w3-sand w3-container">%s</h5>', $ex->getMessage()));
+    echo $sErrMsg;
+}
 

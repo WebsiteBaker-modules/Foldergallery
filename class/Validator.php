@@ -28,7 +28,6 @@ class Validator {
      */
     private $_lastError = '';
 
-
     /**
      *
      * @var bool Just a flag to remember if there was a error
@@ -42,7 +41,6 @@ class Validator {
             $this->_usePHPFilters = true;
         }
     }
-
 
     public function setData(array $data) {
         $this->_data = $data;
@@ -105,7 +103,6 @@ class Validator {
         }
     }
 
-
     /**
      * This functions checks if the argument is numeric (like the is_numeric of PHP)
      * But it also checks if the argument is not NAN (which is, on my point of view
@@ -142,7 +139,6 @@ class Validator {
             return false;
         }
     }
-
 
     /**
      * Checks if the argument is a floating point number. Uses the isNumeric function
@@ -313,11 +309,9 @@ class Validator {
         return NULL;
     }
 
-
     public function getString($value) {
         return trim($value);
     }
-
 
     public function getRegexMatch($value, $regex) {
         if($this->_usePHPFilters) {
@@ -361,5 +355,4 @@ class Validator {
         return ($value);//strtolower
     }
 }
-
 

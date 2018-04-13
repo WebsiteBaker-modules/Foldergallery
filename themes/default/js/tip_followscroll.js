@@ -31,7 +31,6 @@ if(typeof config == "undefined")
 config. FollowScroll = false        // true or false - set to true if you want this to be the default behaviour
 //=======    END OF TOOLTIP CONFIG, DO NOT CHANGE ANYTHING BELOW    ==============//
 
-
 // Create a new tt_Extension object (make sure that the name of that object,
 // here fscrl, is unique amongst the extensions available for
 // wz_tooltips.js):

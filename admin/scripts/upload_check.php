@@ -5,7 +5,7 @@
     $aRequestVars = $_REQUEST;
 
     $v = new Validator();
-    $fileArray = array();
+    $fileArray = [];
     foreach ($aRequestVars as $key => $value) {
         if ($key != 'folder') {
             if (file_exists(WB_PATH . $aRequestVars['folder'] . '/' . $value)) {

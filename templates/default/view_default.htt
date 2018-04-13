@@ -1,5 +1,5 @@
 {ModuleScript}
-<script type="text/javascript">
+<script>
 <!--
     var ColorBoxCss   = "{ModulesTemplateUrl}/js/colorbox/1/colorbox.css";
     var PaginationCss = "{ModulesTemplateUrl}/css/digg/{PAGINATIONCSS}.css";
@@ -21,7 +21,7 @@
 <div class="foldergallery-wrapper">
     <div class="gallery">
         <div class="gallerytitel">
-            <span class="view_title">{VIEW_TITLE}</span>&nbsp;&nbsp;<span class="categories_title">{CATEGORIES_TITLE}</span>&nbsp;<span class="categories_desc">{CAT_DESCRIPTION}&nbsp;</span>
+            <span class="view_title">{VIEW_TITLE}</span>&nbsp;&nbsp;<span class="categories_title">&#160;</span>&nbsp;<span class="categories_desc">{CAT_DESCRIPTION}&nbsp;</span>
         </div>
     </div>
 
@@ -124,7 +124,7 @@
             <!-- BEGIN thumbnails -->
                 <li>
                 <figure style="width: {CATWIDTH}px; max-height: 12.9525em;">
-                    <a href="{ORIGINAL}" title="{CAPTION}" class="group4" target="_blank">
+                    <a href="{ORIGINAL}" title="{CAPTION}" class="group4" >
                         <img src="{THUMB}" alt="{CAPTION}" style="width: {CATWIDTH}px; height: auto;"/>
                     </a>
                 <figcaption>{CAPTION}</figcaption>

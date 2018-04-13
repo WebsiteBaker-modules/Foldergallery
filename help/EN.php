@@ -8,9 +8,9 @@ $FG_HELP['VERSION_TEXT']    = 'Folder Gallery is based on an idea by Jürg Rast,
                              .' Folder Gallery is a module which, starting from an adjustable folder represents all the underlying images and folders as separate galleries. ';
 $FG_HELP['HOMEPAGE_TEXT']   = 'In the Folder Gallery allows various output templates and Lightbox effects integrate';
 $FG_HELP['HELP_TITLE']      = 'Help and Support';
-$FG_HELP['HELP_TEXT']       = 'Support is available in the <a href="http://forum.websitebaker.org/index.php/topic,21046.0.html" target="_blank"> Website Baker Community (Forum) </a> .';
+$FG_HELP['HELP_TEXT']       = 'Support is available in the <a href="http://forum.websitebaker.org/index.php/topic,21046.0.html" > Website Baker Community (Forum) </a> .';
 $FG_HELP['BUG_TITLE']       = 'Report a bug';
-$FG_HELP['BUG_TEXT']        = 'If you have found a Bug or some other curios things, leave me a message on <a href="http://forum.websitebaker.org/index.php/topic,21046.0.html" target="_blank"> Website Baker Community (Forum) </a>';
+$FG_HELP['BUG_TEXT']        = 'If you have found a Bug or some other curios things, leave me a message on <a href="http://forum.websitebaker.org/index.php/topic,21046.0.html" > Website Baker Community (Forum) </a>';
 
 $FG_HELP['BACK_STRING']     = 'Back';
 ?>

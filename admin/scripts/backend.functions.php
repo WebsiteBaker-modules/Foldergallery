@@ -1,12 +1,12 @@
 <?php
 
-
 if (!function_exists('sanitizeListOfValues')){
     function sanitizeListOfValues($mList, $bQuote = false, $sSeperator ='|', $sDefault = '')
     {
         if (!is_array($mList)) {
             $mList = preg_split('/[\s,=+\-\;\:\.\|]+/', $mList, -1, PREG_SPLIT_NO_EMPTY);
         }
+
         $mList = str_replace(',', $sSeperator, $bQuote ? preg_quote(implode(',', $mList)) : implode(',', $mList));
         return $mList = $mList ?: $sDefault;
     }
@@ -73,19 +73,52 @@ if (!function_exists('sanitizeListOfValues')){
                 }
             }
         } else {
-          $allData = array();
+          $allData = [];
         }
         return $allData;
     }
 
-    function scanDirectories(
+    /**
+     * scanDirTree()
+     *
+     * @param string $sAbsPath
+     * @param string $regPattern
+     * @return
+     */
+    function scanDirTreeIterator(
+                  $sAbsPath,
+                  $regPattern='/^.+\.(.*)?$/i'
+    ){
+        $Directory  = new RecursiveDirectoryIterator(
+                          $sAbsPath,
+                          FilesystemIterator::CURRENT_AS_SELF|
+                          FilesystemIterator::FOLLOW_SYMLINKS|
+                          FilesystemIterator::KEY_AS_PATHNAME|
+                          FilesystemIterator::SKIP_DOTS|
+                          FilesystemIterator::UNIX_PATHS
+                      );
+        $Iterator   = new RecursiveIteratorIterator(
+                          $Directory,
+                          RecursiveIteratorIterator::SELF_FIRST,
+                          RecursiveIteratorIterator::CATCH_GET_CHILD
+                      );
+/*
+        $regexIterator = new RegexIterator(
+                          $Iterator, $regPattern,
+                          RecursiveRegexIterator::GET_MATCH
+                        );
+*/
+        return $Iterator;
+    }
+
+    function scanDirectoriesIterator(
                   $rootDir,
                   $aAllowedExtensions = array(),
                   $aInvisibleFileNames = array(),
                   $modus = 1,
                   $rekursiv = true
                   ) {
-        $aOptionList = array();
+        $aOptionList = [];
         $sNotAllowedFolders = sanitizeListOfValues($aInvisibleFileNames, true);
         $sFolderPattern = '/.*?[\/\\\\]('.$sNotAllowedFolders.')[\/\\\\]?/is';
         $sAllowedExtension   = sanitizeListOfValues($aAllowedExtensions);
@@ -97,7 +130,7 @@ if (!function_exists('sanitizeListOfValues')){
         $sSearchPattern = '/^.+\.('.$sAllowedExtension.')(.*)?$/is';
 //        echo $sFolderPattern.' call by '.$_SERVER["SCRIPT_NAME"].'<br />';
 //        echo (!$bScanOnlyDir?$sSearchPattern:'').'<br /><br />';
-        $oDirIterator = scanDirTree($rootDir, $sSearchPattern);
+        $oDirIterator = scanDirTreeIterator($rootDir, $sSearchPattern);
         foreach($oDirIterator as $aFileInfo) {
             $sFilename = basename($aFileInfo->getFilename());
             $sAbsPath  = $aFileInfo->getPathName();
@@ -127,41 +160,6 @@ if (!function_exists('sanitizeListOfValues')){
         return $aOptionList;
     }
 
-
-    /**
-     * scanDirTree()
-     *
-     * @param string $sAbsPath
-     * @param string $regPattern
-     * @return
-     */
-    function scanDirTree(
-                  $sAbsPath,
-                  $regPattern='/^.+\.(.*)?$/i'
-    ){
-        $Directory  = new RecursiveDirectoryIterator(
-                          $sAbsPath,
-                          FilesystemIterator::CURRENT_AS_SELF|
-                          FilesystemIterator::FOLLOW_SYMLINKS|
-                          FilesystemIterator::KEY_AS_PATHNAME|
-                          FilesystemIterator::SKIP_DOTS|
-                          FilesystemIterator::UNIX_PATHS
-                      );
-        $Iterator   = new RecursiveIteratorIterator(
-                          $Directory,
-                          RecursiveIteratorIterator::SELF_FIRST,
-                          RecursiveIteratorIterator::CATCH_GET_CHILD
-                      );
-/*
-        $regexIterator = new RegexIterator(
-                          $Iterator, $regPattern,
-                          RecursiveRegexIterator::GET_MATCH
-                        );
-*/
-        return $Iterator;
-    }
-
-
     /**
      * getFolderStructure()
      *
@@ -172,10 +170,10 @@ if (!function_exists('sanitizeListOfValues')){
      * @param bool $rekursiv
      * @return
      */
-    function getFolderStructure(
+    function getFolderStructureIterator(
                   $rootDir,
-                  $aAllowedExtensions = array(),
-                  $aExcludedFiles = array(),
+                  $aAllowedExtensions = [],
+                  $aExcludedFiles = [],
                   $modus = 1,
                   $rekursiv = true
         ){
@@ -187,7 +185,7 @@ if (!function_exists('sanitizeListOfValues')){
         $sBaseMediaUrl  = $oReg->AppUrl.$oReg->MediaDir;
         $sBaseMediaPath = $oReg->AppPath.$oReg->MediaDir;
 
-        $iterator = scanDirTree($sBaseMediaPath);
+        $iterator = scanDirTreeIterator($sBaseMediaPath);
 
         $sNotAllowedFolders = sanitizeListOfValues($aExcludedFiles, true);
         $sFolderPattern = '/.*?[\/\\\\]('.$sNotAllowedFolders.')[\/\\\\]?/is';
@@ -210,8 +208,9 @@ if (!function_exists('sanitizeListOfValues')){
                       $sIndexFile = str_repeat(' - - ', $level-1).$pathFile;
                 break;
             endswitch;
-            $aOptionList[$key]['level'] = (($level <= 10 ) ? $level : 0 );
-            $aOptionList[$key]['name'] = trim($sIndexFile,'/');
+            $aOptionList[$key]['level']    = (($level <= 10 ) ? $level : 0 );
+            $aOptionList[$key]['name']     = $sFilename;
+            $aOptionList[$key]['select']   = trim($sIndexFile,'/');
             $aOptionList[$key]['selected'] = ( ( $aRecords['root_dir'] == $key) ? true : false);
         }
 
@@ -232,6 +231,214 @@ if (!function_exists('sanitizeListOfValues')){
         return $aDirs;
     }
 
+/*---------------------------------------------------------------------------------------------------*/
+//
+/*-----------------------------------  glob routines -----------------------------------------------*/
+    function scanGlobTree ($sPath, $sPattern = '[a-zA-Z0-9_~@]*'){
+        return (\glob($sPath.$sPattern, \GLOB_MARK));  // \GLOB_ONLYDIR|
+    }
+
+    /**
+     * scanDirTree()
+     *
+     * @param string $sAbsPath
+     * @param string $regPattern
+     * @return
+     */
+    function scanDirTreeGlob(
+                  $sAbsPath,
+                  &$aOptionList,
+                  $aAllowedExtensions,
+                  $aExcludedFiles,
+                  $regPattern='/^.+\.(.*)?$/i'
+    ){
+        global $oAddonReg;
+
+        $oReg = $oAddonReg->oReg;
+        $aRecords = $oAddonReg->Records;
+        $MediaDir = trim($oReg->MediaDir, '/');
+        $sPath = \rtrim($sAbsPath, '\\\\/').'/';
+        $sNotAllowedFolders  = sanitizeListOfValues($aExcludedFiles, true);
+/*
+        $sAllowedExtension   = sanitizeListOfValues($aAllowedExtensions);
+        $RENAME_FILES_ON_UPLOAD = '(ph.*?|cgi|pl|pm|exe|com|bat|pif|cmd|src|asp|aspx|js|gz|zip)';
+        // Check for potentially malicious files
+        $sForbiddenFileTypes  = sanitizeListOfValues($RENAME_FILES_ON_UPLOAD);
+*/
+        // find all nodes which names start with [a-zA-Z0-9_~@] and leading '.' too.
+        // it ignores the '.' and '..' nodes from Linux
+        if (($aHits = scanGlobTree($sPath)) !== false) {
+            $sFolderPattern = '#.*?[\/\\\\]('.$sNotAllowedFolders.')[\/\\\\]?#is';
+            foreach ($aHits as $sItem) {
+                $sItem = str_replace('\\','/',$sItem);
+//                if ((preg_match($sFolderPattern, $sItem, $aMatch))) { continue; }
+                $sBaseMediaPath = $oReg->AppPath.$oReg->MediaDir;
+                $key = '/'.trim(str_replace($sBaseMediaPath,'',$sItem),'/');
+//                $pathFile = trim(basename($key),'/');
+                if (\substr($sItem, -1) === '/') {
+                    $aOptionList[] = $sItem;
+                    $bRetval = scanDirTreeGlob($sItem, $aOptionList, $aAllowedExtensions, $aExcludedFiles);
+                } else {
+                    $aOptionList[] = $sItem;
+                }
+            }  // foreach
+        }  //
+        return (is_array($aOptionList) ? $aOptionList : []);
+    }
+
+    function scanDirectoriesGlob(
+                  $rootDir,
+                  $aAllowedExtensions  = [],
+                  $aInvisibleFileNames = [],
+                  $modus = 1,
+                  $rekursiv = true
+                  ) {
+        global $oAddonReg;
+
+        $oReg = $oAddonReg->oReg;
+        $aRecords = $oAddonReg->Records;
+        $MediaDir = trim($oReg->MediaDir, '/');
+        $sBaseMediaPath = $oReg->AppPath.$oReg->MediaDir;
+
+        $aOptionList = [];
+
+        $sNotAllowedFolders = sanitizeListOfValues($aInvisibleFileNames, true);
+        $sFolderPattern = '/.*?[\/\\\\]('.$sNotAllowedFolders.')[\/\\\\]?/is';
+        $sAllowedExtension   = sanitizeListOfValues($aAllowedExtensions);
+        $bScanOnlyDir        = (($sAllowedExtension!='') ? false : true);
+        $RENAME_FILES_ON_UPLOAD = '(ph.*?|cgi|pl|pm|exe|com|bat|pif|cmd|src|asp|aspx|js|gz|zip)';
+        // Check for potentially malicious files
+        $sForbiddenFileTypes  = sanitizeListOfValues($RENAME_FILES_ON_UPLOAD);
+        $sAllowedExtension   = (!$bScanOnlyDir ? $sAllowedExtension : $sForbiddenFileTypes);
+        $sSearchPattern = '/^.+\.('.$sAllowedExtension.')(.*)?$/is';
+//        echo $sFolderPattern.' call by '.$_SERVER["SCRIPT_NAME"].'<br />';
+//        echo (!$bScanOnlyDir?$sSearchPattern:'').'<br /><br />';
+        $aList = [];
+        $aDirIterator = scanDirTreeGlob($rootDir, $aList, $aAllowedExtensions, $aInvisibleFileNames, $sSearchPattern);
+        $aFiles = [];
+        foreach($aDirIterator as $sFile) {
+            $sFilename = basename($sFile);
+            $sAbsPath  = $sFile;
+            $aFiles[]  = $sFile;
+//            $result = preg_match($sFolderPattern, $sAbsPath, $aMatch);
+            $key = '/'.trim(str_replace($sBaseMediaPath,'',$sAbsPath),'/');
+            if (preg_match($sFolderPattern, $key, $aMatch)) { continue; }
+            if (is_readable($sFile)) {
+                if (!$bScanOnlyDir){
+                    if (is_file($sFile)) {
+                        $sExtension = \preg_replace('#^.*?([^/]*?)\.[^\.]*$#i', '\1', $sFilename);
+                        if (!preg_match($sSearchPattern, $sAbsPath, $aMatch)) { continue;}
+                            switch ($modus):
+                                case 0:
+                                    $aOptionList[] =  $sFile;
+                                    break;
+                                default:
+                                    $aOptionList[] = $sAbsPath;
+                            endswitch;
+                    }
+              }
+              if (is_dir($sFile)) {
+                  if ($modus > 0) {
+                      $aOptionList[] = rtrim($sAbsPath,'/');
+                  }
+              }
+          }
+        } // end of foreach
+/*
+print '<pre  class="mod-pre rounded">function <span>'.__FUNCTION__.'( '.''.' );</span>  filename: <span>'.basename(__FILE__).'</span>  line: '.__LINE__.' -> <br />';
+print_r( $aOptionList ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
+*/
+        return (is_array($aOptionList) ? $aOptionList : []);
+    }
+
+    /**
+     * getFolderStructure()
+     *
+     * @param mixed $rootDir
+     * @param mixed $aAllowedExtensions
+     * @param mixed $aInvisibleFileNames
+     * @param integer $modus
+     * @param bool $rekursiv
+     * @return
+     */
+    function getFolderStructureGlob(
+                  $rootDir,
+                  $aAllowedExtensions = [],
+                  $aExcludedFiles = [],
+                  $modus = 1,
+                  $rekursiv = true
+        ){
+        global $oAddonReg;
+
+        $oReg = $oAddonReg->oReg;
+        $aRecords = $oAddonReg->Records;
+        $rootDir = str_replace ('\\', '/', $rootDir);
+        $sBaseMediaUrl  = $oReg->AppUrl.$oReg->MediaDir;
+        $sBaseMediaPath = $oReg->AppPath.$oReg->MediaDir;
+        $rootDir = (($rootDir!='') ? $rootDir : $sBaseMediaPath);
+
+        $sNotAllowedFolders = sanitizeListOfValues($aExcludedFiles, true);
+        $sFolderPattern = '/.*?[\/\\\\]('.$sNotAllowedFolders.')[\/\\\\]?/is';
+        $iterator = scanDirTreeGlob($rootDir, $aOptionList, $aAllowedExtensions, $aExcludedFiles);
+        $sFolderPattern = '#.*?[\/\\\\]('.$sNotAllowedFolders.')[\/\\\\]?#is';
+//        array_unshift($iterator, $sBaseMediaPath);
+        $aOptionList = [];
+/**/
+        $key = '/'.trim(str_replace($oReg->AppPath,'',$rootDir),'/');
+        $level = substr_count($key, '/');
+        $aOptionList[$key]['type'] = 'folder';
+        $aOptionList[$key]['key'] = $key;
+        $aOptionList[$key]['level'] = $level;
+        $aOptionList[$key]['name'] = str_repeat('', 1).basename($key);
+        $aOptionList[$key]['select'] = basename($key);
+        foreach ($iterator as $sItem) {
+            $sItem = str_replace('\\','/',$sItem);
+//            $sBaseMediaPath = $oReg->AppPath.$oReg->MediaDir;
+            $key = '/'.trim(str_replace($sBaseMediaPath,'',$sItem),'/');
+            $pathFile = trim(basename($key),'/');
+            if (\substr($sItem, -1) === '/') {
+                if (!preg_match($sFolderPattern, $key, $aMatch)){
+//                        $aOptionList['path'][] = $sItem;
+                    $level = substr_count($key, '/');
+                    switch ($level):
+                      case 0:
+                              $sIndexFile = str_repeat('', 1).$pathFile;
+                        break;
+                      default:
+                              $sIndexFile = str_repeat(' - - ', $level).$pathFile;
+                        break;
+                    endswitch;
+                    $aOptionList[$key]['type'] = 'folder';
+                    $aOptionList[$key]['key'] = $key;
+                    $aOptionList[$key]['level'] = (($level <= 10 ) ? $level : 1 );
+                    $aOptionList[$key]['name'] = $pathFile;
+                    $aOptionList[$key]['select'] = $sIndexFile;
+                }
+            }
+        }
+
+        $aDirs[trim($oReg->MediaDir, '/')] = $aOptionList;
+
+        unset($iterator);
+        $i = 1;
+        $aDirs['Settings']  = $aRecords;
+        $iterator = new DirectoryIterator( $oAddonReg->AddonThemePath.'' );
+        foreach ($iterator as $fileinfo) {
+            if ( $fileinfo->isDot() || basename($fileinfo->getPathname()) == $aRecords['thumbPath']  ) { continue; }
+            if ( $fileinfo->isDir() ) {
+                $galleryStyle = basename($fileinfo->getPathname());
+                $aDirs['galleryStyle'][] = array ('value'=>$i, 'name'=>$galleryStyle, 'selected'=>$aRecords['galleryStyle']);
+                $i++;
+            }
+        }
+/*
+print '<pre  class="mod-pre rounded">function <span>'.__FUNCTION__.'( '.$sCategorie.' );</span>  filename: <span>'.basename(__FILE__).'</span>  line: '.__LINE__.' -> <br />';
+print_r( $aDirs ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
+*/
+        return $aDirs;
+    }
+/*-----------------------------------  glob routines -----------------------------------------------*/
+
 /**
 print '<pre  class="mod-pre rounded">function <span>'.__FUNCTION__.'( '.''.' );</span>  filename: <span>'.basename(__FILE__).'</span>  line: '.__LINE__.' -> <br />';
 print_r( $aOptionList ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
@@ -251,31 +458,69 @@ print_r( $aOptionList ); print '</pre>'; flush (); //  ob_flush();;sleep(10); di
                   $rekursiv = true
         ){
         global $oAddonReg;
-        $aFiles = array();
+        $aFiles = [];
         clearstatcache();
-        if (!sizeof($aAllowedExtensions)){
-            $aFiles = getFolderStructure(
-                      $rootDir,
-                      $aAllowedExtensions,
-                      $aInvisibleFileNames,
-                      $modus,
-                      $rekursiv );
+//        $bScanWithIterator = true;
+        $bScanWithIterator = false;
+        if ($bScanWithIterator==true) {
+              $sBackupFile = 'BackupIterator.inc';
+              if (!sizeof($aAllowedExtensions)){
+                  $aFiles = getFolderStructureIterator(
+                            $rootDir,
+                            $aAllowedExtensions,
+                            $aInvisibleFileNames,
+                            $modus,
+                            $rekursiv );
+              } else {
+                  $aFiles = scanDirectoriesIterator(
+                            $rootDir,
+                            $aAllowedExtensions,
+                            $aInvisibleFileNames,
+                            $modus,
+                            $rekursiv );
+                  if (is_array($aFiles) && sizeof($aFiles)) {
+                      array_walk(
+                          $aFiles,
+                          function (&$sFile) use ($rootDir){
+                              $sFile = str_replace($rootDir, '', $sFile);
+                         }
+                      );
+                  }
+              }
         } else {
-            $aFiles = scanDirectories(
-                      $rootDir,
-                      $aAllowedExtensions,
-                      $aInvisibleFileNames,
-                      $modus,
-                      $rekursiv );
-            if (is_array($aFiles) && sizeof($aFiles)) {
-                array_walk(
-                    $aFiles,
-                    function (&$sFile) use ($rootDir){
-                        $sFile = str_replace($rootDir, '', $sFile);
-                   }
-                );
-            }
+              $sBackupFile = 'BackupGlob.inc';
+              if (!sizeof($aAllowedExtensions)){
+                  $aFiles = getFolderStructureGlob(
+                            $rootDir,
+                            $aAllowedExtensions,
+                            $aInvisibleFileNames,
+                            $modus,
+                            $rekursiv );
+              } else {
+                  $aFiles = scanDirectoriesGlob(
+                            $rootDir,
+                            $aAllowedExtensions,
+                            $aInvisibleFileNames,
+                            $modus,
+                            $rekursiv );
+                  if (is_array($aFiles) && sizeof($aFiles)) {
+                      array_walk(
+                          $aFiles,
+                          function (&$sFile) use ($rootDir){
+                              $sFile = str_replace(str_replace('\\','/',$rootDir), '', $sFile);
+                         }
+                      );
+                  }
+              }
         }
+/*
+                  $sBackupFile = sprintf('%d_%s',__LINE__,$sBackupFile);
+                  $sContent = sprintf('%s',serialize($aFiles))."\n";
+        if (!file_put_contents(dirname(dirname(__DIR__)).'/.data/'.$sBackupFile, $sContent, FILE_APPEND)){ echo $sBackupFile;}
+                              $sFile = str_replace(str_replace('\\','/',$rootDir), '', str_replace('\\','/',$sFile));
+print '<pre  class="mod-pre rounded">function <span>'.__FUNCTION__.'( '.''.' );</span>  filename: <span>'.basename(__FILE__).'</span>  line: '.__LINE__.' -> <br />';
+print_r( $aFiles ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
+*/
         return $aFiles;
     }
 
@@ -389,7 +634,7 @@ function getCategories($galerie, $searchCategorie = '', $modus = 1, $rekursiv = 
     };
 /*--------------------------------------------------------------------------------------*/
     // Daten Vorbereiten
-    $rootDir = $path.$galerie['root_dir'];
+    $rootDir = $path.str_replace(MEDIA_DIRECTORY,'',$galerie['root_dir']);
     $searchFolder = $rootDir . $searchCategorie;
     // to allow full scan folder and files , let $aAllowedExtensions empty if you only want folders
     $aAllowedExtensions = $convertToArray($galerie['extensions']);
@@ -397,9 +642,9 @@ function getCategories($galerie, $searchCategorie = '', $modus = 1, $rekursiv = 
     //Alle Angaben aus dem Filesystem holen
     $aFolders = getFolderData($searchFolder, $aAllowedExtensions, $invisibleFileNames);
     //Angaben auswerten
-    $categories = array();
-    $aFilesInDir = array();
-    $files = $aFiles = array();
+    $categories = [];
+    $aFilesInDir = [];
+    $files = $aFiles = [];
     foreach ($aFolders as $sFolder)
     {
         $einzelteile = explode('/', $sFolder);
@@ -416,15 +661,9 @@ function getCategories($galerie, $searchCategorie = '', $modus = 1, $rekursiv = 
             $sAllowedExtensions   = sanitizeListOfValues($aAllowedExtensions);
             $catParents = $searchCategorie.str_replace(WB_PATH.$MediaRel, '',$catParents);//$path
 //            $catParents  = ($catParents==''?'Root':$catParents);
-            if ($catParents!=''){
-                $aFilesInDir = glob ($path.$catParents.'/*.{'.$sAllowedExtensions.'}', GLOB_BRACE);
-/*
-                $categories[$catParents]['is_empty'] = sizeof($aFilesInDir)>0?0:1;
-                $categories[$catParents]['hasFiles'] = sizeof($aFilesInDir);
-*/
-//                $parent = $searchCategorie.str_replace($path, '',$catParents);
-//                $fileLink = $parent."/".$fileName;
-//               $fileLink = str_replace(WB_URL, '', $fileLink);
+            if ($catParents!=''  && is_readable($path.$catParents)){
+                $sSearchFilter = '/*.{'.$sAllowedExtensions.'}';
+                $aFilesInDir = scanGlobTree($path.$catParents, $sSearchFilter);
                   if (is_array($aFilesInDir) && sizeof($aFilesInDir)){
                       array_walk(
                           $aFilesInDir,
@@ -433,14 +672,12 @@ function getCategories($galerie, $searchCategorie = '', $modus = 1, $rekursiv = 
                           }
                       );
                   }
-//                $categories[$catParents]['Files'] = $aFilesInDir;
-//                $aAllFiles[$parent][] = $aFilesInDir;
             }
             $categories[] = array(
                 'categorie' => $catName,
                 'parent'    => $catParents,
-                'is_empty'  => (sizeof($aFilesInDir)>0?0:1),
                 'hasFiles'  => sizeof($aFilesInDir),
+                'is_empty'  => ((sizeof($aFilesInDir)>0) ? 1 : 0),
                 'Files'     => $aFilesInDir
             );
         } elseif (is_file($sFileName)) {
@@ -457,9 +694,10 @@ function getCategories($galerie, $searchCategorie = '', $modus = 1, $rekursiv = 
                 'file_link' => $fileLink,
                 'parent'    => $parent,
             );
-        }
+       }
     }
-    return array ('cat'=>$categories, 'file'=>$files);
+    $aRetval = ['cat'=>$categories, 'file'=>$files];
+    return $aRetval;
 }
 
 /**
@@ -478,7 +716,7 @@ function syncDB($galerie, $searchCategorie = '', $modus = 1, $rekursiv = true) {
 
     // Auf diese Variablen muss zugegriffen werden
     global $database;
-//    global $invisibleFileNames;
+    global $MOD_FOLDERGALLERY;
     global $url;
     global $path;
     global $thumbPath;
@@ -504,6 +742,7 @@ function syncDB($galerie, $searchCategorie = '', $modus = 1, $rekursiv = true) {
 /*--------------------------------------------------------------------------------------*/
 
     // Daten Vorbereiten
+#    $rootDir = $path.str_replace(MEDIA_DIRECTORY,'',$galerie['root_dir']);
     $rootDir = $path.$galerie['root_dir'];
     $searchFolder = $rootDir.$searchCategorie;
     $extensions = explode(',', $galerie['extensions']);
@@ -514,61 +753,13 @@ function syncDB($galerie, $searchCategorie = '', $modus = 1, $rekursiv = true) {
 
     //natsort($allData); # ! Bringt es das?
     //Angaben auswerten
-    $categories = array();
-    $files = array();
+    $files = [];
+    $aSqlSet = '';
+    $aErrorMsg = [];
+    $categories = [];
     $aFilesDir = getCategories($galerie, $searchCategorie , $modus, $rekursiv);
     $files = $aFilesDir['file'];
     $categories = $aFilesDir['cat'];
-
-/*
-print '<pre  class="mod-pre rounded">function <span>'.__FUNCTION__.'( '.''.' );</span>  filename: <span>'.basename(__FILE__).'</span>  line: '.__LINE__.' -> <br />';
-print_r( $categories ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
-    //Alle Angaben aus dem Filesystem holen
-    $allData = getFolderData($searchFolder, $extensions, $invisible);
-    foreach ($allData as $data) {
-        $einzelteile = explode('/', $data);
-        $letztesElement = count($einzelteile) - 1;
-//        if (substr_count($einzelteile[$letztesElement], '.') == 0)
-        if (is_dir(WB_PATH.MEDIA_DIRECTORY.$data))
-        {
-*/
-/*
-            //Hier werden alle Kategorien angelegt
-            $catName = $einzelteile[$letztesElement];
-            unset($einzelteile[$letztesElement]);
-*/
-/*
-            $catName = array_pop($einzelteile);
-            $catParents = implode('/', $einzelteile);
-            $catParents = $searchCategorie.$catParents;
-            $categories[] = array(
-                'categorie' => $catName,
-                'parent' => $catParents,
-                'is_empty' => 1
-            );
-        } else {
-*/
-/*
-            //Hier gehts um die Files
-            $fileName = $einzelteile[$letztesElement];
-            //if ($fileName == 'folderpreview.jpg') continue;
-            unset($einzelteile[$letztesElement]);
-*/
-/*
-            $fileName = array_pop($einzelteile);
-            $parent = implode('/', $einzelteile);
-            $parent = $searchCategorie.$parent;
-            $fileLink = $url.MEDIA_DIRECTORY.$galerie['root_dir'].$parent."/".$fileName;
-            $fileLink = str_replace(WB_URL, '', $fileLink);
-            $files[] = array(
-                'section_id' => $iSectionId,
-                'file_name' => $fileName,
-                'file_link' => $fileLink,
-                'parent' => $parent
-            );
-        }
-    }
-*/
 
     // Kategorien mit Bildern finden
     foreach ($categories as & $nameCat) {
@@ -595,31 +786,31 @@ print_r( $categories ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die
 
     // Kategorien mit DB synchronisieren
     // Neuer SQL vorbereiten
-    $notDeleteArray = array();
+    $notDeleteArray = [];
     $insertSQL = '';
     $insertLaenge = strlen($insertSQL);
-    $deleteSQL = 'DELETE FROM `'.TABLE_PREFIX.'mod_foldergallery_categories` WHERE `parent_id` > 0 AND `section_id` = '.$galerie['section_id'];
+    $deleteSQL  = 'DELETE FROM `'.TABLE_PREFIX.'mod_foldergallery_categories` '
+                . 'WHERE `parent_id` > 0 '
+                .   'AND `section_id` = '.$galerie['section_id'];
     $deleteLaenge = strlen($deleteSQL);
     foreach ($categories as $cat)
     {
+        $result = $cat;
         $whereSQL  = ''
                    .'WHERE `section_id` = '.$galerie['section_id'].' '
                    .  'AND `parent` = \''.$cat['parent'].'\' '
                    .  'AND `categorie` = \''.$cat['categorie'].'\' ';
-        $sql  = 'SELECT * FROM `'.TABLE_PREFIX.'mod_foldergallery_categories` ';
-//               .'WHERE `section_id` = '.$galerie['section_id'].' '
-//               .  'AND `parent` = \''.$cat['parent'].'\' '
-//               .  'AND `categorie` = \''.$cat['categorie'].'\' ';
-        if ($query = $database->query($sql.$whereSQL)){
+        $sql  = 'SELECT * FROM `'.TABLE_PREFIX.'mod_foldergallery_categories` '.$whereSQL;
+        if ($query = $database->query($sql)){
             if ($query->numRows())
             {
                 $result = $query->fetchRow(MYSQLI_ASSOC);
                 $sDescription = $result['description'];
-                $cat_name = str_replace('_', ' ', $result['categorie']);
+                $cat_name = str_replace('_', ' ', $result['cat_name']);
                 $cat_name = str_replace('-', ' ', $cat_name);
                 if ($result['is_empty'] == $cat['is_empty']) {
                     $notDeleteArray[] = $result['id'];
-                } //else {
+                } else {
                     // Falls die Kategorie schon existierte nehmen wir fuer die neuen Eintraege diejenigen von der DB
                     // Diese Datensaetze muessen aber zuerst geloescht werden, da sie sonst doppelt vorkommen wuerden!
     //                $insertSQL .= " (".$result['section_id'].", '".$result['categorie']."', '".$result['parent']."', '".$result['cat_name']."', ".$cat['is_empty'].", '".$result['description']."'),";
@@ -630,7 +821,7 @@ print_r( $categories ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die
                            . '`cat_name` = \''.$database->escapeString($cat_name).'\', '
                            . '`is_empty` = '.intval($result['is_empty']).', '
                            . '`description` = \''.$database->escapeString($sDescription).'\' ';
-//                }
+                }
             } else {
             // Sonst erstellen wir einfach einen neuen Standarddatensatz
                 $whereSQL  = '';
@@ -638,20 +829,20 @@ print_r( $categories ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die
                 $cat_name = str_replace('_', ' ', $cat['categorie']);
                 $cat_name = str_replace('-', ' ', $cat_name);
 //                $insertSQL .= " (".$galerie['section_id'].", '".$cat['categorie']."', '".$cat['parent']."', '".$cat_name."', ".$cat['is_empty'].", '".$sDescription."'),";
-                $insertSQL = 'INSERT INTO `'.TABLE_PREFIX.'mod_foldergallery_categories` SET '
-                           . '`section_id` = '.intval($galerie['section_id']).', '
-                           . '`categorie` = \''.$database->escapeString($cat['categorie']).'\', '
-                           . '`parent` = \''.$database->escapeString($cat['parent']).'\', '
-                           . '`cat_name` = \''.$database->escapeString($cat_name).'\', '
-                           . '`is_empty` = '.intval($cat['is_empty']).', '
-                           . '`description` = \''.$database->escapeString($sDescription).'\' ';
+                $insertSQL  = 'INSERT INTO `'.TABLE_PREFIX.'mod_foldergallery_categories` SET '
+                            . '`section_id` = '.intval($galerie['section_id']).', '
+                            . '`categorie` = \''.$database->escapeString($cat['categorie']).'\', '
+                            . '`parent` = \''.$database->escapeString($cat['parent']).'\', '
+                            . '`cat_name` = \''.$database->escapeString($cat_name).'\', '
+                            . '`is_empty` = '.intval($cat['is_empty']).', '
+                            . '`description` = \''.$database->escapeString($sDescription).'\' ';
             }
+            $aSqlSet .= $insertSQL.$whereSQL.";\n";
             if (!$database->query($insertSQL.$whereSQL)){
-              echo __LINE__.') '.$database->get_error().'<br />'.$insertSQL.$whereSQL;
+              $aErrorMsg[] = sprintf('[%d] %s ',__LINE__,$database->get_error());
             }
         }
     }// end of foreach
-
     // SQL zum loeschen der alten Eintraege
     if (!empty($notDeleteArray)) {
         $deleteSQL .= ' AND (`id` NOT IN( '.implode(',', $notDeleteArray).'))';
@@ -665,16 +856,15 @@ print_r( $categories ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die
         $database->query($deleteSQL);
     }
 /*
-    if (strlen($insertSQL) != $insertLaenge) {
-        // Jetzt fuegen wir die neuen Eintraege hinzu
-        $insertSQL = substr($insertSQL, 0, -1).";";
-    }
+print '<pre  class="mod-pre rounded">function <span>'.__FUNCTION__.'( '.''.' );</span>  filename: <span>'.basename(__FILE__).'</span>  line: '.__LINE__.' -> <br />';
+print_r( $aSqlSet ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
 */
     // So, dass waren die Kategorien, nun sind die Bilder an der Reihe
     //Die Felder "file_link" und "thumb_link" sind obsolet
     //Jetzt noch die Parents zu Ziffern umwandeln:
     //Wieder aus der Datenbank laden:
-    $catpathArray = array();
+
+    $catpathArray = [];
     $sql  = 'SELECT `id`, `categorie`, `parent` FROM `'.TABLE_PREFIX.'mod_foldergallery_categories` '
           . 'WHERE `section_id` ='.$galerie['section_id'];
     $query = $database->query($sql);
@@ -689,7 +879,7 @@ print_r( $categories ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die
         $admin->print_error($database->get_error());
     }
 
-    $notDeleteArray = array();
+    $notDeleteArray = [];
 //    $insertSQL = "INSERT INTO `".TABLE_PREFIX."mod_foldergallery_files` (`file_name`, `parent_id`, `caption`) VALUES";
 //    $insertSQL = "INSERT INTO `".TABLE_PREFIX."mod_foldergallery_files` (`section_id`, `file_name`, `parent_id`, `caption`) VALUES";
 //    $updateSQL = "UPDATE INTO `".TABLE_PREFIX."mod_foldergallery_files` (`section_id`, `file_name`, `parent_id`, `caption`) VALUES";
@@ -701,7 +891,7 @@ print_r( $categories ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die
     $deleteSQL = "DELETE FROM `".TABLE_PREFIX."mod_foldergallery_files` WHERE (`id` NOT IN";
     //Siehe unten, wird derzeit nicht ausgeführt
     //-------------------------------------------------------------------------------------------------------
-
+    $aSqlSet = '';
     $count = 0;
     foreach ($files as $file)
     {
@@ -747,27 +937,42 @@ print_r( $categories ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die
 //            $insertSQL .= " ('".$section_id. "', '".$file['file_name']."', '".$parent_id."', ''),";
             //if ($count == 2) echo $insertSQL;
         }
-        switch ($sType):
-            case 'INSERT':
-                $count++;
-                $sql = $insertSQL;
-                break;
-            case 'UPDATE':
-                $sql = $insertSQL.$whereSQL;
-                break;
-            default:
-        endswitch;
-        if ($database->query($sql)){
+        $aSqlSet .= $insertSQL.$whereSQL.";\n";
+        if ($database->query($insertSQL.$whereSQL)){
+            switch ($sType):
+                case 'INSERT':
+                    $count++;
+                    $sql = $insertSQL.$whereSQL;
+                    break;
+                case 'UPDATE':
+                    $sql = $insertSQL.$whereSQL;
+                    break;
+                default:
+            endswitch;
+//            echo sprintf(' [%d] %s <br /> %s', __LINE__, $database->get_error(), $insertSQL.$whereSQL);
+        } else {
+            echo $aError = sprintf(' [%d] %s <br /> %s', __LINE__, $database->get_error(), $insertSQL.$whereSQL);
+            $aErrorMsg[] = $aError;
         }
     }// end of foreach
-    if ($count){
-        echo '<div class="info">'.'Added '.$count.' files in '.'</div><br />';
-    }
 
+    if ($count){
+?> <div class="w3-panel w3-leftbar w3-pale-green w3-border-green w3-round">
+  <h5 ><?php echo sprintf($MOD_FOLDERGALLERY['ADDED'],$count );?></h5>
+</div>
+<?php
+    }
+/*
+print '<pre  class="mod-pre rounded">function <span>'.__FUNCTION__.'( '.''.' );</span>  filename: <span>'.basename(__FILE__).'</span>  line: '.__LINE__.' -> <br />';
+print_r( $aSqlSet ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
+            $aSqlSet .= $insertSQL.$whereSQL.";\n";
+            if (!$database->query($insertSQL.$whereSQL)){
+              $aErrorMsg[] = sprintf('[%d] %s ',__LINE__,$database->get_error());
+            }
     // SQL fuer neue Eintraege
 //    $insertSQL = substr($insertSQL, 0, -1).";";
 //    if ($laenge != strlen($insertSQL)) {
-
+*/
     delete_files_with_no_cat();
     return true;
 }
@@ -776,7 +981,7 @@ function delete_files_with_no_cat() {
     global $database;
     $sql = 'SELECT `id` FROM `'.TABLE_PREFIX.'mod_foldergallery_categories` ';
     $query = $database->query($sql);
-    $notDeleteArray = array();
+    $notDeleteArray = [];
     while ($result = $query->fetchRow(MYSQLI_ASSOC)) {
         $notDeleteArray[] = $result['id'];
     }
@@ -789,9 +994,9 @@ function delete_files_with_no_cat() {
     }
 }
 
-function rek_db_delete($cat_id) {
+function rek_db_delete($cat_id, $sAbsRootPath) {
     global $database,$sCategorie;
-    $sql  = 'SELECT `section_id`, `categorie`, `section_id`, `parent`, `has_child` FROM `'.TABLE_PREFIX.'mod_foldergallery_categories` '
+    $sql  = 'SELECT `section_id`, `categorie`, `id`, `parent_id`, `parent`, `has_child` FROM `'.TABLE_PREFIX.'mod_foldergallery_categories` '
           . 'WHERE `id`='.$cat_id.';';
     $query = $database->query($sql);
     if ($result = $query->fetchRow(MYSQLI_ASSOC)) {
@@ -804,7 +1009,7 @@ function rek_db_delete($cat_id) {
                         . 'WHERE `parent_id` = '.$cat_id.';';
             $query = $database->query($select_sql);
             while ($select_result = $query->fetchRow(MYSQLI_ASSOC)) {
-                rek_db_delete($select_result['id']);
+                rek_db_delete($select_result['id'], $sAbsRootPath);
             }
         }
     }
@@ -812,7 +1017,7 @@ function rek_db_delete($cat_id) {
     $deletesql  = 'DELETE FROM `'.TABLE_PREFIX.'mod_foldergallery_categories` '
                 . 'WHERE `id`='.$cat_id;
     if ($database->query($deletesql)){
-        $sFilenameToDelete = WB_PATH.$sCategorie.$parent;
+        $sFilenameToDelete = $sAbsRootPath.$sCategorie.$parent;
         if (is_writable($sFilenameToDelete)){
             rm_full_dir($sFilenameToDelete);
 //            echo $sFilenameToDelete.'<br />';
@@ -820,26 +1025,6 @@ function rek_db_delete($cat_id) {
     }
 }
 
-function _rek_db_delete($cat_id)
-{
-    global $database;
-print '<pre  class="mod-pre rounded">function <span>'.__FUNCTION__.'( '.$sCategorie.' );</span>  filename: <span>'.basename(__FILE__).'</span>  line: '.__LINE__.' -> <br />';
-print_r( $sFilenameToDelete ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
-    $aErrorMsg = array();
-    $sql  = 'SELECT * FROM `'.TABLE_PREFIX.'mod_foldergallery_categories` '
-          . 'WHERE `id`='.$cat_id.';';
-    if ($oCat = $database->query($sql)) {
-        if ($aCat = $oCat->fetchRow(MYSQLI_ASSOC)) {
-            if ($aCat['childs']!='') {
-              $aChilds = sanitizeListOfValues($aCat['childs']);
-            }
-        }
-    } else {
-      $aErrorMsg[] = $sql;
-      $aErrorMsg[] = $database->get_error();
-    }
-
-}
 
 /**
  * This function is used to get the advanced thumbsettings as a string
@@ -879,7 +1064,7 @@ function FG_setAdvancedThumbSettings($advancedString) {
     $advancedString = preg_replace('/\r\n|\r/', "\n", trim($advancedString));
     $advancedString = preg_replace("/ |'|;/", '', $advancedString);
     $advancedArray = explode("\n", $advancedString);
-    $returnArray = array();
+    $returnArray = [];
     foreach ($advancedArray as $value) {
         $tmp = explode('=', $value);
         // skip if key/value is ''

@@ -222,7 +222,6 @@ html>/**/body .highslide-gallery ul img {
     cursor: pointer;
 }
 
-
 /* The CSS sprites for the controlbar - see http://www.google.com/search?q=css+sprites */
 .highslide-controls .highslide-previous a {
     background-position: 0 0;
@@ -708,7 +707,6 @@ html>/**/body .highslide-gallery ul img {
 .text-controls .highslide-close span {
     background-position: 0 -120px;
 }
-
 
 /*****************************************************************************/
 /* Styles for the thumbstrip.                                                 */

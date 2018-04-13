@@ -2,7 +2,7 @@
 
     $sAddonPath = dirname(__DIR__);
 
-    if (is_readable($sAddonPath.'/init.php'))     {require ($sAddonPath.'/init.php');}
+    if (is_readable($sAddonPath.'/init.php')) {require ($sAddonPath.'/init.php');}
 
     // to print with or without header, default is with header
     $admin_header=true;
@@ -13,7 +13,7 @@
     // Include WB admin wrapper script to sanitize page_id and section_id, print SectionInfoLine
     require(WB_PATH.'/modules/admin.php');
 
-$settings = getSettings($section_id);
+$settings = getFGSettings($section_id);
 
 if (isset($aRequestVars['cat_id']) && is_numeric($aRequestVars['cat_id'])) {
     $cat_id = intval($aRequestVars['cat_id']);
@@ -49,11 +49,9 @@ $pathToThumb = $path . $folder . $thumbPath . '/';
 $urlToFolder = $url.MEDIA_DIRECTORY.$folder . '/';
 $urlToThumb  = $url.MEDIA_DIRECTORY.$folder . $thumbPath . '/';
 
-
-$bilder = array();
+$bilder = [];
 $sql = 'SELECT * FROM ' . TABLE_PREFIX . 'mod_foldergallery_files WHERE parent_id="' . $parent_id . '" ORDER BY position ASC;';
 $query = $database->query($sql);
-
 
 $t = new Template($sAddonThemePath, 'remove');
 $t->set_file('modify_cat_sort', 'modify_cat_sort.htt');

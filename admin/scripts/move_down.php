@@ -40,7 +40,7 @@ if(isset($aRequestVars['page_id']) AND is_numeric($aRequestVars['page_id'])) {
 }
 
 // Create new admin object and print admin header
-require_once(WB_PATH.'/framework/class.admin.php');
+if(!class_exists('admin')){ include(WB_PATH.'/framework/class.admin.php'); }
 $admin = new admin('Pages', 'pages_settings');
 
 // Include the ordering class
@@ -50,9 +50,9 @@ require(WB_PATH.'/framework/class.order.php');
 $order = new order($table, 'position', $id_field, $common_field);
 if($id_field == 'id') {
     if($order->move_down($id)) {
-        $admin->print_success($MESSAGE['PAGES']['REORDERED'], ADMIN_URL.'/pages/modify.php?page_id='.$page_id);
+        $admin->print_success($MESSAGE['PAGES_REORDERED'], ADMIN_URL.'/pages/modify.php?page_id='.$page_id);
     } else {
-        $admin->print_error($MESSAGE['PAGES']['CANNOT_REORDER'], ADMIN_URL.'/pages/modify.php?page_id='.$page_id);
+        $admin->print_error($MESSAGE['PAGES_CANNOT_REORDER'], ADMIN_URL.'/pages/modify.php?page_id='.$page_id);
     }
 } else {
     if($order->move_down($id)) {

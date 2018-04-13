@@ -1,221 +1,83 @@
-
-/* Dieser Eintrag entfernt den gepunkteten Rahmen um Links beim anklicken. */
-a:focus { outline: none; }
-
-.foldergallery-wrapper { clear: both; position: relative; }
+a:focus{outline:none;}
+.foldergallery-wrapper{clear:both;position:relative;}
 .foldergallery-wrapper a:link,
 .foldergallery-wrapper a:visited,
-.foldergallery-wrapper a:active {
-  color: #1e576d;
-  font-weight: bold;
-  text-decoration: none;
-   text-align: center;
-}
-.foldergallery-wrapper a:hover { color: #AFABAD; text-decoration: none; }
-.foldergallery-wrapper ul { margin-left: 0; padding: 0;}
-
-.gallerytitel { text-align: center;  }
-
-ul.fg_pages_nav, ul.fg_gal_nav { font-size: 1.025em; list-style: inside; width: 100%; }
-ul.fg_pages_nav li, ul.fg_gal_nav li { display: inline; padding: 0.425em 0px; }
-ul.fg_pages_nav li.imgcount { text-align: center; width: 100%; margin: 0 auto; }
+.foldergallery-wrapper a:active{color:#1e576d;font-weight:bold;text-decoration:none;text-align:center;}
+.foldergallery-wrapper a:hover{color:#AFABAD;text-decoration:none;}
+.foldergallery-wrapper ul{margin-left:0;padding:0; list-style: none;}
+.gallerytitel{text-align:center;}
+ul.fg_pages_nav, ul.fg_gal_nav{font-size:1.025em;list-style:inside;width:100%;}
+ul.fg_pages_nav li, ul.fg_gal_nav li{display:inline;padding:0.425em 0px;}
+ul.fg_pages_nav li.imgcount{text-align:center;width:100%;margin:0 auto;}
 ul.fg_pages_nav li a.current,
-
-ul.fg_gal_nav li a.current {
-   /* background: #809146;*/
-    margin-left: 0px!important;
-    text-align: center;
-    float: left;
-    border: none;
-   /* color: #FFFFFF !important;*/
-    text-transform: uppercase;
-    display: inline-block;
-    font-size: 0.825em; border-radius: 3px;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-top: 1px solid #667139;
-    border-bottom: 1px solid #667139;
-    transition: background 0.3s, color 0.2s, border 0.3s;
-    -webkit-transition: background 0.3s, color 0.2s, border 0.3s;
-    -moz-transition: background 0.3s, color 0.2s, border 0.3s;
-
-}
-
+ul.fg_gal_nav li a.current{margin-left:0px!important;text-align:center;float:left;border:none;text-transform:uppercase;display:inline-block;font-size:0.825em;border-radius:3px;-webkit-border-radius:3px;-moz-border-radius:3px;border-top:1px solid #667139;border-bottom:1px solid #667139;transition:background 0.3s, color 0.2s, border 0.3s;-webkit-transition:background 0.3s, color 0.2s, border 0.3s;-moz-transition:background 0.3s, color 0.2s, border 0.3s;}
 .pagenav,
 .fgpagenav,
-.fggalnav { margin: 0; padding: 0.0em; vertical-align: middle; clear: both; text-align: left;}
-
-/*
-.categories,
-padding: 5px 8px;  border-radius: 3px; -webkit-border-radius: 3px; display: table; margin: 0 auto;
-div.fgpagenav label { font-weight: normal; color: #3e474c; padding: 1.425em 0; font-size: 1.025em; vertical-align: middle; float: left; }
-.fgpagenav a, .fgpagenav a:visited, .fggalnav a, .fggalnav a:visited { margin-left: 3px!important; text-align: center; float: left; background: #A3B168; border: 1px solid #667139; text-transform: uppercase; display: inline-block; padding: 5px 13px; font-size: 13px; border-radius: 3px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-top: 1px solid #667139; border-bottom: 1px solid #667139; transition: background 0.3s, color 0.2s, border 0.3s; -webkit-transition: background 0.3s, color 0.2s, border 0.3s; -moz-transition: background 0.3s, color 0.2s, border 0.3s; color: #545E2F !important;  }
-.fgpagenav a:hover{ color: #FFFFFF !important; background: #545E2F;}
-
-a.catbacklink{color: #545E2F !important;}
-a.catlink{color: #335A70 !important;}
-body { height: 100%; }
-.fg_gal_nav {  }
-*/
-#fullSize { display: none; }
-.view_title { font-size: 1.225em; font-weight: bold; color:#335A70;}
-.categories_title {font-size: 1.2em; font-weight: bold; color:#335A70;}
-.categories_desc { display: block; font-size: 1em; font-style: Italic; line-height: 1.5; color:#335A70; }
-/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        ADDS BY gf
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-.fg-outer { width: 950px; }
-  .fg-cat { padding: 0 0 0 0px; float: left; width: 353px; }
-.goddi { width: 170px; height: 250px; text-align: center; }
-.goddi2 { display: table-cell; vertical-align: middle; width: 170px; height: 170px; text-align: center; }
-.goddi2full { display: table-cell; vertical-align: middle; width: 170px; height: 170px; border: 2px #9DB2B9 solid; -moz-border-radius: 5px; -webkit-border-radius: 5px; text-align: center; }
-.photostyle { margin-top: 5px; margin-bottom: 13px; display: block; text-align: center; }
-.photostyle img { width: 100%; transition: 0.3s ease; -o-transition: 0.3s ease; -webkit-transition: 0.3s ease; }
-.photostyle imgfull { display: table-cell; vertical-align: middle; padding: 2px; border: 2px #9DB2B9 solid; -moz-border-radius: 5px; -webkit-border-radius: 5px; }
-.photostyle img:hover { box-shadow: 0px 0px 6px #888888; }
-.cat-fotka { border-radius: 5px 5px 5px 5px; -webkit-border-radius: 5px 5px 5px 5px; -moz-border-radius: 5px 5px 5px 5px; }
-.cat-fotka:hover { opacity: 0.2; transition: 0.5s ease; -o-transition: 0.5s ease; -webkit-transition: 0.5s ease; border-radius: 5px 5px 5px 5px; -webkit-border-radius: 5px 5px 5px 5px; -moz-border-radius: 5px 5px 5px 5px; }
-/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        ADDS BY PUMPI
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-div.images { overflow: hidden; padding: 0.525em; }
-div.images div { overflow: hidden; padding: 0.525em; text-align: center; white-space: normal; }
-ul.photostyle { list-style: none; margin: 0 0 5px 0; padding: 0; display: inline; text-align: center; }
-ul.photostyle li {/* float: left;*/ padding: 4px; border-radius: 5px 5px 5px 5px; -webkit-border-radius: 5px 5px 5px 5px; -moz-border-radius: 5px 5px 5px 5px; }
-ul.photostyle li { display: inline; list-style-type: none; padding-right: 0.1225em; }
-ul.photostyle li  a img{ border: 0 none; }
-.htt-caption { display: block; }
-ul.categories { list-style: none; margin: 0 0 5px 0; }
-ul.categories li { float: left; margin: 3px; padding: 0px; min-height: 11.525em; }
-ul.categories li  a img{ max-width: 100%; transition: 0.5s ease; -o-transition: 0.5s ease; -webkit-transition: 0.5s ease; }
-.categories { margin-top: 5px; margin-bottom: 13px; display: block; }
-.categories img { max-width: 100%; transition: 0.5s ease; -o-transition: 0.5s ease; -webkit-transition: 0.5s ease; }
-.clear { clear: left; padding-top: 0px; border: 0px none #000000; border-bottom: 1px none #000000; }
-.cat-naslov { font-size: 12px; text-align: center; margin-top: 2px; line-height: 1; padding: 0 1px 0 1px; }
-
-/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        nice effect for gallery overview, adds by ROYCH
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-div.categories {
-    border-radius: 0.525em;
-    box-shadow: 0 0 1px #888888;
-    display: inline-block;
-    margin: 0.125em;
-    background: #fff;
-    overflow: hidden;
-    position: relative;
-}
-
-div.categories:hover {
-    box-shadow: 0 0 6px #888888;
-}
-div.categories .categories-image { width: 100%; }
-.categories-info {
-    backface-visibility: hidden;
-    background: #fff none repeat scroll 0 0;
-    padding:0.525em;
-    position: absolute;
-    transition: all 0.4s ease 0s;
-    z-index: 10;
-}
-/*
-div.categories-info div.pagination ul li { padding: 0.525em 0.125em; }
-*/
-/*---------------------------------------------------------------------------------------*/
-/* innerbox                                                                           056AB6  fbe1c1 */
-div.pagination { text-align: left !important; }
-div.pagination { clear: both; }
-/*CSS default style pagination */
-    div.pagination { padding :3px; margin :3px; text-align :left; }
-    div.pagination a { padding :5px 8px 5px 8px; margin :2px; border :1px solid #aaaadd; text-decoration :none; color :#000099; }
-    div.pagination a:hover, div.digg a:active { border :1px solid #000099; color :#FFFFFF; background: #a90329 ; }
-    div.pagination span.current { padding :2px 5px 2px 5px; margin :2px; border :1px solid #000099; font-weight :bold; background-color :#fbe1c1; color :#ffffff; }
-    div.pagination span.disabled { padding :2px 5px 2px 5px; margin :2px; border :1px solid #eeeeee; color :#dddddd; }
-
-div.categories-info { right: 0; left: 0; top: 110%; }
-div.categories-info div.pagination { width: 100%; padding-top: relative; }/* 15%; position:*/
-div.categories-info div.pagination ul { width: 100%; position: absolute; margin-left: 0 !important; }
-div.categories-info div.pagination ul { margin: auto 0.0em; padding: 0; text-align: center; left: 0; }
-/*---------------------------------------------------------------------------------------*/
-/* innerbox size/position of thumbnail boxes*/
-div.categories { padding-bottom: 10.025%; height: 11.925em;}
-div.categories-info { height: 100%; padding: 0.925em 0.5525em; margin-top: -35%; }
-div.categories:hover .categories-info { top: 80%; }
-div.categories-info div.pagination ul { bottom: 40%; position: relative; }
-/*---------------------------------------------------------------------------------------*/
-div.categories .social-media li {
-    margin-right: 4px;
-}
-div.categories .social-media li:last-child {
-    margin-right: 0;
-}
-.categories-more { transform: scale(0); transition: all 0.4s ease 0.1s; }
-div.categories:hover .categories-more { opacity: 1; transform: scale(1); }
-.categories-info h2 {
-    margin: 3px 0 0;
-}
-.categories-info .job {
-    color: #95999e;
-    display: block;
-    font-size: 13px;
-    line-height: 1.2;
-    margin: 7px 0 5px;
-}
-div.categories.big {
-    background: #fff none repeat scroll 0 0;
-    padding: 0;
-}
-.galerija-slika.big .categories-image {
-    float: left;
-    padding-right: 15px;
-    width: 50%;
-}
-div.categories.big .categories-info {
-    float: left;
-    margin-top: 0;
-    padding: 30px 30px 30px 15px;
-    position: relative;
-    top: 0;
-    width: 50%;
-}
-div.categories.big .categories-more {
-    opacity: 1;
-    transform: scale(1);
-}
-.categories-link { line-height: 1.2; text-align: center; width: 100%; }
-.categories-link a.catteaserlink {color: #3E474C !important;  }
-.categories-link a.catteaserlink:hover {color: #809146 !important;}
-
-.images figure {
-  position: relative;
-  margin: 0;
-  padding: 0;
-  border: 1px solid gainsboro;
-  background: ;
-  text-align: justify;
-  min-height: 13.325em;
-}
-
-.images figcaption {
-  padding: 0.0em;
-  text-align: center;
-font-size: 0.625em;
-}
-
-.images {
-  overflow: hidden;
-  height: 100%;
-  width: 100%;
-  white-space: nowrap;
-}
-
-.centered {
-    position: relative;
-    display: inline;
-    text-align: center;
-    -webkit-transform: translateY(-50%);
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%);
-}
-
-
+.fggalnav{margin:0;padding:0.0em;vertical-align:middle;clear:both;text-align:left;}
+#fullSize{display:none;}
+.view_title{font-size:1.225em;font-weight:bold;color:#335A70;}
+.categories_title{font-size:1.2em;font-weight:bold;color:#335A70;}
+.categories_desc{display:block;font-size:1em;font-style:Italic;line-height:1.5;color:#335A70;}
+.fg-outer{width:950px;}
+.fg-cat{padding:0 0 0 0px;float:left;width:353px;}
+.goddi{width:170px;height:250px;text-align:center;}
+.goddi2{display:table-cell;vertical-align:middle;width:170px;height:170px;text-align:center;}
+.goddi2full{display:table-cell;vertical-align:middle;width:170px;height:170px;border:2px #9DB2B9 solid;-moz-border-radius:5px;-webkit-border-radius:5px;text-align:center;}
+.photostyle{margin-top:5px;margin-bottom:13px;display:block;text-align:center;}
+.photostyle img{width:100%;transition:0.3s ease;-o-transition:0.3s ease;-webkit-transition:0.3s ease;}
+.photostyle imgfull{display:table-cell;vertical-align:middle;padding:2px;border:2px #9DB2B9 solid;-moz-border-radius:5px;-webkit-border-radius:5px;}
+.photostyle img:hover{box-shadow:0px 0px 6px #888888;}
+.cat-fotka{border-radius:5px 5px 5px 5px;-webkit-border-radius:5px 5px 5px 5px;-moz-border-radius:5px 5px 5px 5px;}
+.cat-fotka:hover{opacity:0.2;transition:0.5s ease;-o-transition:0.5s ease;-webkit-transition:0.5s ease;border-radius:5px 5px 5px 5px;-webkit-border-radius:5px 5px 5px 5px;-moz-border-radius:5px 5px 5px 5px;}
+div.images{overflow:hidden;padding:0.525em;}
+div.images div{overflow:hidden;padding:0.525em;text-align:center;white-space:normal;}
+ul.photostyle{list-style:none;margin:0 0 5px 0;padding:0;display:inline;text-align:center;}
+ul.photostyle li{padding:4px;border-radius:5px 5px 5px 5px;-webkit-border-radius:5px 5px 5px 5px;-moz-border-radius:5px 5px 5px 5px;}
+ul.photostyle li{display:inline-block;list-style-type:none;padding-right:0.1225em;}
+ul.photostyle li a img{border:0 none;}
+.htt-caption{display:block;}
+ul.categories{list-style:none;margin:0 0 5px 0;}
+ul.categories li{float:left;margin:3px;padding:0px;min-height:11.525em;}
+ul.categories li a img{max-width:100%;transition:0.5s ease;-o-transition:0.5s ease;-webkit-transition:0.5s ease;}
+.categories{margin-top:5px;margin-bottom:13px;display:block;}
+.categories img{max-width:100%;transition:0.5s ease;-o-transition:0.5s ease;-webkit-transition:0.5s ease;}
+.clear{clear:left;padding-top:0px;border:0px none #000000;border-bottom:1px none #000000;}
+.cat-naslov{font-size:12px;text-align:center;margin-top:2px;line-height:1;padding:0 1px 0 1px;}
+div.categories{border-radius:0.525em;box-shadow:0 0 1px #888888;display:inline-block;margin:0.125em;background:#fff;overflow:hidden;position:relative;}
+div.categories:hover{box-shadow:0 0 10px #888888;}
+div.categories .categories-image{width:100%;}
+.categories-info{backface-visibility:hidden;background:#fff none repeat scroll 0 0;padding:0.525em;position:absolute;transition:all 0.4s ease 0s;z-index:10;}
+div.pagination{text-align:left !important;}
+div.pagination{clear:both;}
+div.pagination{padding:3px;margin:3px;text-align:left;}
+div.pagination a{padding:5px 8px 5px 8px;margin:2px;border:1px solid #aaaadd;text-decoration:none;color:#000099;}
+div.pagination a:hover, div.digg a:active{border:1px solid #000099;color:#FFFFFF;background:#a90329;}
+div.pagination span.current{padding:2px 5px 2px 5px;margin:2px;border:1px solid #000099;font-weight:bold;background-color:#fbe1c1;color:#ffffff;}
+div.pagination span.disabled{padding:2px 5px 2px 5px;margin:2px;border:1px solid #eeeeee;color:#dddddd;}
+div.categories-info div.pagination{width:100%;padding-top:relative;opacity:0;-webkit-transition:all .5s linear;-moz-transition:all .5s linear;-ms-transition:all .5s linear;-o-transition:all .5s linear;transition:all .5s linear;}
+div.categories:hover div.categories-info div.pagination{opacity:1;}
+div.categories:hover .categories-info{top:80%;}
+div.categories-info{right:0;left:0;top:110%;}
+div.categories-info{height:100%;padding:0.925em 0.5525em;margin-top:-40%;}
+div.categories-info div.pagination{width:100%;padding-top:relative;}
+div.categories-info div.pagination ul{width:100%;position:absolute;margin-left:0 !important;}
+div.categories-info div.pagination ul{margin:auto 0.0em;padding:0;text-align:center;left:0;}
+div.categories{padding-bottom:10.025%;height:11.925em;box-shadow:0px 0px 6px #888888;}
+div.categories-info div.pagination ul{bottom:40%;position:relative;}
+div.categories .social-media li{margin-right:4px;}
+div.categories .social-media li:last-child{margin-right:0;}
+.categories-more{transform:scale(0);transition:all 0.4s ease 0.1s;}
+div.categories:hover .categories-more{opacity:1;transform:scale(1);}
+.categories-info h2{margin:3px 0 0;}
+.categories-info .job{color:#95999e;display:block;font-size:13px;line-height:1.2;margin:7px 0 5px;}
+div.categories.big{background:#fff none repeat scroll 0 0;padding:0;}
+.galerija-slika.big .categories-image{float:left;padding-right:15px;width:50%;}
+div.categories.big .categories-info{float:left;margin-top:0;padding:30px 30px 30px 15px;position:relative;top:0;width:50%;}
+div.categories.big .categories-more{opacity:1;transform:scale(1);}
+.categories-link{line-height:1.2;text-align:center;width:100%;}
+.categories-link a.catteaserlink{color:#3E474C !important;}
+.categories-link a.catteaserlink:hover{color:#809146 !important;}
+.images figure{position:relative;margin:0;padding:0;border:1px solid gainsboro;text-align:justify;min-height:13.325em;}
+.images figcaption{padding:0.0em;text-align:center;font-size:0.625em;}
+.images{overflow:hidden;height:100%;width:100%;white-space:nowrap;}
+.centered{position:relative;display:inline;text-align:center;-webkit-transform:translateY(-50%);-ms-transform:translateY(-50%);transform:translateY(-50%);}

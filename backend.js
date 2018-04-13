@@ -1,6 +1,5 @@
     function addEvent(elem, event, fn) {
         if(!elem) { return false; }
-//console.info (elem);
         if (elem.addEventListener) {
             elem.addEventListener(event, fn, false);
         } else {

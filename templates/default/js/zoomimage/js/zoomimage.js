@@ -567,7 +567,6 @@
                 }
             },
 
-
             // focus on image
             focus: function(el) {
                 if(el == undefined)

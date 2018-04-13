@@ -11,12 +11,13 @@
     // Include WB admin wrapper script to sanitize page_id and section_id, print SectionInfoLine
     require(WB_PATH.'/modules/admin.php');
 
-
 // Get all Folders in this gallery
-    $settings = getSettings($section_id);
+    $settings = getFGSettings($section_id);
+    $sSectionIdPrefix = (defined( 'SEC_ANCHOR' ) && ( SEC_ANCHOR != '' )  ? SEC_ANCHOR : 'Sec' );
+    $sBacklink = ADMIN_URL.'/pages/modify.php?page_id='.$page_id.'#'.$sSectionIdPrefix.$section_id;
+    $sSynclink = $sAddonUrl.'/admin/sync.php?page_id='.$page_id.'&section_id='.$section_id;
     $invisibleFileNames = array_merge(explode(',', $settings['invisible']), $wbCoreFolders);
-    $aOptionList = getFolderData($path.$settings['root_dir'], array(), $invisibleFileNames, 2);
-
+    $aOptionList = getFolderData($path.$settings['root_dir'], [], $invisibleFileNames, 2);
 // Template
     $t = new Template($sAddonThemePath, 'remove');
     $t->halt_on_error = 'no';
@@ -37,29 +38,23 @@
         'SAVE_STRING'           => $TEXT['SAVE'],
         'CANCEL_STRING'         => $TEXT['CANCEL']
     ));
-/*
-// parent folder Select
-    $t->set_var('ORDNER', '/');
-    $t->parse('ORDNER_SELECT', 'ordner_select', true);
-    foreach($folders as $folder) {
-        $t->set_var('ORDNER', $folder);
-        $t->parse('ORDNER_SELECT', 'ordner_select', true);
-    }
-    if( preg_match( '/'.'pages\/(modify)\.php$/is', $sCallingScript)) {
-
-*/
-
 // filter all sub folder in root dir
-    foreach($aOptionList[trim($oReg->MediaDir, '/')] as $sKey=>$sValue) {
+    $aFolders = [];
+    $iPrevLevel = substr_count($settings['root_dir'],'/');
+    foreach($aOptionList[trim($oReg->MediaDir, '/')] as $sKey=>$aValue) {
+        $aValue['key'] = $sKey = str_replace($oReg->MediaDir,'',$sKey);
+        $iLevel = $aValue['level'] = substr_count($sKey, '/')-$iPrevLevel;
         $pattern = '/'.preg_quote($settings['root_dir'], '/').'/is';
         if (preg_match($pattern, ($sKey))){
-            $aFolders[$sKey] = $sValue;
+            $aFolders[$sKey] = $aValue;
+            $aFolders[$sKey]['level']  = $iLevel;
+            $aFolders[$sKey]['select'] = ((($aValue['level'])>0) ? str_repeat(' -- ', $aValue['level']).$aValue['name'] : $aValue['name']);
         }
     }
 
     foreach($aFolders as $sKey=>$sValue) {
         $t->set_var('FOLDER', $sKey);
-        $t->set_var('FOLDER_NAME', ($sValue['name']));
+        $t->set_var('FOLDER_NAME', ($sValue['select']));
         $t->set_var('NIVEAU', ($sValue['level']));
         if($sKey != $settings['root_dir']) {
             $t->set_var('DIR_SELECTED','');
@@ -75,7 +70,7 @@
         'SECTION_ID_VALUE'  => $section_id,
         'PAGE_ID_VALUE'     => $page_id,
         'NEW_CAT_LINK'      => $sAddonUrl.'/admin/save_new_cat.php?page_id='.$page_id.'&section_id='.$section_id,
-        'CANCEL_ONCLICK'    => 'javascript: window.location = \''.ADMIN_URL.'/pages/modify.php?page_id='.$page_id.'\';'
+        'CANCEL_ONCLICK'    => 'window.location = \''.ADMIN_URL.'/pages/modify.php?page_id='.$page_id.'\';'
     ));
 
     $t->pparse('Output', 'new_cat');

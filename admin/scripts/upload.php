@@ -43,10 +43,10 @@ $cat_id = $secArray[2];
     // Include WB admin wrapper script to sanitize page_id and section_id, print SectionInfoLine
     require(WB_PATH.'/modules/admin.php');
     // An associative array that by default contains the contents of $aRequestVars, $aRequestVars and $_COOKIE.
-    $aRequestVars = $_REQUEST;
+//    $aRequestVars = $_REQUEST;
 
 // Get the settings for this section
-$settings = getSettings($section_id);
+$settings = getFGSettings($section_id);
 if ($settings['page_id'] != $page_id) {
     exit;
 }

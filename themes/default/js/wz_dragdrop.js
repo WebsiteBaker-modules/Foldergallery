@@ -31,15 +31,10 @@ For more details on the GNU Lesser General Public License,
 see http://www.gnu.org/copyleft/lesser.html
 */
 
-
 // PATH TO THE TRANSPARENT 1*1 PX IMAGE (required by NS 4 as spacer)
 var spacer = 'transparentpixel.gif';
 
-
-
-
 //window.onerror = new Function('return true;');
-
 
 // Optional commands passed to SET_DHTML() on the html-page (g: may be applied globally, i: individually)
 var CLONE			= 'C10nE';   // i  img	  clone image
@@ -1353,12 +1348,8 @@ function ADD_DHTML() // layers only!
 	dd.mkWzDom();
 }
 
-
-
-
 ////////////////////////////////////////////////////////////
 // If not needed, all code below this line may be removed
-
 
 // For backward compatibility
 dd.d = document;			// < v. 2.72
@@ -1367,15 +1358,10 @@ var KEYDOWN_RESIZE = RESIZABLE; // < 4.43
 var CURSOR_POINTER = CURSOR_HAND; // < 4.44
 var NO_SCROLL = '';		 // < v. 4.49
 
-
-
-
 ////////////////////////////////////////////////////////////
 // FUNCTIONS FOR EXTENDED SCRIPTING
 // Use these for your own extensions,
 // or to call functions defined elsewhere
-
-
 
 /* my_PickFunc IS AUTOMATICALLY CALLED WHEN AN ITEM STARTS TO BE DRAGGED.
 The following objects/properties are accessible from here:
@@ -1405,9 +1391,6 @@ function my_PickFunc()
 {
 }
 
-
-
-
 /* my_DragFunc IS CALLED WHILE AN ITEM IS DRAGGED
 See the description of my_PickFunc above for what's accessible from here. */
 function my_DragFunc()
@@ -1415,18 +1398,12 @@ function my_DragFunc()
 	//window.status = 'dd.elements.' + dd.obj.name + '.x  = ' + dd.obj.x + '	 dd.elements.' + dd.obj.name + '.y = ' + dd.obj.y;
 }
 
-
-
-
 /* my_ResizeFunc IS CALLED WHILE AN ITEM IS RESIZED
 See the description of my_PickFunc above for what's accessible from here. */
 function my_ResizeFunc()
 {
 	//window.status = 'dd.elements.' + dd.obj.name + '.w  = ' + dd.obj.w + '	 dd.elements.' + dd.obj.name + '.h = ' + dd.obj.h;
 }
-
-
-
 
 /* THIS ONE IS CALLED ONCE AN ITEM IS DROPPED
 See the description of my_PickFunc for what's accessible from here.

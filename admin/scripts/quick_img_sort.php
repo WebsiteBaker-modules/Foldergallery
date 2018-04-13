@@ -40,8 +40,8 @@
     }
 
     // Create new admin object and print admin header
+    if(!class_exists('admin')){ include(WB_PATH.'/framework/class.admin.php'); }
     $admin = new admin('Pages', 'pages_settings');
-
 
 $sql="SELECT file_name, position, id FROM `".TABLE_PREFIX."mod_foldergallery_files` WHERE parent_id =".$cat_id." ORDER BY file_name ".$sort;
 

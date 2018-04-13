@@ -7,13 +7,13 @@ This is a phplib-template for modify_cat_sort.php
 <h2>{REORDER_IMAGES_STRING}</h2>
 <input type="button" value="{CANCEL_STRING}" onclick="{CANCEL_ONCLICK}" style="width: 200px;" class="FG_button fg-btn fg-btn-gradient" />
 
-<h3>{QUICK_SORT_STRING}</h3>
+<h3 class="w3-large">{QUICK_SORT_STRING}</h3>
 <input type="button" value="{QUICK_ASC_STRING}" onclick="{QUICK_ASC_ONCLICK}" style="width: 200px;" class="FG_button fg-btn fg-btn-gradient" />
 <input type="button" value="{QUICK_DESC_STRING}" onclick="{QUICK_DESC_ONCLICK}" style="width: 200px;" class="FG_button fg-btn fg-btn-gradient" />
 
-<h3>{MANUAL_SORT}</h3>
+<h3 class="w3-large">{MANUAL_SORT}</h3>
 
-<script type="text/javascript">
+<script>
         var the_parent_id = {PARENT_ID_VALUE};
         var WB_URL = "{WB_URL_VALUE}";
 </script>

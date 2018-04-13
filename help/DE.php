@@ -9,9 +9,9 @@ $FG_HELP['VERSION_TEXT']    = 'Die Foldergallery basiert auf einer Idee von Jür
                              .' Foldergallery ist ein Modul, das, ausgehend von einem einstellbaren Ordner, alle darunter liegenden Bilder und Ordner als separate Bildergalerien darstellt.';
 $FG_HELP['HOMEPAGE_TEXT']   = 'In die Foldergallery lassen sich diverse Ausgabe-Templates und auch Lightbox-Effekte integrieren';
 $FG_HELP['HELP_TITLE']      = 'Hilfe und Support';
-$FG_HELP['HELP_TEXT']       = 'Support wird im <a href="http://forum.websitebaker.org/index.php/topic,21046.0.html" target="_blank">Websitebaker Community (Forum)</a> angeboten.';
+$FG_HELP['HELP_TEXT']       = 'Support wird im <a href="http://forum.websitebaker.org/index.php/topic,21046.0.html" >Websitebaker Community (Forum)</a> angeboten.';
 $FG_HELP['BUG_TITLE']       = 'Problem melden';
-$FG_HELP['BUG_TEXT']        = 'Falls sie ein Problem oder Fehler im Modul gefunden haben, bitte ich Sie, diese im <a href="http://forum.websitebaker.org/index.php/topic,21046.0.html" target="_blank">Websitebaker Forum</a> zu melden';
+$FG_HELP['BUG_TEXT']        = 'Falls sie ein Problem oder Fehler im Modul gefunden haben, bitte ich Sie, diese im <a href="http://forum.websitebaker.org/index.php/topic,21046.0.html" >Websitebaker Forum</a> zu melden';
 
 $FG_HELP['BACK_STRING']     = 'Zur&uuml;ck';
 ?>

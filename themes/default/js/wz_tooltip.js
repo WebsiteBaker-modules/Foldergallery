@@ -300,7 +300,6 @@ tt_tFade = new Number(0), tt_tWaitMov = new Number(0),
 tt_bWait = false,
 tt_u = "undefined";
 
-
 function tt_Init()
 {
     tt_MkCmdEnum();

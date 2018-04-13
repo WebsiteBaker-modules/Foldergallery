@@ -1,8 +1,8 @@
 <?php
 
-
     $sAddonPath = dirname(__DIR__);
-    if (is_readable($sAddonPath.'/init.php'))     {require ($sAddonPath.'/init.php');}
+
+    if (is_readable($sAddonPath.'/init.php')) {require ($sAddonPath.'/init.php');}
     if (is_readable($sAddonPath.'/presets/thumbPresets.php')){require($sAddonPath.'/presets/thumbPresets.php');}
     // to print with or without header, default is with header
     $admin_header=true;
@@ -15,7 +15,7 @@
     // An associative array that by default contains the contents of $_GET, $_POST and $_COOKIE.
     $aRequestVars = $_REQUEST;
 
-    $settings = getSettings($section_id);
+    $settings = getFGSettings($section_id);
     $root_dir = $settings['root_dir']; //Chio
 
 if (isset($aRequestVars['cat_id']) && is_numeric($aRequestVars['cat_id'])) {
@@ -58,8 +58,7 @@ if (isset($aRequestVars['cat_id']) && is_numeric($aRequestVars['cat_id'])) {
     $pathToThumb  = $path.$folder.$thumbPath . '/';
     $urlToFolder  = $url.$MediaAddonRel.$folder.'/';
     $urlToThumb   = $url.$MediaAddonRel.$folder.$thumbPath . '/';
-
-    $bilder = array();
+    $bilder = [];
     $sql = 'SELECT * FROM ' . TABLE_PREFIX . 'mod_foldergallery_files WHERE parent_id="' . $parent_id . '" ORDER BY position ASC;';
     $query = $database->query($sql);
     if ($query->numRows()) {
@@ -104,20 +103,8 @@ if (isset($aRequestVars['cat_id']) && is_numeric($aRequestVars['cat_id'])) {
     $t->set_block('modify_cat', 'file_loop', 'FILE_LOOP');
     $t->set_var($aTplDefaults);
     $sUploadTemplateFile = '';
-/*
-    $sUploadTemplateFile = $sAddonThemePath.'/FineUpload/templates/simple-thumbnails.html';
-    $sUploadTemplateFile = $sAddonThemePath.'/FineUpload/templates/manual_trigger.js';
-*/
+
     if (is_readable($sUploadTemplateFile)){
-/*
-        $t->set_var('QQ-TEMPLATE'. $sUploadTemplateFile);
-        $sContent = (file_get_contents($sUploadTemplateFile));
-        ob_start();
-        require $sUploadTemplate;
-        $sContent = ob_get_clean();
-        echo $sUploadTemplateFile;
-        echo $sContent;
-*/
     }
 
 $sScriptTemplateBlock = 'show_template_manual_trigger_block';
@@ -134,26 +121,25 @@ $sScriptTemplate      = 'show_template_default';
 //    $t->parse($sScriptTemplate, $sScriptTemplateBlock, true);
     $t->set_block($sScriptTemplateBlock, '');
 
-    $defaultQuality = (@$settings['defaultQuality']?:'50');
-    $maxImageSize   = (@$settings['maxImageSize']?:'1024');
-
+    $defaultQuality = (isset($settings['defaultQuality']) ? $settings['defaultQuality'] :'50');
+    $maxImageSize   = (isset($settings['maxImageSize'])   ? $settings['maxImageSize'] :'1024');
 // data parsen
 $t->set_var(array(
-    'SYNC_ONKLICK'      => 'window.location = \''.$sAddonUrl.'/admin/sync.php?page_id='.$page_id.'&amp;section_id='.$section_id.'\';',
-    'SYNC_STRING'                  => $MOD_FOLDERGALLERY['SYNC'],
-    'FOLDER_IN_FS_VALUE' => str_replace($path,'',$sCategorie),
-    'FOLDER_IN_FS_TITLE' => str_replace($path,'',$cat_path),
-    'CAT_ACTIVE_CHECKED' => $cat_active_checked,
-    'CAT_NAME_VALUE' => $categorie['cat_name'],
-    'SECTION_ID_VALUE' => $section_id,
-    'PAGE_ID_VALUE' => $page_id,
-    'CAT_ID_VALUE' => $cat_id,
-    'EXTENSIONS' => $settings['extensions'],
-    'UPLOAD_FOLDER' => $uploadPath,
-    'UPLOAD_SEC_NUM' => $page_id . '/' . $section_id . '/' . $cat_id,
+    'SYNC_ONKLICK'        => 'window.location = \''.$sAddonUrl.'/admin/sync.php?page_id='.$page_id.'&amp;section_id='.$section_id.'\';',
+    'SYNC_STRING'         => $MOD_FOLDERGALLERY['SYNC'],
+    'FOLDER_IN_FS_VALUE'  => str_replace(MEDIA_DIRECTORY, '',str_replace($path,'',$sCategorie)),
+    'FOLDER_IN_FS_TITLE'  => str_replace(MEDIA_DIRECTORY, '',str_replace($path,'',$cat_path)),
+    'CAT_ACTIVE_CHECKED'  => $cat_active_checked,
+    'CAT_NAME_VALUE'      => $categorie['cat_name'],
+    'SECTION_ID_VALUE'    => $section_id,
+    'PAGE_ID_VALUE'       => $page_id,
+    'CAT_ID_VALUE'        => $cat_id,
+    'EXTENSIONS'          => $settings['extensions'],
+    'UPLOAD_FOLDER'       => $uploadPath,
+    'UPLOAD_SEC_NUM'      => $page_id . '/' . $section_id . '/' . $cat_id,
     'UploadThumbnailSize' => 30,
-    'defaultQuality' => $defaultQuality,
-    'maxImageSize'  => $maxImageSize,
+    'defaultQuality'      => $defaultQuality,
+    'maxImageSize'        => $maxImageSize,
 ));
 
 // Textvariablen parsen
@@ -172,6 +158,9 @@ $t->set_var(array(
     'IMAGE_ACTION_STRING' => $MOD_FOLDERGALLERY['ACTION'],
     'SAVE_STRING' => $TEXT['SAVE'],
     'CANCEL_STRING' => $TEXT['CANCEL'],
+    'TEXT_BACK' => $TEXT['BACK'],
+    'TEXT_CANCEL' => $TEXT['CANCEL'],
+    'TEXT_UPLOAD_FILES' => $TEXT['UPLOAD_FILES'],
     'SORT_IMAGES_STRING' => $MOD_FOLDERGALLERY['SORT_IMAGE'],
     'IMAGE_DELETE_ALT' => $MOD_FOLDERGALLERY['IMAGE_DELETE_ALT'],
     'THUMB_EDIT_ALT' => $MOD_FOLDERGALLERY['THUMB_EDIT_ALT'],
@@ -181,7 +170,7 @@ $t->set_var(array(
     'IMG_TITLE_TEXT' => $MOD_FOLDERGALLERY['IMG_TITLE_TEXT']
 ));
 
-$t->set_var($aLang);
+$t->set_var($aLangFG);
 // Links parsen
 $t->set_var(array(
     'SAVE_CAT_LINK' => $sAddonUrl.'/admin/save_cat.php?page_id=' . $page_id . '&section_id=' . $section_id . '&cat_id=' . $cat_id,
@@ -200,7 +189,7 @@ foreach ($bilder as $bild) {
         'IMG_TITLE' => $bild['img_title'],
         'CAPTION_VALUE' => $bild['caption'],
         'THUMB_EDIT_LINK' => $sAddonUrl."/admin/modify_thumb.php?page_id=" . $page_id . "&section_id=" . $section_id . "&cat_id=" . $cat_id . "&id=" . $bild['id'],
-        'IMAGE_DELETE_LINK' => "javascript: confirm_link(\"" .$MOD_FOLDERGALLERY['DELETE_IMG_ARE_YOU_SURE'] . "\", \"" . $sAddonUrl."/admin/scripts/delete_img.php?page_id=" . $page_id . "&section_id=" . $section_id . "&cat_id=" . $cat_id . "&id=" . $bild['id'] . "\");",
+        'IMAGE_DELETE_LINK' => "confirm_link(\"" .$MOD_FOLDERGALLERY['DELETE_IMG_ARE_YOU_SURE'] . "\", \"" . $sAddonUrl."/admin/scripts/delete_img.php?page_id=" . $page_id . "&section_id=" . $section_id . "&cat_id=" . $cat_id . "&id=" . $bild['id'] . "\");",
         'ONCLICK_DELETE_CONFIRM' => $MOD_FOLDERGALLERY['DELETE_IMG_ARE_YOU_SURE'],
         'ONCLICK_DELETE_URL' => $sAddonUrl."/admin/scripts/delete_img.php?page_id=".$page_id."&section_id=".$section_id."&cat_id=".$cat_id."&id=".$bild['id'],
 //        'ONCLICK_DELETE_LINK' => "confirm_link(\"".$MOD_FOLDERGALLERY['DELETE_IMG_ARE_YOU_SURE']."\", \"".$sAddonUrl."/admin/scripts/delete_img.php?page_id=".$page_id."&section_id=".$section_id."&cat_id=".$cat_id."&id=".$bild['id']."\");",

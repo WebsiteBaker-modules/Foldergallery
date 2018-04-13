@@ -1,7 +1,6 @@
 //domReady.ready(function() {
     function addEvent(elem, event, fn) {
         if(!elem) { return false; }
-console.info (elem);
         if (elem.addEventListener) {
             elem.addEventListener(event, fn, false);
         } else {
@@ -13,10 +12,8 @@ console.info (elem);
     }
 
 $(document).ready(function() {
-    console.info('FOLDERGALLERY ==='+typeof FOLDERGALLERY);
 
     if (typeof FOLDERGALLERY === 'object') {
-
         $(function() {
             $("#dragableCategorie ul").sortable({
                 opacity: 0.6,
@@ -134,9 +131,6 @@ $(document).ready(function() {
     };
 })(jQuery);
 
-
-
-
     $("#loadPreset").change(function () {
         var value = $(this).val(),
             thumb_x = $("#thumb_x").val(),
@@ -145,16 +139,12 @@ $(document).ready(function() {
                         +'admin/scripts/getThumbPreset.php?preset='+value
                         +'&thumb_x='+thumb_x
                         +'&thumb_y='+thumb_y;
-console.info(thumb_x);
-console.info(thumb_y);
         $.getJSON(ThumbPreset, {
             format: "json"
         })
           .done(function(data) {
                 var preset = data.preset,
                     ratio  = preset.thumb_ratio;
-console.log(preset);
-//console.log(ratio);
                 setRatio(preset);
                 if(typeof(preset.image_background_color) == 'undefined') {
                     $('#background_color').attr("value", "#FFFFFF");
@@ -169,7 +159,6 @@ console.log(preset);
     function setRatio(preset) {
         var iRatio = preset.thumb_ratio,
             ratio  = iRatio;
-//    console.log('ratio = '+ratio);
         switch (ratio) {
             case 1:
                 $("input[name='thumb_ratio'][value='1']").attr('checked', true);
@@ -212,13 +201,10 @@ console.log(preset);
     if( document.querySelectorAll("#thumb_x").length > 0 ) {
 
         var $thumb_x = $("#thumb_x");
-    console.log($thumb_x);
         $thumb_x.on('input', function() {
           // Do this when value changes
-        //console.log($(this).val());
             var ratio = getRatio("input[name='thumb_ratio']:checked"),
                 value = $(this).val();
-    console.log('ratio = '+ratio+' value ='+value);
             if (!ratio){
              // Do nothing
             } else {
@@ -228,28 +214,23 @@ console.log(preset);
 
 /*---------------------------------------------------------------------------------------------------*/
         var $thumb_y = $("#thumb_y");
-        console.log($thumb_y);
         $thumb_y.on('input', function() {
           // Do this when value changes
-        //console.log($(this).val());
             var value = $(this).val(),
                 ratio = getRatio("input[name='thumb_ratio']:checked");
             if (!ratio){
              // Do nothing
             } else {
                 var xValue = Math.round(value/ratio);
-    console.log('ratio = '+ratio+' value ='+value+ ' Ergebnis = '+xValue);
                 $("#thumb_x").attr("value", xValue);
             }
         });
     }
 /*---------------------------------------------------------------------------------------------------*/
 
-//console.info('FOLDERGALLERY ==='+typeof FOLDERGALLERY);
     // Function to toggle active/inavtive of a categorie in the overview
     function toggle_active_inactive(id) {
         var img = $("#i" + id);
-    console.log(img);
         if( img.attr("src") == FOLDERGALLERY.AddonThemeUrl+"img/active1.gif") {
             var action = "disable";
             var src = FOLDERGALLERY.AddonThemeUrl+"img/active0.gif";
@@ -283,7 +264,6 @@ console.log(preset);
             resJpegQuality.innerHTML = "" + pJpegQuality.value+" %";
         }, false);
     }
-
 
     var pBgOpacity = document.getElementById( "opacity" ),
         resBgOpacity = document.getElementById( "OpacityResult" );

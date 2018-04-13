@@ -38,7 +38,7 @@
     $uploader = new UploadHandler();
 
 // Specify the list of valid extensions, ex. array("jpeg", "jpg", "png", "gif","jpeg", "xml", "bmp")
-    $uploader->allowedExtensions = array(); // all files types allowed by default
+    $uploader->allowedExtensions = []; // all files types allowed by default
 
 // Specify max file size in bytes.
     $uploader->sizeLimit = 200*1024;

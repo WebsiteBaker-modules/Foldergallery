@@ -1,5 +1,5 @@
 {ModuleScript}
-<script type="text/javascript">
+<script>
 <!--
     var MagnificPopupCss    = '{ModulesTemplateUrl}/js/magnific-popup/dist/magnific-popup.css';
     var MagnificPopupCssTpl = '{ModulesTemplateUrl}/js/magnific-popup/template.css';
@@ -53,7 +53,7 @@ console.info(imageUrl);
 <div class="foldergallery-wrapper">
     <div class="gallery">
       <div class="gallerytitel">
-        <span class="view_title">{VIEW_TITLE}</span>&nbsp;&nbsp;<span class="categories_title">{CATEGORIES_TITLE}</span>&nbsp;<span class="categories_desc">{CAT_DESCRIPTION}&nbsp;</span>
+        <span class="view_title">{VIEW_TITLE}</span>&nbsp;&nbsp;<span class="categories_title">&#160;</span>&nbsp;<span class="categories_desc">{CAT_DESCRIPTION}&nbsp;</span>
       </div>
     </div>
 <!-- BEGIN show_breadcrumbs -->

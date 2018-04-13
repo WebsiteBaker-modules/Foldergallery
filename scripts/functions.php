@@ -1,16 +1,15 @@
-<?PHP
-/*
-*/
+<?php
+/* -------------------------------------------------------- */
+// Must include code to stop this file being accessed directly
+if (!defined('SYSTEM_RUN')) {header($_SERVER['SERVER_PROTOCOL'].' 404 Not Found'); echo '404 File not found'; flush(); exit;}
+/* -------------------------------------------------------- */
+?><?PHP
+/*  */
     $sAddonPath = dirname(__DIR__);
-    if (is_readable($sAddonPath.'/init.php'))     {require ($sAddonPath.'/init.php');}
-/* -------------------------------------------------------- */
-// Must include code to prevent this file from being accessed directly
-if(defined('WB_PATH') == false) { die('Cannot access '.basename(__DIR__).'/'.basename(__FILE__).' directly'); }
-/* -------------------------------------------------------- */
 
-    function getSettings($section_id) {
-        global $database, $aDefaults, $oAddonReg, $page_id;
-        $settings  = array();
+    function getFGSettings($section_id) {
+        global $database, $aDefaults, $page_id;
+        $settings  = [];
 //        $aDefaults = $oAddonReg->aDefaults;
         $sql  = 'SELECT `s_name`, `s_value` FROM `'.TABLE_PREFIX.'mod_foldergallery_settings` '
               . 'WHERE `section_id` = ' . $section_id;
@@ -18,17 +17,19 @@ if(defined('WB_PATH') == false) { die('Cannot access '.basename(__DIR__).'/'.bas
             while ($row = $query->fetchRow(MYSQLI_ASSOC)) {
                 $settings[$row['s_name']] = $row['s_value'];
             }
+            $settings['section_id'] = $section_id;
+/* add extra handling */
             if (isset($settings['tbSettings'])){
                 $settings['tbSettings'] = unserialize($settings['tbSettings']);
-//                $settings['page_id'] = $page_id;
+                $settings['page_id'] = $page_id;
             }
-            $settings['section_id'] = $section_id;
+
         }
         if (is_array($aDefaults)) {
             $aTmp = array_diff_key($aDefaults, $settings);
             if ($aTmp){
-                UpdateKeyValue('mod_foldergallery_settings', $aTmp, '', array('section_id'=>$section_id ));
-                $settings = array_merge($aDefaults,$settings);
+                UpdateKeyValue('mod_foldergallery_settings', $aTmp, '', ['section_id'=>$section_id]);
+//                $settings = array_merge($aDefaults, $settings);
             }
         }
         return $settings;
@@ -299,7 +300,6 @@ function FG_getCatId($sectionID, $kategorie) {
     $katID = $ergebnis['id'];
     return $katID;
 }
-
 
 /**
  * Gibt die Kategorie ID der Kategorie zurueck

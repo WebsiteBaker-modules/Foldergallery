@@ -6,7 +6,7 @@ This is a phplib-template for modify_cat.php
 </div><!-- end SectionInfoLine -->
 <div class="remodal"></div>
 {ModuleScript}
-<script type="text/javascript">
+<script>
         var upSettings = {
             folder         : '{UPLOAD_FOLDER}',
             catID          : '{CAT_ID_VALUE}',
@@ -17,7 +17,7 @@ This is a phplib-template for modify_cat.php
             maxImageSize   : '{maxImageSize}',
         }
 </script>
-<script type="text/javascript">
+<script>
 <!--
 //    var UploadCss = "{sAddonThemeUrl}/css/upload/upload.css";
     var UploadCss         = "{AddonThemeUrl}/FineUpload/fine-uploader.css";
@@ -33,7 +33,7 @@ This is a phplib-template for modify_cat.php
     }
 -->
 </script>
-<script src="{AddonThemeUrl}/FineUpload/all.fine-uploader.js"></script>
+<script src="{AddonThemeUrl}/FineUpload/all.fine-uploader.min.js"></script>
 <!-- Fine Uploader DOM Element
 ====================================================================== -->
 <!-- Your code to create an instance of Fine Uploader and bind to the DOM/template trigger
@@ -174,7 +174,7 @@ This is a phplib-template for modify_cat.php
 </script>
 <!-- END show_template_default_block -->
 
-<script type="text/javascript">
+<script>
 <!--
 /**
  * http://t4t5.github.io/sweetalert/
@@ -306,11 +306,17 @@ console.info(elm);
                 includeExif: true,
                 orient: true,
                 sizes: [
-                    {name: "", maxSize: (upSettings.maxImageSize<1600?upSettings.maxImageSize:1536 ) }
+                    {name: "", maxSize: (upSettings.maxImageSize < 1600 ? upSettings.maxImageSize : 1536 ) }
                 ]
             },
             text: {
               failUpload: 'Upload files are failed',
+            },
+            callbacks: {
+                onAllComplete: function() {
+                    alert('done');
+                    document.location.href="{AddonUrl}/admin/sync.php?page_id="+upSettings.pageID+"&section_id="+upSettings.sectionID;
+                }
             },
             debug: true
         });
@@ -323,7 +329,7 @@ console.info(elm);
 
 -->
 </script>
-<h2>{MODIFY_CAT_TITLE}</h2><br />
+<h2 class="w3-large">{MODIFY_CAT_TITLE}</h2><br />
 <form action="{SAVE_CAT_LINK}" method="post" style="margin: 0.925em 0;">
     <input type="hidden" name="section_id" value="{SECTION_ID_VALUE}">
     <input type="hidden" name="page_id" value="{PAGE_ID_VALUE}">
@@ -363,7 +369,7 @@ console.info(elm);
                     <input onclick="uploadImages(this)" data-href="{UPLOAD_FOLDER}" name="upload" type="button" value="{TEXT_UPLOAD_FILES} " class="FG_button fg-btn fg-btn-gradient" style="width: 100%; margin-top: 5px;" />
                 </td>
                 <td style="float: right;">
-                    <input type="button" value="{TEXT_CANCEL}/{TEXT_BACK}" onclick="{CANCEL_ONCLICK}" class="FG_button fg-btn fg-btn-gradient" style="width: 100% margin-top: 5px;" />
+                    <input type="button" value="{TEXT_CANCEL}/{TEXT_BACK}" onclick="{CANCEL_ONCLICK}" class="FG_button fg-btn fg-btn-gradient" style="width: 100%; margin-top: 5px;" />
                 </td>
             </tr>
         </tbody>
@@ -377,8 +383,9 @@ console.info(elm);
     <input type="hidden" name="cat_id"  value="{CAT_ID_VALUE}" />
     <div class="block-outer" style="margin-bottom: 0.625em;">
 
-        <h3>{MODIFY_IMG_STRING} | <a href="modify_cat_sort.php?page_id={PAGE_ID_VALUE}&section_id={SECTION_ID_VALUE}&cat_id={CAT_ID_VALUE}">{SORT_IMAGES_STRING}</a>
-            <a href="" onclick="{SYNC_ONKLICK}" style="display: inline;" > | {SYNC_STRING}</a>
+        <h3 class="w3-large">{MODIFY_IMG_STRING} |
+            <span><a href="{AddonUrl}/admin/modify_cat_sort.php?page_id={PAGE_ID_VALUE}&section_id={SECTION_ID_VALUE}&cat_id={CAT_ID_VALUE}">{SORT_IMAGES_STRING}</a></span>
+            <a class="w3-pointer" onclick="window.location='{AddonUrl}/admin/sync.php?page_id={PAGE_ID_VALUE}&section_id={SECTION_ID_VALUE}';" style="display: inline;" > | {SYNC_STRING}</a>
         </h3>
 
         <table style="width: 100%; border:0px none #999999; border-collapse: collapse;" id="FG_table" class="sort_cat">

@@ -546,8 +546,6 @@ if ( typeof define === 'function' && define.amd ) {
 
 ( function( window ) {
 
-
-
 var docElem = document.documentElement;
 
 var bind = function() {};
@@ -619,8 +617,6 @@ if ( typeof define === 'function' && define.amd ) {
 
 ( function( window ) {
 
-
-
 var prefixes = 'Webkit Moz ms Ms O'.split(' ');
 var docElemStyle = document.documentElement.style;
 
@@ -669,8 +665,6 @@ if ( typeof define === 'function' && define.amd ) {
 /*global define: false */
 
 ( function( window, undefined ) {
-
-
 
 // -------------------------- helpers -------------------------- //
 
@@ -725,8 +719,6 @@ function getZeroSize() {
   return size;
 }
 
-
-
 function defineGetSize( getStyleProperty ) {
 
 // -------------------------- box sizing -------------------------- //
@@ -757,7 +749,6 @@ var isBoxSizeOuter;
   isBoxSizeOuter = getStyleSize( style.width ) === 200;
   body.removeChild( div );
 })();
-
 
 // -------------------------- getSize -------------------------- //
 
@@ -852,8 +843,6 @@ if ( typeof define === 'function' && define.amd ) {
 
 ( function( window ) {
 
-
-
 // vars
 var document = window.document;
 
@@ -880,7 +869,6 @@ var getStyle = defView && defView.getComputedStyle ?
   function( elem ) {
     return elem.currentStyle;
   };
-
 
 // http://stackoverflow.com/a/384380/182183
 var isElement = ( typeof HTMLElement === 'object' ) ?

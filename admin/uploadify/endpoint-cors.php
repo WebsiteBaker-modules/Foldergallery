@@ -76,7 +76,7 @@ function get_request_method() {
 }
 
 function parseRequestHeaders() {
-    $headers = array();
+    $headers = [];
     foreach($_SERVER as $key => $value) {
         if (substr($key, 0, 5) <> 'HTTP_') {
             continue;

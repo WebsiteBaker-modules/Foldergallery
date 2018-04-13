@@ -8,7 +8,7 @@
 
 class UploadHandler {
 
-    public $allowedExtensions = array();
+    public $allowedExtensions = [];
     public $sizeLimit = null;
     public $inputName = 'qqfile';
     public $chunksFolder = 'chunks';
@@ -16,14 +16,13 @@ class UploadHandler {
     public $chunksCleanupProbability = 0.001; // Once in 1000 requests on avg
     public $chunksExpireIn = 604800; // One week
 
-    protected $aConfig = array();
+    protected $aConfig = [];
 
     protected $uploadName;
 
     protected $sBackStep;
 
     public function __construct(){}
-
 
     public function __isset($name)
     {
@@ -77,7 +76,7 @@ class UploadHandler {
     }
 
     protected function getInitialFiles() {
-        $initialFiles = array();
+        $initialFiles = [];
         for ($i = 0; $i < 5000; $i++) {
             array_push($initialFiles, array("name" => "name" + $i, uuid => "uuid" + $i, thumbnailUrl => "/test/dev/handlers/vendor/fineuploader/php-traditional-server/fu.png"));
         }
@@ -341,7 +340,7 @@ print_r( $targetFileName ); print '</pre>'; flush (); //  ob_flush();;sleep(10);
      * @param string $str
      */
     protected function toBytes($str){
-        $val = trim($str);
+        $val = intval(trim($str));
         $last = strtolower($str[strlen($str)-1]);
         switch($last) {
             case 'g': $val *= 1024;

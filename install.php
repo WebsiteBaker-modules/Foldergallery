@@ -18,13 +18,13 @@
 // prevent this file from being accessed directly
 /* -------------------------------------------------------- */
 // Must include code to prevent this file from being accessed directly
-if(defined('WB_PATH') == false) {
-    die('Cannot access '.basename(__DIR__).'/'.basename(__FILE__).' directly');
-} else {
+if (!defined('SYSTEM_RUN')) { header($_SERVER['SERVER_PROTOCOL'].' 404 Not Found'); flush(); exit; }
+
     // create tables from sql dump file
     if (is_readable(__DIR__.'/install-struct.sql')) {
-        $database->SqlImport(__DIR__.'/install-struct.sql', TABLE_PREFIX, false );
+        if (!$database->SqlImport(__DIR__.'/install-struct.sql', TABLE_PREFIX, 'install' )){
+          echo $database->get_error();
+        }
     }
-}
 
 // end of file

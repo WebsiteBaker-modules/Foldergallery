@@ -6,7 +6,7 @@
     $aRequestVars = $_REQUEST;
 
 // Answer array wich is sent back to the backend
-    $answer = array();
+    $answer = [];
     $answer['message'] = $MOD_FOLDERGALLERY['CAT_TOGGLE_ACTIV_FAIL'];
     $answer['success'] = 'false';
 
@@ -21,6 +21,7 @@
 // OK, Parameters seem to be save
 
 // Check if user has enough rights to do this:
+    if(!class_exists('admin')){ include(WB_PATH.'/framework/class.admin.php'); }
     $admin = new admin('Modules', 'module_view', false, false);
     if (!($admin->is_authenticated() && $admin->get_permission($sAddonName, 'module'))) {
         exit(json_encode($answer));

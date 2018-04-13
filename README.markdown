@@ -80,7 +80,6 @@ GNU General Public License for more details.
 + updated lightbox-scripts
 + removed old files
 
-
 ###V1.21 (Jürg Rast, 30.03.2011)
 + BugFix: Some categories where not displayed
 + BugFix: Library-/jQueryAdmin integration was missing

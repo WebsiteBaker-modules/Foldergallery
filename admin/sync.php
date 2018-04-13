@@ -21,36 +21,44 @@
 */
 
     $sAddonPath = dirname(__DIR__);
-    if (is_readable($sAddonPath.'/init.php'))     {require ($sAddonPath.'/init.php');}
-    // to print with or without header, default is with header
-    $admin_header=true;
-    // Workout if the developer wants to show the info banner
-    $print_info_banner = false; // true/false
-    // Tells script to update when this page was last updated
-    $update_when_modified = false;
-    // Include WB admin wrapper script to sanitize page_id and section_id, print SectionInfoLine
-    require(WB_PATH.'/modules/admin.php');
+    if (is_readable($sAddonPath.'/init.php')) {require ($sAddonPath.'/init.php');}
+    $sExtendedPrint = preg_match( '/'.'admin\/save_settings\.php$/is', $sCallingScript);
+    if (!$sExtendedPrint) {
+        // to print with or without header, default is with header
+        $admin_header=true;
+        // Workout if the developer wants to show the info banner
+        $print_info_banner = false; // true/false
+        // Tells script to update when this page was last updated
+        $update_when_modified = false;
+        // Include WB admin wrapper script to sanitize page_id and section_id, print SectionInfoLine
+        require(WB_PATH.'/modules/admin.php');
+}
     // An associative array that by default contains the contents of $_GET, $_POST and $_COOKIE.
     $aRequestVars = $_REQUEST;
 
-    $settings = getSettings($section_id);
+    $settings = getFGSettings($section_id);
 
     $flag = false;
-
+    $aMessageError = [];
+    $aMessageSuccess = [];
 /* syncDB($galerie) ist kompletter updatealgorithmus */
-if(syncDB($settings)) {
-
-        echo "<div class=\"info\">".$MOD_FOLDERGALLERY['SYNC_DATABASE']."</div><br />";
+if (syncDB($settings)) {
+?> <div class="w3-panel w3-leftbar w3-pale-green w3-border-green w3-round">
+  <h5 ><?php echo $MOD_FOLDERGALLERY['SYNC_DATABASE'];?></h5>
+</div>
+<?php
+    $sBackLink = $sAddonUrl.'/admin/modify_settings.php?page_id='.$page_id.'&section_id='.$section_id;
+//          $aMessageSuccess[]= $MOD_FOLDERGALLERY['SYNC_DATABASE'];
         // Wieder alle Angaben aus der DB holen um Sortierung festzulegen
-        $results = array();
+        $results = [];
         $sql = "SELECT * FROM ".TABLE_PREFIX."mod_foldergallery_categories WHERE `section_id` =".$section_id;
         $query = $database->query($sql);
-        if ( $query->numRows() > 0 ) {
+        if ($query->numRows() > 0) {
             while($result = $query->fetchRow(MYSQLI_ASSOC)) {
             if($result['parent'] != -1) {
                 $folder = $settings['root_dir'].'/'.$result['parent'].'/'.$result['categorie'];
                 $pathToFolder = $path.$folder;
-                if(!is_dir(DirectoryHandler::DecodePath($pathToFolder))) {
+                if (!is_dir(DirectoryHandler::DecodePath($pathToFolder))) {
                     $delete_sql = 'DELETE FROM `'.TABLE_PREFIX.'mod_foldergallery_categories` '
                                 . 'WHERE `id`='.$result['id'].' ';
                     $database->query($delete_sql);
@@ -58,22 +66,6 @@ if(syncDB($settings)) {
                 }
             }
             $results[] = $result;
-/*
-            $folder = $settings['root_dir'].'/'.$result['parent'].'/'.$result['categorie'];
-            $pathToFolder = $path.$folder;
-            var_dump($pathToFolder);
-            if ($result['parent'] != -1) {; //nicht die roots;
-                    //checken, ob es das Verzeichnis noch gibt:
-                    if(!is_dir(DirectoryHandler::DecodePath($pathToFolder))){
-                            $delete_sql = 'DELETE FROM '.TABLE_PREFIX.'mod_foldergallery_categories WHERE id="'.$result['id'].'";';
-                            $database->query($delete_sql);
-                            continue;
-                    }
-            }
-        $results[] = $result;
-print '<pre  class="mod-pre rounded">function <span>'.__FUNCTION__.'( '.''.' );</span>  filename: <span>'.basename(__FILE__).'</span>  line: '.__LINE__.' -> <br />';
-print_r( $results ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
-*/
             }
 
         $niveau = 0;
@@ -85,8 +77,9 @@ print_r( $results ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
             }
             // String bilden für Parentvergleich
             $ast = $cat['parent']."/".$cat['categorie'];
-                $cat['ast'] = $ast;
-                $cat['childs'] = '';
+            $cat['ast'] = $ast;
+            $cat['childs'] = '';
+            $cat['has_child'] = 0;
             // Alle Kategorien durchlaufen und auf gleichheit untersuchen
             foreach($results as &$searchcat){
                 if($ast == $searchcat['parent']) {
@@ -100,15 +93,18 @@ print_r( $results ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
 //Das ginge sicher besser:
 //Childs finden
         foreach($results as &$cat) {
-            if ($cat['has_child'] == 0) continue;
-            foreach($results as $others) {
-                if ($cat['id'] == $others['id']) {continue;}
-                if  (strpos($others['ast'], $cat['ast']) !== false) {
-                    //others ist also ein Child von $cat
-                    $cat['childs'].= ','.$others['id'];
+            if ($cat['has_child'] != 0){
+                foreach($results as $others) {
+                    if ($cat['id'] != $others['id']) {
+                        if  (strpos($others['ast'], $cat['ast']) !== false) {
+                            //others ist also ein Child von $cat
+                            $cat['childs'].= ','.$others['id'];
+                        }
+                    }
                 }
             }
         }
+
 //-------------------------
 
 // Sortierung festlegen
@@ -164,16 +160,20 @@ print_r( $results ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
             }
         }
 
-      $sSectionIdPrefix = (defined( 'SEC_ANCHOR' ) && ( SEC_ANCHOR != '' )  ? SEC_ANCHOR : '' );
-      if($flag) {
-          $admin->print_success(__LINE__.') '.$TEXT['SUCCESS'], ADMIN_URL.'/pages/modify.php?page_id='.$page_id.'#'.$sSectionIdPrefix.$section_id);
-      } else {
-          $admin->print_error("Synchronisation fehlgeschlagen", $sAddonUrl.'/admin/modify_settings.php?page_id='.$page_id.'&section_id='.$section_id);
-      }
-    }   // keine Kategorien vorhanden
-    else {
-        $admin->print_error( $MOD_FOLDERGALLERY['NO_CATEGORIES'], $sAddonUrl.'/admin/modify_settings.php?page_id='.$page_id.'&section_id='.$section_id );
+        $sSectionIdPrefix = (defined( 'SEC_ANCHOR' ) && ( SEC_ANCHOR != '' )  ? SEC_ANCHOR : '' );
+        $sBackLink =  ( $flag ?
+                      ADMIN_URL.'/pages/modify.php?page_id='.$page_id.'#'.$sSectionIdPrefix.$section_id :
+                      $sBackLink
+                      );
+
+        if($flag) {
+            $admin->print_success(sprintf(' [%d] %s ', __LINE__, $MOD_FOLDERGALLERY['SYNC_SUCCESS']),$sBackLink);
+        } else {
+            $admin->print_error(sprintf(' [%d] %s ', __LINE__, $MOD_FOLDERGALLERY['SYNC_FAILED']), $sBackLink);
+        }
+    } else {   // keine Kategorien vorhanden
+            $admin->print_error( $MOD_FOLDERGALLERY['NO_CATEGORIES'], $sBackLink);
+        }
     }
-}
 // Print admin footer
-$admin->print_footer();
+    if (!$sExtendedPrint) {$admin->print_footer();}

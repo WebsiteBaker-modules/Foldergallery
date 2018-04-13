@@ -21,7 +21,7 @@
 */
 
     $sAddonPath = dirname(__DIR__);
-    if (is_readable($sAddonPath.'/init.php'))     {require ($sAddonPath.'/init.php');}
+    if (is_readable($sAddonPath.'/init.php')) {require ($sAddonPath.'/init.php');}
     if (is_readable($sAddonPath.'/presets/thumbPresets.php')){require($sAddonPath.'/presets/thumbPresets.php');}
     // to print with or without header, default is with header
     $admin_header=true;
@@ -32,9 +32,10 @@
     // Include WB admin wrapper script to sanitize page_id and section_id, print SectionInfoLine
     require(WB_PATH.'/modules/admin.php');
 
-    $oldSettings = getSettings($section_id);
-    $newSettings = array();
-    $aErrorMsg = array();
+    $oldSettings = getFGSettings($section_id);
+    $newSettings = [];
+    $aErrorMsg = [];
+    $aInvisibile = explode(',',$aDefaults['invisible']);
 
     if (isset($page_id)) {
             $newSettings['page_id'] = $admin->StripCodeFromText($page_id);
@@ -42,18 +43,18 @@
             $newSettings['page_id'] = $page_id;
     }
     if (isset($aRequestVars['catpic']) && is_numeric($aRequestVars['catpic']) ) {
-            $newSettings['catpic'] = intval($aRequestVars['catpic']);
+        $newSettings['catpic'] = intval($aRequestVars['catpic']);
     } else {
-            $newSettings['catpic'] = 0;
+        $newSettings['catpic'] = 0;
     }
 
     //Daten aus $aRequestVars auswerten und validieren
     if (isset($aRequestVars['root_dir'])) {
-        $newSettings['root_dir'] = '/'.trim(str_replace('\\', '/', ($aRequestVars['root_dir'])), '/');
+        $aRequestVars['root_dir'] = str_replace($MediaAddonRel,'',$aRequestVars['root_dir']);
+        $newSettings['root_dir'] = filter_var($aRequestVars['root_dir'] ,FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH);
     } else {
         $newSettings['root_dir'] = '/';
     }
-
     if (isset($aRequestVars['extensions']) && ($aRequestVars['extensions'] != '')) {
         $extensions = strtolower($aRequestVars['extensions']);
             $extensionsarray = explode(',',str_replace(' ', '', $extensions));
@@ -64,8 +65,11 @@
     }
     if (isset($aRequestVars['invisible'])) {
             $newSettings['invisible'] = $admin->StripCodeFromText($aRequestVars['invisible']);
+            $aForbidden['invisible'] = array_diff($aInvisibile, explode(',',$newSettings['invisible']));
+            $sForbidden = ','.implode(',',$aForbidden['invisible']);
+            $newSettings['invisible'] = trim($newSettings['invisible'].$sForbidden,',');
     } else {
-            $newSettings['invisible'] = '';
+            $newSettings['invisible'] = $aDefaults['invisible'];
     }
     if (isset($aRequestVars['pics_pp']) && is_numeric($aRequestVars['pics_pp']) ) {
             $newSettings['pics_pp'] = intval($aRequestVars['pics_pp']);
@@ -154,6 +158,16 @@
     } else {
         $bForceThumbnails = false;
     }
+    if (isset($aRequestVars['thumb_width']) && is_numeric($aRequestVars['thumb_width']) ) {
+            $newSettings['thumb_width'] = (int) trim($aRequestVars['thumb_width']);
+    } else {
+            $newSettings['thumb_width'] = 150;
+    }
+    if (isset($aRequestVars['thumb_height']) && is_numeric($aRequestVars['thumb_height']) ) {
+            $newSettings['thumb_height'] = (int) trim($aRequestVars['thumb_height']);
+    } else {
+            $newSettings['thumb_height'] = 150;
+    }
 
     // Get the new Thumbsettings:
     if (isset($aRequestVars['thumb_x']) && is_numeric($aRequestVars['thumb_x']) ) {
@@ -173,21 +187,8 @@
         $newSettings['tbSettings']['image_ratio_fill'] = false;
         $newSettings['tbSettings']['image_ratio_crop'] = true;
     }
-/*
-print '<pre  class="mod-pre rounded">function <span>'.__FUNCTION__.'( '.''.' );</span>  filename: <span>'.basename(__FILE__).'</span>  line: '.__LINE__.' -> <br />';
-print_r( $newSettings ); print '</pre>'; flush (); //  ob_flush();;sleep(10);
-*/
     if(isset($aRequestVars['background_color']) && is_string($aRequestVars['background_color'])) {
         $newSettings['tbSettings']['image_background_color'] = '#'.trim($aRequestVars['background_color'], '#');
-/*
-        if(strlen($aRequestVars['background_color']) == 6) {
-            $newSettings['tbSettings']['image_background_color'] = '#'.$aRequestVars['background_color'];
-        } else if(strlen($aRequestVars['background_color']) == 7) {
-            $newSettings['tbSettings']['image_background_color'] = $aRequestVars['background_color'];
-        } else {
-            $newSettings['tbSettings']['image_background_color'] = '#FFFFFF';
-        }
-*/
     } else {
         $newSettings['tbSettings']['image_background_color'] = '#FFFFFF';
     }
@@ -201,20 +202,20 @@ print_r( $newSettings ); print '</pre>'; flush (); //  ob_flush();;sleep(10);
     }
     // This is set by default as we want to resize the images
     $newSettings['tbSettings']['image_resize'] = true;
+?><div class="w3-panel w3-leftbar w3-pale-green w3-border-green w3-round">
+  <h5 ><?php echo $MOD_FOLDERGALLERY['SAVE_SETTINGS'];?></h5>
+</div><!-- SAVE_SETTINGS -->
+<?php
 
-    echo '<div class="info">'.$MOD_FOLDERGALLERY['SAVE_SETTINGS'].'</div><br />';
     $newSettings['section_id'] = $section_id;
-/*
-print '<pre  class="mod-pre rounded">function <span>'.__FUNCTION__.'( '.''.' );</span>  filename: <span>'.basename(__FILE__).'</span>  line: '.__LINE__.' -> <br />';
-print_r( $newSettings ); print '</pre>'; flush (); //  ob_flush();;sleep(10);die();
-*/
     //SQL wich is used for all updates
     $rawUpdtSQL = "UPDATE `".TABLE_PREFIX."mod_foldergallery_settings` SET `s_value` = '%s' WHERE "
         ."`section_id` = '".$section_id."' AND `s_name` = '%s';";
 
     // execute SQL
-    $sUpdateSql =array();
+    $sUpdateSql =[];
     foreach ($newSettings as $s_name=>$s_value){
+
         if (!is_array($s_value)) {
             $sSql = sprintf($rawUpdtSQL, $database->escapeString($s_value), $s_name);
         } else {
@@ -229,36 +230,37 @@ print_r( $newSettings ); print '</pre>'; flush (); //  ob_flush();;sleep(10);die
       $admin->print_error(implode('<br />', $aErrorMsg), $sAddonUrl.'/admin/modify_settings.php?page_id='.$page_id.'&section_id='.$section_id);
     }
 
-/*
-    $database->query(sprintf($rawUpdtSQL, $newSettings['catpic'], 'catpic'));
-    $database->query(sprintf($rawUpdtSQL, $newSettings['extensions'], 'extensions'));
-    $database->query(sprintf($rawUpdtSQL, $newSettings['gal_pp'], 'gal_pp'));
-    $database->query(sprintf($rawUpdtSQL, $newSettings['invisible'], 'invisible'));
-    $database->query(sprintf($rawUpdtSQL, $newSettings['lightbox'], 'lightbox'));
-    $database->query(sprintf($rawUpdtSQL, $newSettings['loadPreset'], 'loadPreset'));
-    $database->query(sprintf($rawUpdtSQL, $newSettings['pics_pp'], 'pics_pp'));
-    $database->query(sprintf($rawUpdtSQL, $newSettings['root_dir'], 'root_dir'));
-    $database->query(sprintf($rawUpdtSQL, serialize($newSettings['tbSettings']), 'tbSettings'));
-*/
-
     if(( serialize($oldSettings['tbSettings']) != serialize($newSettings['tbSettings'])) && !isset($aRequestVars['noNew']) || $bForceThumbnails )
     {
         // Ok, thumb_size hat gewechselt, also alte Thumbs lÃ¶schen
         $sql = 'SELECT `parent`, `categorie` FROM '.TABLE_PREFIX.'mod_foldergallery_categories WHERE section_id='.$oldSettings['section_id'].';';
         $query = $database->query($sql);
-        echo '<div class="info">'.$MOD_FOLDERGALLERY['DELETE_OLD_THUMBS'].':';
+        if ($query->numRows()) {
+?><div class="w3-section w3-panel w3-leftbar w3-pale-red w3-border-red w3-round w3-border-green">
+      <h5><?php echo $MOD_FOLDERGALLERY['DELETE_OLD_THUMBS'];?></h5>
+      <ul class=" w3-margin-bottom">
+<?php
+        $pathToFolder = $oldSettings['root_dir'].$thumbPath;
+?><li><?php echo $MOD_FOLDERGALLERY['DELETE'];?>: <?php echo $pathToFolder;?></li>
+<?php
+        deleteFolder($path.$pathToFolder);
         while($link = $query->fetchRow(MYSQLI_ASSOC))
         {
-            $pathToFolder = $path.$oldSettings['root_dir'].$link['parent'].'/'.$link['categorie'].$thumbPath;
-            #
-            echo '<br/>'.$MOD_FOLDERGALLERY['DELETE'].': '.$pathToFolder;
-            deleteFolder($pathToFolder);
+            $pathToFolder = $oldSettings['root_dir'].$link['parent'].$link['categorie'].$thumbPath;
+?><li><?php echo $MOD_FOLDERGALLERY['DELETE'];?>: <?php echo $pathToFolder;?></li>
+<?php
+            deleteFolder($path.$pathToFolder);
         }
-        $pathToFolder = $path.$oldSettings['root_dir'].$thumbPath;
-        echo '<br/>Delete: '.$pathToFolder.'</div>';
-        deleteFolder($pathToFolder);
-    }
-
+?>
+      </ul>
+  </div>
+<?php
+        } else {
+?>
+<!-- no fg-thumbs -->
+<?php
+        } // numRows
+    } // serialize($oldSettings['tbSettings']
     $sCatTitle = basename($newSettings['root_dir']);
     $sCatTitle = $database->escapeString($sCatTitle==''?basename($path):$sCatTitle);
 
@@ -281,10 +283,6 @@ print_r( $newSettings ); print '</pre>'; flush (); //  ob_flush();;sleep(10);die
         //    VALUES ( '$section_id', '-1', 'Root', '-1', 'Root', '1', '0', '0', '-1', '0', '', 'Root Description' );";
         $sql  = 'INSERT INTO `'.TABLE_PREFIX."mod_foldergallery_categories` ( `section_id`,`parent_id`,`categorie`,`parent`,`cat_name`,`active`,`is_empty`,`position`,`niveau`,`has_child`,`childs`,`description` ) "
               . "VALUES ( '$section_id', '-1', 'Root', '-1', '".$sCatTitle."', '1', '0', '0', '-1', '0', '', '' );";
-/*
-print '<pre  class="mod-pre rounded">function <span>'.__FUNCTION__.'( '.''.' );</span>  filename: <span>'.basename(__FILE__).'</span>  line: '.__LINE__.' -> <br />';
-print_r( $sql ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
-*/
         $query = $database->query($sql);
         if($database->is_error()) {
             $admin->print_error($database->get_error(), $sAddonUrl.'/admin/modify_settings.php?page_id='.$page_id.'&section_id='.$section_id);
@@ -297,7 +295,8 @@ print_r( $sql ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
     if($database->is_error()) {
         $admin->print_error(basname(__FILE__).' - '.__LINE__.' :: '.$database->get_error(), $sAddonUrl.'/admin/modify_settings.php?page_id='.$page_id.'&section_id='.$section_id);
     } else {
-        $admin->print_success(__LINE__.') '.$TEXT['SUCCESS'], $sAddonUrl.'/admin/sync.php?page_id='.$page_id.'&section_id='.$section_id);
+        include ($sAddonPath.'/admin/sync.php');
+//        $admin->print_success(__LINE__.') '.$TEXT['SUCCESS'], $sAddonUrl.'/admin/sync.php?page_id='.$page_id.'&section_id='.$section_id);
 }
     // Print admin footer
     $admin->print_footer();
