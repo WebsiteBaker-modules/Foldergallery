@@ -41,36 +41,35 @@ if (!defined('SYSTEM_RUN')) {require($sAppPath.'/config.php');}
 /* -------------------------------------------------------- */
     $sCallingScript = $_SERVER['SCRIPT_NAME'];
 
-    $globalStarted = \preg_match('/upgrade\-script\.php$/', $sCallingScript);
-    $sWbVersion = ($globalStarted && \defined('VERSION') ? VERSION : WB_VERSION);
+    $globalStarted = preg_match('/upgrade\-script\.php$/', $sCallingScript);
+    $sWbVersion = ($globalStarted && defined('VERSION') ? VERSION : WB_VERSION);
     switch ($iSteps):
         case 5:
-            $sAddonPath = \dirname(\dirname(\dirname(__DIR__)));
+            $sAddonPath = dirname(dirname(dirname(__DIR__)));
             break;
         case 4:
-            $sAddonPath = \dirname(\dirname(__DIR__));
+            $sAddonPath = dirname(dirname(__DIR__));
             break;
         case 3:
-            $sAddonPath = \dirname(__DIR__);
+            $sAddonPath = dirname(__DIR__);
             break;
         case 2:
         default:
             $sAddonPath = __DIR__;
     endswitch;
-
     $bExcecuteCommand = false;
     // needed for simple Dispatcher
-    $sAddonName = \basename($sAddonPath);
+    $sAddonName = basename($sAddonPath);
     // An associative array that by default contains the contents of $_GET, $_POST and $_COOKIE.
     $aRequestVars = $_REQUEST;
-    if (\is_readable(\dirname(__DIR__).'/SimpleCommandDispatcher.inc')) {require(\dirname(__DIR__).'/SimpleCommandDispatcher.inc');}
+    if (is_readable(dirname(__DIR__).'/SimpleCommandDispatcher.inc')) {require(dirname(__DIR__).'/SimpleCommandDispatcher.inc');}
 //    if (isset($sAddonBaseDir)) { exit; }
 
 //    $sCallingScript = $_SERVER['SCRIPT_NAME'];
 
 /*--------------------------------------------------------------------------------------------------------*/
     $unixPath = (function ($string){
-      return \str_replace('\\', '/', $string);
+      return str_replace('\\', '/', $string);
     });
 /*--------------------------------------------------------------------------------------------------------*/
 /**
@@ -80,7 +79,7 @@ if (!function_exists('index_exists')){
     function index_exists($table_name, $index_name, $number_fields = 0)
     {
         global $database;
-        $number_fields = \intval($number_fields);
+        $number_fields = intval($number_fields);
         $keys = 0;
         $sql = 'SHOW INDEX FROM `'.$table_name.'`';
         if (($res_keys = $database->query($sql))) {
@@ -119,9 +118,9 @@ if (!function_exists('UpdateKeyValue')){
         global $database;
         if( !is_array($key))
         {
-            if (\trim($key) != '' )
+            if( trim($key) != '' )
             {
-                $key = array( \trim($key) => \trim($value) );
+                $key = array( trim($key) => trim($value) );
             } else {
                 $key = [];
             }
@@ -141,7 +140,7 @@ if (!function_exists('UpdateKeyValue')){
                   $iFirst++;
               }
             }
-            $aExtraFieldsList =  \array_intersect_key($aTmp, $aExtraFields);
+            $aExtraFieldsList =  array_intersect_key($aTmp, $aExtraFields);
             foreach($aExtraFieldsList as $sName=>$sValue){
                 $sExtraFields .= '`'.$sName.'` = \''.$sValue.'\', ';
             }
@@ -156,7 +155,7 @@ if (!function_exists('UpdateKeyValue')){
                   . 'WHERE `s_name` = \''.$index.'\' '
                   . (($aIndexField['0']!='') ? 'AND '. $aIndexField['0'] : '');
 
-            if ($database->get_one($sql))
+            if($database->get_one($sql))
             {
                 $sql = 'UPDATE ';
                 $sql_where = 'WHERE `s_name` LIKE \''.$index.'\'';
@@ -174,7 +173,7 @@ if (!function_exists('UpdateKeyValue')){
                 $retval[]=$database->get_error();
             }
         }
-        return ((\sizeof($retval)==0) ? true : $retval);
+        return ((sizeof($retval)==0) ? true : $retval);
     };
 }
 /*--------------------------------------------------------------------------------------*/
@@ -192,26 +191,26 @@ $ColorConverter = (function ($color){
    if(!$color) return false;
    $color = trim($color);
    $result = false;
-  if (\preg_match("/^[0-9ABCDEFabcdef\#]+$/i", $color)){
+  if(preg_match("/^[0-9ABCDEFabcdef\#]+$/i", $color)){
       $hex = str_replace('#','', $color);
       if(!$hex) return false;
       if(strlen($hex) == 3):
-         $result['r'] = \hexdec(\substr($hex,0,1).\substr($hex,0,1));
-         $result['g'] = \hexdec(\substr($hex,1,1).\substr($hex,1,1));
-         $result['b'] = \hexdec(\substr($hex,2,1).\substr($hex,2,1));
+         $result['r'] = hexdec(substr($hex,0,1).substr($hex,0,1));
+         $result['g'] = hexdec(substr($hex,1,1).substr($hex,1,1));
+         $result['b'] = hexdec(substr($hex,2,1).substr($hex,2,1));
       else:
-         $result['r'] = \hexdec(\substr($hex,0,2));
-         $result['g'] = \hexdec(\substr($hex,2,2));
-         $result['b'] = \hexdec(\substr($hex,4,2));
+         $result['r'] = hexdec(substr($hex,0,2));
+         $result['g'] = hexdec(substr($hex,2,2));
+         $result['b'] = hexdec(substr($hex,4,2));
       endif;
-   }elseif (\preg_match("/^[0-9]+(,| |.)+[0-9]+(,| |.)+[0-9]+$/i", $color)){
-      $rgbstr = \str_replace(array(',',' ','.'), ':', $color);
-      $rgbarr = \explode(":", $rgbstr);
+   }elseif (preg_match("/^[0-9]+(,| |.)+[0-9]+(,| |.)+[0-9]+$/i", $color)){
+      $rgbstr = str_replace(array(',',' ','.'), ':', $color);
+      $rgbarr = explode(":", $rgbstr);
       $result = '#';
-      $result .= \str_pad(\dechex($rgbarr[0]), 2, "0", \STR_PAD_LEFT);
-      $result .= \str_pad(\dechex($rgbarr[1]), 2, "0", \STR_PAD_LEFT);
-      $result .= \str_pad(\dechex($rgbarr[2]), 2, "0", \STR_PAD_LEFT);
-      $result = \strtoupper($result);
+      $result .= str_pad(dechex($rgbarr[0]), 2, "0", STR_PAD_LEFT);
+      $result .= str_pad(dechex($rgbarr[1]), 2, "0", STR_PAD_LEFT);
+      $result .= str_pad(dechex($rgbarr[2]), 2, "0", STR_PAD_LEFT);
+      $result = strtoupper($result);
    }else{
       $result = false;
    }
@@ -220,19 +219,19 @@ $ColorConverter = (function ($color){
 
     $convertToCategory = (function ($sList)
     {
-      if (\is_array($sList)){
+      if (is_array($sList)){
           return $sList;
       }
 //    return preg_split('/[\s,=+\;\:\.\/\|]+/', $sList, -1, PREG_SPLIT_NO_EMPTY);
-      return \preg_split('/[,=+\;\:\/\|]+/', $sList, -1, \PREG_SPLIT_NO_EMPTY);
+      return preg_split('/[,=+\;\:\/\|]+/', $sList, -1, PREG_SPLIT_NO_EMPTY);
     });
 
     $convertToArray = (function ($sList)
     {
-      if (\is_array($sList)){
+      if (is_array($sList)){
           return $sList;
       }
-      return \preg_split('/[\s,=+\;\:\.\|]+/', $sList, -1, \PREG_SPLIT_NO_EMPTY);
+      return preg_split('/[\s,=+\;\:\.\|]+/', $sList, -1, PREG_SPLIT_NO_EMPTY);
     });
 /*--------------------------------------------------------------------------------------*/
 

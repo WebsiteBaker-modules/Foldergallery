@@ -451,6 +451,8 @@ print_r( $ergebnisse ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die
                 $katcount[$ix] = '';
             };
 
+/*
+*/
             if($katcount[$ix] == "1") {
                         $katcount[$ix].= " ".$MOD_FOLDERGALLERY['1PICTURE'];
             } else if($katcount[$ix] == "2") {
@@ -469,6 +471,10 @@ print_r( $ergebnisse ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die
                     $katcount[$ix].= " ".$MOD_FOLDERGALLERY['PICTURES'];
                 }
             };
+/*
+print '<pre  class="mod-pre rounded">function <span>'.__FUNCTION__.'( '.$iRatio.' );</span>  filename: <span>'.basename(__FILE__).'</span>  line: '.__LINE__.' -> <br />';
+print_r( $bilder ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
+*/
             $sCatGalleryLink = $unterKats[$ix]['link'];
             $sCatThumbUrl = (!is_dir($unterKats[$ix]['thumb'])? $unterKats[$ix]['thumb']:'');
             $sCatName = $unterKats[$ix]['name'];
@@ -476,7 +482,6 @@ print_r( $ergebnisse ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die
             $isEmpty = ((intval($katcount[$ix])==0)?true:$isEmpty);
             $bIsThumbLink = ($sCatThumbUrl);
             if ($isEmpty &&!$bIsAdmin){continue;}
-
             $aCategorie = array(
                 'CAT_LINK' => $sCatGalleryLink,
                 'THUMB_LINK' => $sCatThumbUrl.'?t='.time(),
@@ -487,7 +492,10 @@ print_r( $ergebnisse ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die
                 'IsEmpty' =>$isEmpty
             );
             $t->set_var($aCategorie);
-
+/*
+print '<pre  class="mod-pre rounded">function <span>'.__FUNCTION__.'( '.''.' );</span>  filename: <span>'.basename(__FILE__).'</span>  line: '.__LINE__.' -> <br />';
+print_r( $aCategorie ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die();
+*/
             $iRatio = (float)($thumbPresets[$settings ['loadPreset']]['thumb_ratio']);
             $iRatio = (float)($iRatio>1?$iRatio:1.34);
             $catWidth  = (float)$settings['tbSettings']['image_x'];
@@ -632,7 +640,7 @@ print_r( $ergebnisse ); print '</pre>'; flush (); //  ob_flush();;sleep(10); die
             $sImageFile = function ($sImage) use ($ImgInfo){
                 return __DIR__.'/preview.php?img='.$sImage;  // '
             };
-            $sFilename = $url.$pathToFolder.$sOrginalFilename;
+            $sFilename = $pathToFolder.$sOrginalFilename;
 //            $sImageFilename = $sImageFile($pathToFolder.$sOrginalFilename);
 
             $aShowImages = [

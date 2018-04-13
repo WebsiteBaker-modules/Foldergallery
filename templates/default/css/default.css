@@ -33,7 +33,7 @@ div.images{overflow:hidden;padding:0.525em;}
 div.images div{overflow:hidden;padding:0.525em;text-align:center;white-space:normal;}
 ul.photostyle{list-style:none;margin:0 0 5px 0;padding:0;display:inline;text-align:center;}
 ul.photostyle li{padding:4px;border-radius:5px 5px 5px 5px;-webkit-border-radius:5px 5px 5px 5px;-moz-border-radius:5px 5px 5px 5px;}
-ul.photostyle li{display:inline-block;list-style-type:none;padding-right:0.1225em;}
+ul.photostyle li{display:inline;list-style-type:none;padding-right:0.1225em;}
 ul.photostyle li a img{border:0 none;}
 .htt-caption{display:block;}
 ul.categories{list-style:none;margin:0 0 5px 0;}
@@ -44,7 +44,7 @@ ul.categories li a img{max-width:100%;transition:0.5s ease;-o-transition:0.5s ea
 .clear{clear:left;padding-top:0px;border:0px none #000000;border-bottom:1px none #000000;}
 .cat-naslov{font-size:12px;text-align:center;margin-top:2px;line-height:1;padding:0 1px 0 1px;}
 div.categories{border-radius:0.525em;box-shadow:0 0 1px #888888;display:inline-block;margin:0.125em;background:#fff;overflow:hidden;position:relative;}
-div.categories:hover{box-shadow:0 0 10px #888888;}
+div.categories:hover{box-shadow:0 0 6px #888888;}
 div.categories .categories-image{width:100%;}
 .categories-info{backface-visibility:hidden;background:#fff none repeat scroll 0 0;padding:0.525em;position:absolute;transition:all 0.4s ease 0s;z-index:10;}
 div.pagination{text-align:left !important;}
@@ -62,7 +62,7 @@ div.categories-info{height:100%;padding:0.925em 0.5525em;margin-top:-40%;}
 div.categories-info div.pagination{width:100%;padding-top:relative;}
 div.categories-info div.pagination ul{width:100%;position:absolute;margin-left:0 !important;}
 div.categories-info div.pagination ul{margin:auto 0.0em;padding:0;text-align:center;left:0;}
-div.categories{padding-bottom:10.025%;height:11.925em;box-shadow:0px 0px 6px #888888;}
+div.categories{padding-bottom:10.025%;height:11.925em;}
 div.categories-info div.pagination ul{bottom:40%;position:relative;}
 div.categories .social-media li{margin-right:4px;}
 div.categories .social-media li:last-child{margin-right:0;}

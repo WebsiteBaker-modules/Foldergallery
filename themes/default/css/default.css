@@ -103,4 +103,3 @@ input[type=range ],::-moz-range-track,::-ms-track{-webkit-appearance:normal;back
 img.fg{margin-bottom:3px!important;}
 .thumbb{max-height:100px;margin:10px 0 10px 0;}
 input[type="radio"]+ label,input[type="checkbox"]+ label,input[type="checkbox"]+ td label{font-weight:normal;padding:0 1.325em 0 0.825em;vertical-align:middle;}
-

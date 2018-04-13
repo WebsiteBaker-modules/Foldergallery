@@ -26,11 +26,11 @@
 if (!defined('SYSTEM_RUN')) { header($_SERVER['SERVER_PROTOCOL'].' 404 Not Found'); flush(); exit; }
 
 $module_directory       = 'foldergallery';
-$module_name            = 'Foldergallery v3.0.0-dev5';
+$module_name            = 'Foldergallery v2.2.0';
 $module_function        = 'page';
-$module_version         = '3.0.0-dev5';
+$module_version         = '2.2.0';
 $module_status          = '';
-$module_platform        = '2.11.0';
+$module_platform        = '2.10.0';
 
 $module_author          = 'Jürg Rast, schliffer, Bianka Martinovic, Chio, Pumpi, Luisehahne';
 $module_license         = 'GNU General Public License';

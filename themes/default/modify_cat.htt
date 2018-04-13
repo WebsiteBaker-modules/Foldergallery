@@ -306,17 +306,11 @@ console.info(elm);
                 includeExif: true,
                 orient: true,
                 sizes: [
-                    {name: "", maxSize: (upSettings.maxImageSize < 1600 ? upSettings.maxImageSize : 1536 ) }
+                    {name: "", maxSize: (upSettings.maxImageSize<1600?upSettings.maxImageSize:1536 ) }
                 ]
             },
             text: {
               failUpload: 'Upload files are failed',
-            },
-            callbacks: {
-                onAllComplete: function() {
-                    alert('done');
-                    document.location.href="{AddonUrl}/admin/sync.php?page_id="+upSettings.pageID+"&section_id="+upSettings.sectionID;
-                }
             },
             debug: true
         });

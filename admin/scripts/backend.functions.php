@@ -234,8 +234,8 @@ if (!function_exists('sanitizeListOfValues')){
 /*---------------------------------------------------------------------------------------------------*/
 //
 /*-----------------------------------  glob routines -----------------------------------------------*/
-    function scanGlobTree ($sPath, $sPattern = '[a-zA-Z0-9_~@]*'){
-        return (\glob($sPath.$sPattern, \GLOB_MARK));  // \GLOB_ONLYDIR|
+    function scanGlobTree ($sPath, $sPattern = '{,^.}[a-zA-Z0-9_~@]*'){
+        return (\glob($sPath.$sPattern, \GLOB_BRACE|\GLOB_MARK));  // \GLOB_ONLYDIR|
     }
 
     /**
@@ -662,6 +662,16 @@ function getCategories($galerie, $searchCategorie = '', $modus = 1, $rekursiv = 
             $catParents = $searchCategorie.str_replace(WB_PATH.$MediaRel, '',$catParents);//$path
 //            $catParents  = ($catParents==''?'Root':$catParents);
             if ($catParents!=''  && is_readable($path.$catParents)){
+/*
+            $sAllowedExtensions   = implode(',', $aAllowedExtensions);
+    function scanGlobTree ($sPath, $sPattern = '{,^.}[a-zA-Z0-9_~@]*'){
+        return (\glob($sPath.$sPattern, \GLOB_BRACE|\GLOB_MARK));  // \GLOB_ONLYDIR|
+    }
+                $sSearchFilter = DIRECTORY_SEPARATOR.'{,.}{'.$sAllowedExtensions.'}';
+                $sSearchFilter = '*';
+                $aFilesInDir = (\glob($path.$catParents.$sSearchFilter, \GLOB_BRACE));  // \GLOB_ONLYDIR
+*/
+//                $aFilesInDir = glob ($sSearchFilter, GLOB_BRACE);
                 $sSearchFilter = '/*.{'.$sAllowedExtensions.'}';
                 $aFilesInDir = scanGlobTree($path.$catParents, $sSearchFilter);
                   if (is_array($aFilesInDir) && sizeof($aFilesInDir)){

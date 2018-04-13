@@ -26,7 +26,7 @@ if (!defined('SYSTEM_RUN')) { header($_SERVER['SERVER_PROTOCOL'].' 404 Not Found
     // check if upgrade startet by upgrade-script to echo a message
     $globalStarted = preg_match('/upgrade\-script\.php$/', $_SERVER["SCRIPT_NAME"]);
     $sWbVersion = ($globalStarted && defined('VERSION') ? VERSION : WB_VERSION);
-    Translate::getInstance()->enableAddon(ADMIN_DIRECTORY.'\\addons');
+        Translate::getInstance()->enableAddon(ADMIN_DIRECTORY.'\\addons');
     if (is_writable(WB_PATH.'/temp/cache')) {
         Translate::getInstance()->clearCache();
     }
